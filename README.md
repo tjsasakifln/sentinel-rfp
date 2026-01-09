@@ -5,7 +5,6 @@
 [![NestJS](https://img.shields.io/badge/NestJS-10.x-red?logo=nestjs)](https://nestjs.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
-[![Opus 4.5](https://img.shields.io/badge/LLM-Opus_4.5-orange)]()
 
 **Sentinel RFP is an agentic AI platform for RFP response automation that transforms how organizations win proposals.** By leveraging multi-agent orchestration and trust-scored AI responses, Sentinel RFP reduces proposal response time by 50% while improving win rates by 8-15 percentage points. Built for mid-market tech companies and government contractors who need FAR/DFARS compliant proposal management software.
 
@@ -317,11 +316,13 @@ For detailed roadmap information, see [ROADMAP.md](ROADMAP.md).
 
 ## Use Cases
 
+> **Note**: Sentinel RFP is currently in early development. The following describes our target use cases and planned capabilities.
+
 ### Mid-Market Technology Companies
 
-Sales teams at 200-2,000 employee SaaS and technology companies use Sentinel RFP to respond to 50-200 RFPs annually. The platform reduces response time from 5 days to 2 days while maintaining quality standards.
+Sales teams at 200-2,000 employee SaaS and technology companies will use Sentinel RFP to respond to 50-200 RFPs annually. The platform aims to reduce response time from 5 days to 2 days while maintaining quality standards.
 
-**Key Benefits:**
+**Planned Benefits:**
 - 50% reduction in proposal response time
 - Centralized knowledge library accessible to all teams
 - Consistent messaging across proposals
@@ -329,9 +330,9 @@ Sales teams at 200-2,000 employee SaaS and technology companies use Sentinel RFP
 
 ### Enterprise Sales Organizations
 
-Large enterprises managing complex, multi-stakeholder proposals leverage Sentinel RFP for competitive differentiation. The platform handles 200-500 RFPs per year with sophisticated approval workflows.
+Large enterprises managing complex, multi-stakeholder proposals will leverage Sentinel RFP for competitive differentiation. The platform is designed to handle 200-500 RFPs per year with sophisticated approval workflows.
 
-**Key Benefits:**
+**Planned Benefits:**
 - Scalable proposal operations
 - Advanced analytics and win rate tracking
 - Integration with Salesforce and existing CRM systems
@@ -339,9 +340,9 @@ Large enterprises managing complex, multi-stakeholder proposals leverage Sentine
 
 ### Government Contractors
 
-Federal contractors pursuing $50M+ opportunities use Sentinel RFP for FAR/DFARS compliance and efficient Section L/M response management. The platform addresses the unique requirements of government proposals.
+Federal contractors pursuing $50M+ opportunities will use Sentinel RFP for FAR/DFARS compliance and efficient Section L/M response management. The platform will address the unique requirements of government proposals.
 
-**Key Benefits:**
+**Planned Benefits:**
 - Pre-built compliance clause libraries
 - Automated compliance matrix generation
 - CMMC-ready security controls
@@ -355,7 +356,8 @@ Federal contractors pursuing $50M+ opportunities use Sentinel RFP for FAR/DFARS 
 For inquiries about Sentinel RFP, partnership opportunities, or technical questions:
 
 **Tiago Sasaki**
-Phone: +55 48 98834-4559
+Email: tiago.sasaki@gmail.com
+WhatsApp: +55 48 98834-4559
 
 ---
 
