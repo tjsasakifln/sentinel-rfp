@@ -64,3 +64,11 @@ secrets.json
 # Database
 *.sqlite
 *.db
+
+# TypeScript
+*.tsbuildinfo
+
+# pnpm
+.pnp
+.pnp.js
+pnpm-debug.log*

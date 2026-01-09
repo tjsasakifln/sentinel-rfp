@@ -1,6 +1,7 @@
 # ADR-004: NestJS + TypeScript over Python/FastAPI
 
 ## Status
+
 **Accepted** - January 2026
 
 ## Context
@@ -13,6 +14,7 @@ We need to select the primary backend framework for Sentinel RFP. The main conte
 4. **Django (Python)**: Batteries-included Python framework
 
 ### Evaluation Criteria
+
 - Type safety and developer experience
 - Enterprise patterns (DI, modules, testing)
 - AI/ML ecosystem integration
@@ -26,21 +28,22 @@ We need to select the primary backend framework for Sentinel RFP. The main conte
 
 ### Rationale
 
-| Factor | NestJS | FastAPI | Winner |
-|--------|--------|---------|--------|
-| Type Safety | Native TypeScript | Pydantic (good) | NestJS |
-| Enterprise Patterns | Built-in (DI, modules) | Manual setup | NestJS |
-| AI/ML Libraries | Via child process/API | Native Python | FastAPI |
-| Async Performance | Excellent | Excellent | Tie |
-| Frontend Sharing | Same language | Different | NestJS |
-| Testing | Jest, built-in | pytest | Tie |
-| Railway Support | Excellent | Excellent | Tie |
-| Hiring Pool (BR) | Large | Medium | NestJS |
-| Documentation | Excellent | Excellent | Tie |
+| Factor              | NestJS                 | FastAPI         | Winner  |
+| ------------------- | ---------------------- | --------------- | ------- |
+| Type Safety         | Native TypeScript      | Pydantic (good) | NestJS  |
+| Enterprise Patterns | Built-in (DI, modules) | Manual setup    | NestJS  |
+| AI/ML Libraries     | Via child process/API  | Native Python   | FastAPI |
+| Async Performance   | Excellent              | Excellent       | Tie     |
+| Frontend Sharing    | Same language          | Different       | NestJS  |
+| Testing             | Jest, built-in         | pytest          | Tie     |
+| Railway Support     | Excellent              | Excellent       | Tie     |
+| Hiring Pool (BR)    | Large                  | Medium          | NestJS  |
+| Documentation       | Excellent              | Excellent       | Tie     |
 
 ### Key Decision Factors
 
 #### 1. Full-Stack TypeScript
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    SHARED TYPE SYSTEM                                │
@@ -110,10 +113,7 @@ describe('ProposalService', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [
-        ProposalService,
-        { provide: PrismaService, useValue: mockDeep<PrismaClient>() },
-      ],
+      providers: [ProposalService, { provide: PrismaService, useValue: mockDeep<PrismaClient>() }],
     }).compile();
 
     service = module.get(ProposalService);
@@ -191,6 +191,7 @@ apps/api/
 ## Consequences
 
 ### Positive
+
 - **Type Safety**: End-to-end TypeScript reduces bugs
 - **Code Sharing**: Types, validation schemas shared with frontend
 - **Enterprise Ready**: Built-in patterns for large teams
@@ -199,11 +200,13 @@ apps/api/
 - **Performance**: V8 performance excellent for I/O bound work
 
 ### Negative
+
 - **AI Libraries**: Some Python ML libraries not available
 - **Learning Curve**: NestJS decorators unfamiliar to some
 - **Bundle Size**: Node.js apps larger than Go/Rust
 
 ### Mitigations
+
 - Use TypeScript SDKs for LLM APIs (well-supported)
 - Add Python microservice if ML requirements emerge
 - Document NestJS patterns for team onboarding
@@ -212,30 +215,38 @@ apps/api/
 ## Technology Alternatives Rejected
 
 ### FastAPI
+
 Good framework, but:
+
 - Different language from frontend
 - No shared types
 - Smaller hiring pool in BR
 - Extra overhead for AI features we're not using (we call APIs)
 
 ### Express.js
+
 Too minimal:
+
 - No built-in DI
 - No module system
 - More boilerplate
 - Less opinionated (inconsistent codebases)
 
 ### Django
+
 Too heavy:
+
 - Monolithic architecture
 - ORM doesn't fit our needs (Prisma better for TypeScript)
 - Sync by default
 
 ## Related ADRs
+
 - ADR-001: Event-Driven Architecture
 - ADR-007: CQRS for Proposals Domain
 
 ## References
+
 - [NestJS Documentation](https://docs.nestjs.com/)
 - [TypeScript Best Practices](https://www.typescriptlang.org/docs/)
 - [Prisma + NestJS](https://docs.nestjs.com/recipes/prisma)

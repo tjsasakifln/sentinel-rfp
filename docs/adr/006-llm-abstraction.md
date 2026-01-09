@@ -1,11 +1,13 @@
 # ADR-006: LLM Provider Abstraction Layer
 
 ## Status
+
 **Accepted** - January 2026
 
 ## Context
 
 Sentinel RFP relies heavily on Large Language Models for:
+
 - Response generation (primary value)
 - Query planning and decomposition
 - Response review and scoring
@@ -20,6 +22,7 @@ We need to decide how to integrate with LLM providers:
 4. **Hybrid**: Mix of approaches
 
 ### Requirements
+
 - Support multiple providers (Anthropic, OpenAI)
 - Easy provider switching (fallback, A/B testing)
 - Cost tracking per tenant
@@ -34,15 +37,15 @@ We need to decide how to integrate with LLM providers:
 
 ### Rationale
 
-| Factor | LangChain | Custom | Winner |
-|--------|-----------|--------|--------|
-| Type Safety | Partial | Full TypeScript | Custom |
-| Bundle Size | Large (100+ deps) | Minimal | Custom |
-| Control | Limited | Full | Custom |
-| Learning Curve | High | Low (our code) | Custom |
-| Updates | External | Internal | Custom |
-| Debugging | Complex chains | Simple | Custom |
-| Testing | Hard to mock | Easy | Custom |
+| Factor         | LangChain         | Custom          | Winner |
+| -------------- | ----------------- | --------------- | ------ |
+| Type Safety    | Partial           | Full TypeScript | Custom |
+| Bundle Size    | Large (100+ deps) | Minimal         | Custom |
+| Control        | Limited           | Full            | Custom |
+| Learning Curve | High              | Low (our code)  | Custom |
+| Updates        | External          | Internal        | Custom |
+| Debugging      | Complex chains    | Simple          | Custom |
+| Testing        | Hard to mock      | Easy            | Custom |
 
 ### Architecture
 
@@ -239,10 +242,7 @@ export class LLMRouter {
     throw new Error('All LLM providers failed');
   }
 
-  private async withRetry<T>(
-    fn: () => Promise<T>,
-    maxRetries = 3
-  ): Promise<T> {
+  private async withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
     let lastError: Error;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -267,18 +267,14 @@ export class LLMRouter {
 export class CostTracker {
   // Pricing per 1M tokens (as of Jan 2026)
   private pricing = {
-    'claude-3-5-sonnet-20241022': { input: 3.00, output: 15.00 },
-    'claude-3-opus-20240229': { input: 15.00, output: 75.00 },
-    'gpt-4o': { input: 5.00, output: 15.00 },
-    'gpt-4o-mini': { input: 0.15, output: 0.60 },
+    'claude-3-5-sonnet-20241022': { input: 3.0, output: 15.0 },
+    'claude-3-opus-20240229': { input: 15.0, output: 75.0 },
+    'gpt-4o': { input: 5.0, output: 15.0 },
+    'gpt-4o-mini': { input: 0.15, output: 0.6 },
     'text-embedding-3-large': { input: 0.13, output: 0 },
   };
 
-  trackUsage(
-    tenantId: string,
-    model: string,
-    usage: TokenUsage
-  ): void {
+  trackUsage(tenantId: string, model: string, usage: TokenUsage): void {
     const price = this.pricing[model];
     if (!price) return;
 
@@ -343,6 +339,7 @@ const MODEL_ROUTING = {
 ## Consequences
 
 ### Positive
+
 - **Full control**: Customize behavior exactly as needed
 - **Type safety**: 100% TypeScript, full IDE support
 - **Small footprint**: No LangChain dependency tree
@@ -351,11 +348,13 @@ const MODEL_ROUTING = {
 - **Fast iteration**: Change logic without library updates
 
 ### Negative
+
 - **Maintenance**: Must maintain provider integrations
 - **Missing features**: No LangChain ecosystem (chains, agents)
 - **Updates**: Must track API changes manually
 
 ### Mitigations
+
 - Official SDKs handle most complexity
 - Build only what we need (YAGNI)
 - Automated tests catch API changes
@@ -385,10 +384,12 @@ async function cachedComplete(request: CompletionRequest) {
 ```
 
 ## Related ADRs
+
 - ADR-002: Multi-Agent RAG Architecture
 - ADR-003: Vector Storage Strategy
 
 ## References
+
 - [Anthropic TypeScript SDK](https://github.com/anthropics/anthropic-sdk-typescript)
 - [OpenAI TypeScript SDK](https://github.com/openai/openai-node)
 - [LLM Caching Strategies](https://www.anthropic.com/news/prompt-caching)

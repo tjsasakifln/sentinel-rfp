@@ -17,24 +17,24 @@ This document defines the security architecture, controls, and compliance pathwa
 
 ### Actors
 
-| Actor | Capability | Motivation |
-|-------|------------|------------|
-| External Attacker | Medium-High | Financial, data theft |
-| Malicious Insider | High | Financial, sabotage |
-| Competitor | Medium | Corporate espionage |
-| Nation State | Very High | Intelligence (GovCon) |
-| Automated Bot | Low-Medium | Credential stuffing, spam |
+| Actor             | Capability  | Motivation                |
+| ----------------- | ----------- | ------------------------- |
+| External Attacker | Medium-High | Financial, data theft     |
+| Malicious Insider | High        | Financial, sabotage       |
+| Competitor        | Medium      | Corporate espionage       |
+| Nation State      | Very High   | Intelligence (GovCon)     |
+| Automated Bot     | Low-Medium  | Credential stuffing, spam |
 
 ### Assets
 
-| Asset | Sensitivity | Impact if Compromised |
-|-------|-------------|----------------------|
-| Proposal Content | High | Competitive disadvantage, contract loss |
-| Pricing Data | Critical | Direct financial loss |
-| Customer Data | High | Regulatory fines, reputation |
-| API Keys/Secrets | Critical | Full system compromise |
-| User Credentials | High | Account takeover |
-| Knowledge Base | Medium-High | Competitive intelligence leak |
+| Asset            | Sensitivity | Impact if Compromised                   |
+| ---------------- | ----------- | --------------------------------------- |
+| Proposal Content | High        | Competitive disadvantage, contract loss |
+| Pricing Data     | Critical    | Direct financial loss                   |
+| Customer Data    | High        | Regulatory fines, reputation            |
+| API Keys/Secrets | Critical    | Full system compromise                  |
+| User Credentials | High        | Account takeover                        |
+| Knowledge Base   | Medium-High | Competitive intelligence leak           |
 
 ### Attack Vectors
 
@@ -121,39 +121,39 @@ This document defines the security architecture, controls, and compliance pathwa
 // JWT Configuration
 interface JWTConfig {
   accessToken: {
-    expiresIn: '15m';      // Short-lived
-    algorithm: 'RS256';     // RSA signatures
+    expiresIn: '15m'; // Short-lived
+    algorithm: 'RS256'; // RSA signatures
     issuer: 'sentinel-rfp';
   };
   refreshToken: {
     expiresIn: '7d';
-    rotateOnUse: true;      // Rotation prevents reuse
-    absoluteExpiry: '30d';  // Force re-auth after 30 days
+    rotateOnUse: true; // Rotation prevents reuse
+    absoluteExpiry: '30d'; // Force re-auth after 30 days
   };
 }
 
 // Token Claims
 interface TokenClaims {
-  sub: string;              // User ID
-  org: string;              // Organization ID
-  role: UserRole;           // User role
-  permissions: string[];    // Explicit permissions
-  sessionId: string;        // Session tracking
-  iat: number;              // Issued at
-  exp: number;              // Expiration
-  aud: string;              // Audience (api.sentinel-rfp.com)
-  iss: string;              // Issuer
+  sub: string; // User ID
+  org: string; // Organization ID
+  role: UserRole; // User role
+  permissions: string[]; // Explicit permissions
+  sessionId: string; // Session tracking
+  iat: number; // Issued at
+  exp: number; // Expiration
+  aud: string; // Audience (api.sentinel-rfp.com)
+  iss: string; // Issuer
 }
 ```
 
 ### Multi-Factor Authentication
 
-| Factor Type | Implementation | Required For |
-|-------------|----------------|--------------|
-| Knowledge | Password (Argon2id) | All users |
-| Possession | TOTP (Google Authenticator) | Org admins, optional for users |
-| Possession | WebAuthn/Passkeys | Optional, recommended |
-| SMS | Backup only | Recovery, not primary |
+| Factor Type | Implementation              | Required For                   |
+| ----------- | --------------------------- | ------------------------------ |
+| Knowledge   | Password (Argon2id)         | All users                      |
+| Possession  | TOTP (Google Authenticator) | Org admins, optional for users |
+| Possession  | WebAuthn/Passkeys           | Optional, recommended          |
+| SMS         | Backup only                 | Recovery, not primary          |
 
 ### SSO Integration
 
@@ -211,20 +211,20 @@ const oidcConfig = {
 
 ### Permission Matrix
 
-| Permission | Admin | Proposal Lead | SME | Viewer |
-|------------|-------|---------------|-----|--------|
-| users:manage | Yes | No | No | No |
-| proposals:create | Yes | Yes | No | No |
-| proposals:read | All | Assigned | Assigned | Assigned |
-| proposals:edit | All | Own | Assigned Q's | No |
-| proposals:delete | Yes | Own | No | No |
-| responses:generate | Yes | Yes | No | No |
-| responses:edit | Yes | Yes | Assigned | No |
-| knowledge:manage | Yes | Yes | No | No |
-| knowledge:read | Yes | Yes | Yes | Yes |
-| integrations:manage | Yes | No | No | No |
-| analytics:view | Yes | Yes | Limited | No |
-| settings:manage | Yes | No | No | No |
+| Permission          | Admin | Proposal Lead | SME          | Viewer   |
+| ------------------- | ----- | ------------- | ------------ | -------- |
+| users:manage        | Yes   | No            | No           | No       |
+| proposals:create    | Yes   | Yes           | No           | No       |
+| proposals:read      | All   | Assigned      | Assigned     | Assigned |
+| proposals:edit      | All   | Own           | Assigned Q's | No       |
+| proposals:delete    | Yes   | Own           | No           | No       |
+| responses:generate  | Yes   | Yes           | No           | No       |
+| responses:edit      | Yes   | Yes           | Assigned     | No       |
+| knowledge:manage    | Yes   | Yes           | No           | No       |
+| knowledge:read      | Yes   | Yes           | Yes          | Yes      |
+| integrations:manage | Yes   | No            | No           | No       |
+| analytics:view      | Yes   | Yes           | Limited      | No       |
+| settings:manage     | Yes   | No            | No           | No       |
 
 ### Attribute-Based Access Control (ABAC)
 
@@ -328,11 +328,7 @@ export class EncryptionService {
 
   decrypt(value: EncryptedValue): string {
     const key = this.getKey(value.keyId);
-    const decipher = crypto.createDecipheriv(
-      this.algorithm,
-      key,
-      Buffer.from(value.iv, 'base64')
-    );
+    const decipher = crypto.createDecipheriv(this.algorithm, key, Buffer.from(value.iv, 'base64'));
     decipher.setAuthTag(Buffer.from(value.tag, 'base64'));
 
     let decrypted = decipher.update(value.ciphertext, 'base64', 'utf8');
@@ -345,12 +341,12 @@ export class EncryptionService {
 
 ### Data Classification
 
-| Level | Examples | Controls |
-|-------|----------|----------|
-| **Restricted** | Passwords, API keys, PII | Encrypted, audited, no logs |
-| **Confidential** | Proposal content, pricing | Encrypted, access logged |
-| **Internal** | User names, org settings | Access controlled |
-| **Public** | Product info, docs | No restrictions |
+| Level            | Examples                  | Controls                    |
+| ---------------- | ------------------------- | --------------------------- |
+| **Restricted**   | Passwords, API keys, PII  | Encrypted, audited, no logs |
+| **Confidential** | Proposal content, pricing | Encrypted, access logged    |
+| **Internal**     | User names, org settings  | Access controlled           |
+| **Public**       | Product info, docs        | No restrictions             |
 
 ## API Security
 
@@ -379,10 +375,10 @@ const rateLimits = {
 
   // Endpoint-specific
   endpoints: {
-    '/auth/login': { window: '15m', max: 5 },           // Prevent brute force
-    '/auth/password-reset': { window: '1h', max: 3 },   // Prevent enumeration
+    '/auth/login': { window: '15m', max: 5 }, // Prevent brute force
+    '/auth/password-reset': { window: '1h', max: 3 }, // Prevent enumeration
     '/api/responses/generate': { window: '1m', max: 10 }, // AI cost control
-    '/api/documents/upload': { window: '1h', max: 50 },   // Storage abuse
+    '/api/documents/upload': { window: '1h', max: 50 }, // Storage abuse
   },
 };
 ```
@@ -394,23 +390,24 @@ const rateLimits = {
 import { z } from 'zod';
 
 const createProposalSchema = z.object({
-  title: z.string()
+  title: z
+    .string()
     .min(3, 'Title must be at least 3 characters')
     .max(200, 'Title must not exceed 200 characters')
     .regex(/^[^<>{}]*$/, 'Invalid characters in title'), // XSS prevention
 
-  clientName: z.string()
+  clientName: z
+    .string()
     .min(2)
     .max(100)
-    .transform(val => sanitizeHtml(val)), // Sanitize on input
+    .transform((val) => sanitizeHtml(val)), // Sanitize on input
 
-  dueDate: z.string()
+  dueDate: z
+    .string()
     .datetime()
-    .refine(date => new Date(date) > new Date(), 'Due date must be in the future'),
+    .refine((date) => new Date(date) > new Date(), 'Due date must be in the future'),
 
-  value: z.number()
-    .positive()
-    .max(999999999999, 'Value exceeds maximum'),
+  value: z.number().positive().max(999999999999, 'Value exceeds maximum'),
 });
 
 // SQL injection prevention via Prisma (parameterized queries)
@@ -424,15 +421,10 @@ const corsConfig = {
   origin: [
     'https://app.sentinel-rfp.com',
     'https://staging.sentinel-rfp.com',
-    /\.sentinel-rfp\.com$/,  // Subdomains
+    /\.sentinel-rfp\.com$/, // Subdomains
   ],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'X-Request-ID',
-    'X-Tenant-ID',
-  ],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID', 'X-Tenant-ID'],
   exposedHeaders: ['X-RateLimit-Remaining', 'X-Request-ID'],
   credentials: true,
   maxAge: 86400, // 24 hours
@@ -656,9 +648,9 @@ interface AuditLog {
   organizationId: string;
 
   // Action
-  action: string;        // e.g., 'proposal.created', 'user.login'
-  resource: string;      // e.g., 'proposal:123'
-  resourceType: string;  // e.g., 'proposal'
+  action: string; // e.g., 'proposal.created', 'user.login'
+  resource: string; // e.g., 'proposal:123'
+  resourceType: string; // e.g., 'proposal'
 
   // Context
   requestId: string;
@@ -679,14 +671,14 @@ interface AuditLog {
 
 ### Audit Events
 
-| Event Category | Events | Retention |
-|----------------|--------|-----------|
-| Authentication | login, logout, mfa_enabled, password_changed | 2 years |
-| Authorization | permission_denied, role_changed | 2 years |
-| Data Access | proposal_viewed, document_downloaded, export_created | 1 year |
-| Data Modification | proposal_created, response_edited, user_deleted | 2 years |
-| Administration | settings_changed, user_invited, integration_added | 2 years |
-| Security | suspicious_activity, rate_limit_exceeded | 2 years |
+| Event Category    | Events                                               | Retention |
+| ----------------- | ---------------------------------------------------- | --------- |
+| Authentication    | login, logout, mfa_enabled, password_changed         | 2 years   |
+| Authorization     | permission_denied, role_changed                      | 2 years   |
+| Data Access       | proposal_viewed, document_downloaded, export_created | 1 year    |
+| Data Modification | proposal_created, response_edited, user_deleted      | 2 years   |
+| Administration    | settings_changed, user_invited, integration_added    | 2 years   |
+| Security          | suspicious_activity, rate_limit_exceeded             | 2 years   |
 
 ### Log Sanitization
 
@@ -705,9 +697,9 @@ const NEVER_LOG = [
 
 // Fields to mask
 const MASK_FIELDS = [
-  'email',      // show first 2 chars + domain
-  'phone',      // show last 4 digits
-  'ip',         // can be configured per tenant
+  'email', // show first 2 chars + domain
+  'phone', // show last 4 digits
+  'ip', // can be configured per tenant
 ];
 
 function sanitizeForLog(obj: Record<string, unknown>): Record<string, unknown> {
@@ -774,14 +766,14 @@ function sanitizeForLog(obj: Record<string, unknown>): Record<string, unknown> {
 
 ### Phase 3+: FedRAMP/CMMC Readiness
 
-| Requirement | Current State | FedRAMP Ready |
-|-------------|---------------|---------------|
-| Data residency | Railway (US) | AWS GovCloud |
-| Key management | Railway env vars | AWS KMS / HSM |
-| Audit logging | Application logs | SIEM integration |
-| Penetration testing | Annual | Continuous |
-| Background checks | Standard | NIST 800-53 |
-| Incident response | 24-hour SLA | 1-hour SLA |
+| Requirement         | Current State    | FedRAMP Ready    |
+| ------------------- | ---------------- | ---------------- |
+| Data residency      | Railway (US)     | AWS GovCloud     |
+| Key management      | Railway env vars | AWS KMS / HSM    |
+| Audit logging       | Application logs | SIEM integration |
+| Penetration testing | Annual           | Continuous       |
+| Background checks   | Standard         | NIST 800-53      |
+| Incident response   | 24-hour SLA      | 1-hour SLA       |
 
 ### GDPR Compliance
 
@@ -819,12 +811,12 @@ interface DPA {
 
 ### Severity Classification
 
-| Level | Description | Response Time | Examples |
-|-------|-------------|---------------|----------|
-| P0 - Critical | Active breach, data exfiltration | 15 minutes | Compromised credentials, data leak |
-| P1 - High | Vulnerability with exploit potential | 1 hour | SQLi discovered, auth bypass |
-| P2 - Medium | Security gap, no active exploit | 4 hours | Missing rate limit, weak password policy |
-| P3 - Low | Best practice deviation | 24 hours | Outdated dependency, logging gap |
+| Level         | Description                          | Response Time | Examples                                 |
+| ------------- | ------------------------------------ | ------------- | ---------------------------------------- |
+| P0 - Critical | Active breach, data exfiltration     | 15 minutes    | Compromised credentials, data leak       |
+| P1 - High     | Vulnerability with exploit potential | 1 hour        | SQLi discovered, auth bypass             |
+| P2 - Medium   | Security gap, no active exploit      | 4 hours       | Missing rate limit, weak password policy |
+| P3 - Low      | Best practice deviation              | 24 hours      | Outdated dependency, logging gap         |
 
 ### Response Procedure
 
@@ -903,13 +895,13 @@ Sentinel RFP Security Team
 
 ### Testing Schedule
 
-| Test Type | Frequency | Scope |
-|-----------|-----------|-------|
-| SAST (Static Analysis) | Every commit | All code |
-| DAST (Dynamic Analysis) | Weekly | API endpoints |
-| Dependency Scanning | Daily | All dependencies |
-| Penetration Testing | Annually | Full application |
-| Red Team Exercise | Bi-annually | Full organization |
+| Test Type               | Frequency    | Scope             |
+| ----------------------- | ------------ | ----------------- |
+| SAST (Static Analysis)  | Every commit | All code          |
+| DAST (Dynamic Analysis) | Weekly       | API endpoints     |
+| Dependency Scanning     | Daily        | All dependencies  |
+| Penetration Testing     | Annually     | Full application  |
+| Red Team Exercise       | Bi-annually  | Full organization |
 
 ### Automated Security Checks
 
@@ -923,7 +915,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 0 * * *'  # Daily
+    - cron: '0 0 * * *' # Daily
 
 jobs:
   security:
@@ -957,11 +949,11 @@ jobs:
 
 ## Security Contacts
 
-| Role | Responsibility | Contact |
-|------|----------------|---------|
-| Security Lead | Overall security strategy | security@sentinel-rfp.com |
-| Incident Commander | P0/P1 response coordination | oncall@sentinel-rfp.com |
-| Privacy Officer | GDPR/data protection | privacy@sentinel-rfp.com |
+| Role                  | Responsibility                | Contact                   |
+| --------------------- | ----------------------------- | ------------------------- |
+| Security Lead         | Overall security strategy     | security@sentinel-rfp.com |
+| Incident Commander    | P0/P1 response coordination   | oncall@sentinel-rfp.com   |
+| Privacy Officer       | GDPR/data protection          | privacy@sentinel-rfp.com  |
 | Vulnerability Reports | External security researchers | security@sentinel-rfp.com |
 
 ## References

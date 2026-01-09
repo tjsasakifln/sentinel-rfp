@@ -1,5 +1,7 @@
 # Product Requirements Document (PRD)
+
 # Sentinel RFP
+
 ## Plataforma de Automação Agêntica para Respostas a RFP
 
 ---
@@ -7,7 +9,7 @@
 **Versão:** 1.0.0  
 **Data:** Janeiro 2026  
 **Status:** Draft para Revisão  
-**Classificação:** Confidencial  
+**Classificação:** Confidencial
 
 ---
 
@@ -40,21 +42,21 @@
 
 ### 1.1 Propriedade
 
-| Campo | Valor |
-|-------|-------|
-| Product Owner | [A definir] |
-| Tech Lead | [A definir] |
-| Design Lead | [A definir] |
-| Stakeholders | Equipe de Produto, Engenharia, Vendas, Customer Success |
+| Campo         | Valor                                                   |
+| ------------- | ------------------------------------------------------- |
+| Product Owner | [A definir]                                             |
+| Tech Lead     | [A definir]                                             |
+| Design Lead   | [A definir]                                             |
+| Stakeholders  | Equipe de Produto, Engenharia, Vendas, Customer Success |
 
 ### 1.2 Aprovações Necessárias
 
-| Papel | Nome | Status | Data |
-|-------|------|--------|------|
-| CPO | [Nome] | Pendente | - |
-| CTO | [Nome] | Pendente | - |
-| Head de Engenharia | [Nome] | Pendente | - |
-| Head de Vendas | [Nome] | Pendente | - |
+| Papel              | Nome   | Status   | Data |
+| ------------------ | ------ | -------- | ---- |
+| CPO                | [Nome] | Pendente | -    |
+| CTO                | [Nome] | Pendente | -    |
+| Head de Engenharia | [Nome] | Pendente | -    |
+| Head de Vendas     | [Nome] | Pendente | -    |
 
 ### 1.3 Documentos Relacionados
 
@@ -73,7 +75,7 @@ O **Sentinel RFP** é uma plataforma de automação de respostas a RFP (Request 
 
 ### 2.2 Proposta de Valor Única
 
-> *"De repositório de busca para execução autônoma: agentes de IA especializados realizam o trabalho pesado de leitura, estratégia e redação, deixando aos humanos apenas a validação final e o refinamento estratégico."*
+> _"De repositório de busca para execução autônoma: agentes de IA especializados realizam o trabalho pesado de leitura, estratégia e redação, deixando aos humanos apenas a validação final e o refinamento estratégico."_
 
 ### 2.3 Oportunidade de Mercado
 
@@ -85,14 +87,14 @@ O **Sentinel RFP** é uma plataforma de automação de respostas a RFP (Request 
 
 ### 2.4 Diferencial Competitivo
 
-| Aspecto | Incumbentes (Loopio, Responsive) | Sentinel RFP |
-|---------|----------------------------------|---------------------|
-| Arquitetura | CMS passivo + RAG básico | Agentic Workflow First |
-| Processamento de Docs | OCR simples | VLM híbrido multimodal |
-| Colaboração SME | Portal de vendas obrigatório | Headless via Slack/Teams |
-| Confiança IA | Caixa preta | Trust Score granular com rastreabilidade |
-| Precificação | Per-seat (cria silos) | Baseada em valor (usuários ilimitados) |
-| Conformidade GovCon | Básica ou inexistente | Nativa (FedRAMP, CMMC, FAR) |
+| Aspecto               | Incumbentes (Loopio, Responsive) | Sentinel RFP                             |
+| --------------------- | -------------------------------- | ---------------------------------------- |
+| Arquitetura           | CMS passivo + RAG básico         | Agentic Workflow First                   |
+| Processamento de Docs | OCR simples                      | VLM híbrido multimodal                   |
+| Colaboração SME       | Portal de vendas obrigatório     | Headless via Slack/Teams                 |
+| Confiança IA          | Caixa preta                      | Trust Score granular com rastreabilidade |
+| Precificação          | Per-seat (cria silos)            | Baseada em valor (usuários ilimitados)   |
+| Conformidade GovCon   | Básica ou inexistente            | Nativa (FedRAMP, CMMC, FAR)              |
 
 ---
 
@@ -104,25 +106,29 @@ O mercado de gestão de RFPs encontra-se em um ponto de inflexão crítico. Embo
 
 ### 3.2 Indicadores Críticos do Mercado (2025)
 
-| KPI | Benchmark | Implicação para Design |
-|-----|-----------|------------------------|
-| Taxa de Vitória | 45% (↑ YoY) | Automação básica absorvida; diferencial é qualidade estratégica |
-| Tempo de Resposta | 25 horas (↓ 17%) | Eliminar tarefas administrativas para focar em estratégia |
-| Adoção IA Gen | 68% (2x vs 2023) | IA nativa esperada; tolerância zero para alucinações |
-| Volume RFPs | 153/ano | Escalabilidade crítica sem degradação de performance |
+| KPI               | Benchmark        | Implicação para Design                                          |
+| ----------------- | ---------------- | --------------------------------------------------------------- |
+| Taxa de Vitória   | 45% (↑ YoY)      | Automação básica absorvida; diferencial é qualidade estratégica |
+| Tempo de Resposta | 25 horas (↓ 17%) | Eliminar tarefas administrativas para focar em estratégia       |
+| Adoção IA Gen     | 68% (2x vs 2023) | IA nativa esperada; tolerância zero para alucinações            |
+| Volume RFPs       | 153/ano          | Escalabilidade crítica sem degradação de performance            |
 
 ### 3.3 Dores Crônicas do Mercado
 
 #### 3.3.1 Fadiga do Especialista (SME)
+
 A maior barreira não é tecnológica, mas de colaboração humana. Engenheiros, arquitetos de soluções e gerentes de produto detestam fazer login em portais de vendas para responder perguntas técnicas. O modelo de atribuição de tarefas por e-mail é ineficiente e cria gargalos.
 
 **Impacto Quantificado:**
+
 - Tempo médio de resposta de SME: 3-5 dias úteis
 - Taxa de resposta de primeira solicitação: <40%
 - Custo de hora de engenheiro desperdiçada em portais: $150-300/hora
 
 #### 3.3.2 Abismo da Precisão Técnica
+
 Ferramentas genéricas de IA falham catastroficamente ao interpretar:
+
 - Tabelas complexas em PDFs
 - Diagramas de arquitetura
 - Requisitos de conformidade cruzada
@@ -131,6 +137,7 @@ Ferramentas genéricas de IA falham catastroficamente ao interpretar:
 **Impacto:** Riscos legais, desqualificações, perda de credibilidade.
 
 #### 3.3.3 Caixa Preta da IA
+
 Usuários profissionais desconfiam de respostas geradas sem rastreabilidade clara. A ausência de um sistema de confiança granular reduz adoção e aumenta retrabalho de validação manual.
 
 **Impacto:** Adoção limitada a 30-40% das capacidades disponíveis.
@@ -140,6 +147,7 @@ Usuários profissionais desconfiam de respostas geradas sem rastreabilidade clar
 As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era pré-LLM com arquitetura baseada em bibliotecas Q&A que exigem curadoria manual intensa. Sofrem de dívida técnica conceitual irreversível.
 
 **Problemas Estruturais Identificados:**
+
 1. Bibliotecas estáticas tornam-se obsoletas rapidamente
 2. Manutenção manual é principal causa de falha na implementação
 3. Camadas de IA adicionadas como patches, não como arquitetura core
@@ -151,7 +159,7 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 
 ### 4.1 Declaração de Visão
 
-> *Ser a infraestrutura crítica de receita para empresas de serviços e tecnologia de alta performance, transformando a gestão de propostas de um centro de custo operacional em uma vantagem competitiva estratégica através de automação agêntica.*
+> _Ser a infraestrutura crítica de receita para empresas de serviços e tecnologia de alta performance, transformando a gestão de propostas de um centro de custo operacional em uma vantagem competitiva estratégica através de automação agêntica._
 
 ### 4.2 Princípios de Design
 
@@ -190,41 +198,41 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 
 ### 5.1 Objetivos Primários (North Star Metrics)
 
-| Objetivo | Métrica | Target Y1 | Target Y2 |
-|----------|---------|-----------|-----------|
-| Aumentar taxa de vitória dos clientes | Win Rate delta | +8 p.p. | +15 p.p. |
-| Reduzir tempo de resposta | Horas/proposta | -50% | -70% |
-| Eliminar fadiga de SME | Engajamento via portal | <10% | <5% |
+| Objetivo                              | Métrica                | Target Y1 | Target Y2 |
+| ------------------------------------- | ---------------------- | --------- | --------- |
+| Aumentar taxa de vitória dos clientes | Win Rate delta         | +8 p.p.   | +15 p.p.  |
+| Reduzir tempo de resposta             | Horas/proposta         | -50%      | -70%      |
+| Eliminar fadiga de SME                | Engajamento via portal | <10%      | <5%       |
 
 ### 5.2 Objetivos de Produto
 
-| Categoria | Métrica | Target |
-|-----------|---------|--------|
-| Precisão | Trust Score médio das respostas geradas | >85% |
-| Cobertura | % de perguntas respondidas automaticamente | >70% |
-| Adoção | DAU/MAU ratio | >40% |
-| Retenção | Net Revenue Retention | >120% |
-| NPS | Net Promoter Score | >50 |
+| Categoria | Métrica                                    | Target |
+| --------- | ------------------------------------------ | ------ |
+| Precisão  | Trust Score médio das respostas geradas    | >85%   |
+| Cobertura | % de perguntas respondidas automaticamente | >70%   |
+| Adoção    | DAU/MAU ratio                              | >40%   |
+| Retenção  | Net Revenue Retention                      | >120%  |
+| NPS       | Net Promoter Score                         | >50    |
 
 ### 5.3 Objetivos Técnicos
 
-| Área | Métrica | Target |
-|------|---------|--------|
-| Performance | Tempo de ingestão de documento (100 págs) | <60 segundos |
-| Performance | Latência de geração de resposta | <3 segundos |
-| Disponibilidade | Uptime SLA | 99.9% |
-| Escalabilidade | Documentos processados/dia/cliente | >1.000 |
-| Segurança | Tempo para certificação FedRAMP | <18 meses |
+| Área            | Métrica                                   | Target       |
+| --------------- | ----------------------------------------- | ------------ |
+| Performance     | Tempo de ingestão de documento (100 págs) | <60 segundos |
+| Performance     | Latência de geração de resposta           | <3 segundos  |
+| Disponibilidade | Uptime SLA                                | 99.9%        |
+| Escalabilidade  | Documentos processados/dia/cliente        | >1.000       |
+| Segurança       | Tempo para certificação FedRAMP           | <18 meses    |
 
 ### 5.4 Objetivos de Negócio
 
-| Métrica | Y1 | Y2 | Y3 |
-|---------|----|----|----| 
-| ARR | $2M | $8M | $25M |
-| Clientes Pagantes | 50 | 200 | 600 |
-| ACV Médio | $40K | $40K | $42K |
-| CAC Payback | 18 meses | 12 meses | 9 meses |
-| Gross Margin | 70% | 75% | 80% |
+| Métrica           | Y1       | Y2       | Y3      |
+| ----------------- | -------- | -------- | ------- |
+| ARR               | $2M      | $8M      | $25M    |
+| Clientes Pagantes | 50       | 200      | 600     |
+| ACV Médio         | $40K     | $40K     | $42K    |
+| CAC Payback       | 18 meses | 12 meses | 9 meses |
+| Gross Margin      | 70%      | 75%      | 80%     |
 
 ---
 
@@ -355,36 +363,36 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 
 #### Segmento Primário: Mid-Market Tech/SaaS
 
-| Característica | Descrição |
-|----------------|-----------|
-| Tamanho | 200-2000 funcionários |
-| ARR | $20M-200M |
-| Volume RFPs | 50-200/ano |
-| Dor Principal | Escala vs Qualidade |
-| ACV Esperado | $24K-60K |
-| Ciclo de Vendas | 3-6 meses |
+| Característica  | Descrição             |
+| --------------- | --------------------- |
+| Tamanho         | 200-2000 funcionários |
+| ARR             | $20M-200M             |
+| Volume RFPs     | 50-200/ano            |
+| Dor Principal   | Escala vs Qualidade   |
+| ACV Esperado    | $24K-60K              |
+| Ciclo de Vendas | 3-6 meses             |
 
 #### Segmento Secundário: Enterprise Tech
 
-| Característica | Descrição |
-|----------------|-----------|
-| Tamanho | 2000+ funcionários |
-| ARR | $200M+ |
-| Volume RFPs | 200-500/ano |
-| Dor Principal | Consistência e Compliance |
-| ACV Esperado | $100K-500K |
-| Ciclo de Vendas | 6-12 meses |
+| Característica  | Descrição                 |
+| --------------- | ------------------------- |
+| Tamanho         | 2000+ funcionários        |
+| ARR             | $200M+                    |
+| Volume RFPs     | 200-500/ano               |
+| Dor Principal   | Consistência e Compliance |
+| ACV Esperado    | $100K-500K                |
+| Ciclo de Vendas | 6-12 meses                |
 
 #### Segmento Estratégico: GovCon
 
-| Característica | Descrição |
-|----------------|-----------|
-| Tamanho | Variável (Prime + Sub) |
-| Contratos | $10M+/ano |
-| Volume RFPs | 20-100/ano (alto valor) |
-| Dor Principal | Conformidade e Complexidade |
-| ACV Esperado | $150K-1M |
-| Ciclo de Vendas | 9-18 meses |
+| Característica  | Descrição                   |
+| --------------- | --------------------------- |
+| Tamanho         | Variável (Prime + Sub)      |
+| Contratos       | $10M+/ano                   |
+| Volume RFPs     | 20-100/ano (alto valor)     |
+| Dor Principal   | Conformidade e Complexidade |
+| ACV Esperado    | $150K-1M                    |
+| Ciclo de Vendas | 9-18 meses                  |
 
 ### 6.3 Matriz de Priorização de Segmentos
 
@@ -422,6 +430,7 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 | MSG/EML | P2 | E-mails com anexos |
 
 **Critérios de Aceitação:**
+
 - [ ] Upload de arquivo único até 100MB
 - [ ] Upload em lote de até 50 arquivos
 - [ ] Processamento assíncrono com notificação de conclusão
@@ -435,12 +444,14 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 **Descrição:** O sistema deve extrair e interpretar tabelas complexas preservando relações semânticas entre cabeçalhos e células.
 
 **Requisitos Técnicos:**
+
 - Utilização de Vision Language Models (VLM) para identificação visual de estrutura
 - Conversão para formato estruturado (Markdown/HTML/JSON)
 - Preservação de merge cells e spanning headers
 - Detecção de tabelas implícitas (dados tabulares sem bordas)
 
 **Critérios de Aceitação:**
+
 - [ ] Precisão de extração de tabelas >95%
 - [ ] Mapeamento correto de cabeçalhos para células >98%
 - [ ] Suporte a tabelas com até 100 colunas e 1000 linhas
@@ -451,6 +462,7 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 **Descrição:** O sistema deve dividir documentos respeitando a hierarquia semântica, não apenas por tamanho.
 
 **Algoritmo:**
+
 ```
 1. Identificar estrutura hierárquica via Layout Analysis
 2. Detectar níveis: Documento > Seção > Subseção > Parágrafo
@@ -460,6 +472,7 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Chunks respeitam limites de seção (não cortam no meio)
 - [ ] Metadados incluem: título da seção, página, posição hierárquica
 - [ ] Overlap configurável (padrão: 10% do chunk anterior)
@@ -479,6 +492,7 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 | Anexos | Attachments | Indexar e criar hiperlinks |
 
 **Critérios de Aceitação:**
+
 - [ ] Detecção automática de seções com >90% de precisão
 - [ ] Geração de Matriz de Conformidade Excel
 - [ ] Hiperlinks entre requisitos e anexos referenciados
@@ -489,6 +503,7 @@ As plataformas dominantes (Loopio, Responsive/RFPIO) foram construídas na era p
 **Descrição:** O sistema deve identificar e destacar termos contratuais de alto risco durante a ingestão.
 
 **Termos Monitorados:**
+
 ```
 RISCO ALTO:
 - "Liquidated Damages" / "Danos Liquidados"
@@ -506,6 +521,7 @@ RISCO MÉDIO:
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Destacar visualmente termos de risco no documento
 - [ ] Notificação para revisão legal imediata
 - [ ] Relatório consolidado de riscos por documento
@@ -528,6 +544,7 @@ RISCO MÉDIO:
 | Atualização | Monitoramento passivo de mudanças |
 
 **Pesos de Autoridade:**
+
 ```
 Documentos Assinados/Contratos: 1.0
 Documentação Oficial: 0.9
@@ -538,6 +555,7 @@ Conversas Slack/Teams: 0.4
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Indexação incremental (delta sync) a cada 15 minutos
 - [ ] Score de autoridade visível na interface
 - [ ] Sugestão de atualização quando documento >90 dias
@@ -548,6 +566,7 @@ Conversas Slack/Teams: 0.4
 **Descrição:** Agente que analisa perguntas complexas e decompõe em plano de busca multi-tópico.
 
 **Comportamento:**
+
 ```
 INPUT: "Descreva sua abordagem de segurança e conformidade com GDPR"
 
@@ -561,6 +580,7 @@ PLANO GERADO:
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Decomposição automática de perguntas compostas
 - [ ] Plano de busca visível e editável pelo usuário
 - [ ] Execução paralela de buscas independentes
@@ -571,6 +591,7 @@ PLANO GERADO:
 **Descrição:** Agente principal de geração de respostas usando modelo de linguagem avançado (Claude 3.5 Sonnet ou superior).
 
 **Capacidades Requeridas:**
+
 - Janela de contexto: mínimo 200K tokens
 - Raciocínio complexo e nuances de linguagem
 - Consistência terminológica ao longo da proposta
@@ -585,6 +606,7 @@ PLANO GERADO:
 | Modelo | Claude 3.5 Sonnet | Por plano |
 
 **Critérios de Aceitação:**
+
 - [ ] Respostas gramaticalmente corretas (>99%)
 - [ ] Manutenção de terminologia consistente
 - [ ] Adaptação a Win Themes configurados
@@ -595,6 +617,7 @@ PLANO GERADO:
 **Descrição:** Agente que atua como Red Team interno, validando respostas antes de apresentar ao usuário.
 
 **Checklist de Validação:**
+
 ```
 □ Resposta atende aos requisitos da pergunta?
 □ Informações são factualmente verificáveis?
@@ -613,6 +636,7 @@ PLANO GERADO:
 | <60 | Confiança insuficiente | Não apresentar, solicitar input humano |
 
 **Critérios de Aceitação:**
+
 - [ ] Trust Score calculado e exibido para cada resposta
 - [ ] Rastreabilidade: documento, página, parágrafo de origem
 - [ ] Identificação de gaps de informação
@@ -627,12 +651,14 @@ PLANO GERADO:
 **Descrição:** O sistema deve monitorar passivamente fontes de conteúdo técnico e sugerir atualizações.
 
 **Fontes Monitoradas:**
+
 - Páginas de documentação técnica (URLs configuráveis)
 - Release notes em sistemas de issue tracking (Jira, GitHub)
 - Changelogs de produto
 - Base de conhecimento interna
 
 **Critérios de Aceitação:**
+
 - [ ] Webhook/polling configurável por fonte
 - [ ] Detecção de mudanças relevantes para respostas existentes
 - [ ] Sugestão automática de atualização
@@ -643,6 +669,7 @@ PLANO GERADO:
 **Descrição:** O sistema deve identificar quando respostas diferentes foram usadas para a mesma pergunta.
 
 **Algoritmo:**
+
 ```
 1. Identificar perguntas semanticamente similares (>90% cosine similarity)
 2. Comparar respostas usadas em propostas diferentes
@@ -651,6 +678,7 @@ PLANO GERADO:
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Detecção automática de perguntas similares
 - [ ] Dashboard de conflitos pendentes
 - [ ] Histórico de decisões de canonização
@@ -661,6 +689,7 @@ PLANO GERADO:
 **Descrição:** O sistema deve gerenciar o ciclo de vida de cada item de conteúdo.
 
 **Estados:**
+
 ```
 DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 ```
@@ -674,6 +703,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 | ARCHIVED | ACTIVE | Reativação manual |
 
 **Critérios de Aceitação:**
+
 - [ ] Indicador visual de estado em cada conteúdo
 - [ ] Notificações para owners de conteúdo STALE
 - [ ] Relatório de health da biblioteca
@@ -688,6 +718,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 **Descrição:** Bot que permite SMEs colaborar em propostas diretamente do Slack.
 
 **Comandos:**
+
 ```
 /nexus ask [pergunta] - Buscar resposta na biblioteca
 /nexus validate - Validar resposta sugerida para thread atual
@@ -698,23 +729,25 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 ```
 
 **Workflow de Solicitação:**
+
 ```
 1. Proposal Manager marca @SME no Sentinel
 2. Bot envia DM para SME no Slack:
    "Marina precisa de validação técnica para Acme Corp RFP:
-   
+
    Pergunta: Como funciona o rate limiting da API?
-   
+
    Resposta sugerida: [resposta gerada]
    Trust Score: 82%
-   
+
    [✓ Aprovar] [✎ Editar] [✗ Rejeitar]"
-   
+
 3. SME responde no Slack
 4. Sistema captura e atualiza proposta automaticamente
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Latência de notificação <5 segundos
 - [ ] Resposta capturada sem necessidade de login em portal
 - [ ] Threading para discussões de follow-up
@@ -725,6 +758,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 **Descrição:** Funcionalidade equivalente ao RF-030 para ambiente Microsoft Teams.
 
 **Critérios de Aceitação:**
+
 - [ ] Paridade funcional com Slack
 - [ ] Suporte a Adaptive Cards para UX rica
 - [ ] Integração com calendário para disponibilidade
@@ -734,6 +768,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 **Descrição:** O sistema deve (com permissão) indexar canais públicos para capturar conhecimento tribal.
 
 **Escopo:**
+
 - Canais públicos de engenharia/produto
 - Threads de suporte técnico interno
 - Discussões de arquitetura
@@ -747,6 +782,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 | Opt-out individual | Sim | Sempre disponível |
 
 **Critérios de Aceitação:**
+
 - [ ] Consentimento explícito antes de indexação
 - [ ] Dashboard de canais indexados
 - [ ] Exclusão de mensagens sob solicitação
@@ -771,12 +807,14 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 | Timeline | RFP | 10% |
 
 **Modelo:**
+
 - Algoritmo: XGBoost ou Random Forest
 - Treinamento: Dados históricos do cliente
 - Retreinamento: Trimestral ou após 50 novas decisões
 - Explicabilidade: SHAP values para cada predição
 
 **Output:**
+
 ```
 {
   "pwin": 0.72,
@@ -795,6 +833,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Acurácia >75% em holdout set
 - [ ] Explicação em linguagem natural
 - [ ] Comparação com média histórica
@@ -813,6 +852,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 | Urgência | Prazos curtos, linguagem urgente | Depende de capacidade |
 
 **Critérios de Aceitação:**
+
 - [ ] Análise automática na ingestão
 - [ ] Score de "wired para competidor"
 - [ ] Recomendações de posicionamento
@@ -823,12 +863,14 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 **Descrição:** Sugestão de faixas de preço competitivas baseada em dados públicos.
 
 **Fontes de Dados:**
+
 - FPDS.gov (Federal Procurement Data System)
 - GovWin/Deltek
 - USASpending.gov
 - Contratos anteriores do cliente (se disponíveis)
 
 **Output:**
+
 ```
 {
   "service_category": "IT Professional Services",
@@ -847,6 +889,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Cobertura de >80% das categorias NAICS comuns
 - [ ] Atualização de dados mensal
 - [ ] Disclaimers legais apropriados
@@ -871,6 +914,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 | Formato de arquivo | PDF/DOCX | Erro se diferente |
 
 **Critérios de Aceitação:**
+
 - [ ] Parsing de requisitos de Seção L com >95% precisão
 - [ ] Validação em tempo real durante edição
 - [ ] Relatório de conformidade exportável
@@ -881,6 +925,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 **Descrição:** Criação automática e validação de lista de acrônimos usados na proposta.
 
 **Regras:**
+
 ```
 1. Extrair todos os acrônimos usados no documento
 2. Verificar se definidos na primeira ocorrência
@@ -890,6 +935,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Detecção automática de acrônimos (padrão: maiúsculas >2 chars)
 - [ ] Validação de definição na primeira ocorrência
 - [ ] Geração de lista em formato padrão
@@ -911,6 +957,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 | Isolamento | Tenant isolation completo |
 
 **Critérios de Aceitação:**
+
 - [ ] Certificação CMMC 2.0 Nível 2 (ou readiness assessment)
 - [ ] Documentação de controles para auditoria
 - [ ] Penetration testing anual
@@ -925,12 +972,14 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 **Descrição:** Extensão de navegador que preenche respostas em portais web de RFP.
 
 **Portais Suportados (P0):**
+
 - Ariba
 - Coupa
 - SAP Fieldglass
 - Portais customizados (via seletor CSS)
 
 **Funcionalidades:**
+
 ```
 1. Detectar campos de pergunta/resposta no DOM
 2. Extrair contexto (pergunta, limite de caracteres)
@@ -941,6 +990,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Detecção automática de campos em portais conhecidos
 - [ ] Modo de seleção manual para portais desconhecidos
 - [ ] Respeito a limites de caracteres
@@ -964,6 +1014,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 | Engajamento SME | Tempo de resposta | Por pessoa |
 
 **Critérios de Aceitação:**
+
 - [ ] Dashboard configurável por role
 - [ ] Export para PDF/Excel
 - [ ] Alertas configuráveis
@@ -974,6 +1025,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 **Descrição:** Cálculo automático de ROI baseado em economia de tempo e win rate.
 
 **Fórmula:**
+
 ```
 ROI = [(Horas Economizadas × Custo/Hora) + (Delta Win Rate × Pipeline Value)] / Custo da Plataforma
 
@@ -985,6 +1037,7 @@ Onde:
 ```
 
 **Critérios de Aceitação:**
+
 - [ ] Cálculo automático mensal
 - [ ] Comparação com baseline pré-implementação
 - [ ] Exportável para apresentação executiva
@@ -996,79 +1049,79 @@ Onde:
 
 ### 8.1 Performance
 
-| Métrica | Requisito | Medição |
-|---------|-----------|---------|
-| Tempo de ingestão | <60s para 100 páginas | P95 |
-| Latência de resposta | <3s para geração | P95 |
-| Latência de busca | <500ms | P95 |
-| Throughput | >100 requisições/s/cliente | Sustentado |
+| Métrica              | Requisito                  | Medição    |
+| -------------------- | -------------------------- | ---------- |
+| Tempo de ingestão    | <60s para 100 páginas      | P95        |
+| Latência de resposta | <3s para geração           | P95        |
+| Latência de busca    | <500ms                     | P95        |
+| Throughput           | >100 requisições/s/cliente | Sustentado |
 
 ### 8.2 Escalabilidade
 
-| Dimensão | Requisito |
-|----------|-----------|
-| Clientes simultâneos | >1.000 |
-| Documentos por cliente | >100.000 |
-| Usuários por cliente | Ilimitado |
-| RFPs simultâneas por cliente | >50 |
-| Crescimento | 10x sem re-arquitetura |
+| Dimensão                     | Requisito              |
+| ---------------------------- | ---------------------- |
+| Clientes simultâneos         | >1.000                 |
+| Documentos por cliente       | >100.000               |
+| Usuários por cliente         | Ilimitado              |
+| RFPs simultâneas por cliente | >50                    |
+| Crescimento                  | 10x sem re-arquitetura |
 
 ### 8.3 Disponibilidade
 
-| Métrica | Requisito |
-|---------|-----------|
-| Uptime SLA | 99.9% |
-| RPO (Recovery Point Objective) | <1 hora |
-| RTO (Recovery Time Objective) | <4 horas |
-| Manutenções programadas | Fora de horário comercial US/EU |
+| Métrica                        | Requisito                       |
+| ------------------------------ | ------------------------------- |
+| Uptime SLA                     | 99.9%                           |
+| RPO (Recovery Point Objective) | <1 hora                         |
+| RTO (Recovery Time Objective)  | <4 horas                        |
+| Manutenções programadas        | Fora de horário comercial US/EU |
 
 ### 8.4 Segurança
 
-| Controle | Requisito |
-|----------|-----------|
-| Autenticação | SSO (SAML, OIDC), MFA obrigatório para admin |
-| Autorização | RBAC granular |
-| Criptografia em trânsito | TLS 1.3 |
-| Criptografia em repouso | AES-256 |
-| Isolamento de dados | Tenant isolation completo |
-| Retenção de LLM | Zero data retention policy |
-| Logs de auditoria | Imutáveis, exportáveis |
-| Penetration testing | Anual por terceiro |
-| SOC 2 Type II | Requerido |
-| FedRAMP Ready | Fase 3 |
-| CMMC 2.0 Nível 2 | Fase 3 |
+| Controle                 | Requisito                                    |
+| ------------------------ | -------------------------------------------- |
+| Autenticação             | SSO (SAML, OIDC), MFA obrigatório para admin |
+| Autorização              | RBAC granular                                |
+| Criptografia em trânsito | TLS 1.3                                      |
+| Criptografia em repouso  | AES-256                                      |
+| Isolamento de dados      | Tenant isolation completo                    |
+| Retenção de LLM          | Zero data retention policy                   |
+| Logs de auditoria        | Imutáveis, exportáveis                       |
+| Penetration testing      | Anual por terceiro                           |
+| SOC 2 Type II            | Requerido                                    |
+| FedRAMP Ready            | Fase 3                                       |
+| CMMC 2.0 Nível 2         | Fase 3                                       |
 
 ### 8.5 Conformidade
 
-| Regulação | Requisito | Prazo |
-|-----------|-----------|-------|
-| GDPR | Compliant | Lançamento |
-| CCPA | Compliant | Lançamento |
-| SOC 2 Type II | Certificado | 12 meses |
-| ISO 27001 | Certificado | 18 meses |
-| FedRAMP Moderate | Authorization | 24 meses |
-| CMMC 2.0 | Nível 2 Ready | 18 meses |
+| Regulação        | Requisito     | Prazo      |
+| ---------------- | ------------- | ---------- |
+| GDPR             | Compliant     | Lançamento |
+| CCPA             | Compliant     | Lançamento |
+| SOC 2 Type II    | Certificado   | 12 meses   |
+| ISO 27001        | Certificado   | 18 meses   |
+| FedRAMP Moderate | Authorization | 24 meses   |
+| CMMC 2.0         | Nível 2 Ready | 18 meses   |
 
 ### 8.6 Usabilidade
 
-| Critério | Requisito |
-|----------|-----------|
-| Onboarding | Primeiro valor em <30 minutos |
-| Curva de aprendizado | Proficiência básica em <4 horas |
-| Documentação | 100% de features documentadas |
-| Suporte | Chat in-app, SLA de resposta <4h |
-| Acessibilidade | WCAG 2.1 AA |
-| Idiomas | EN, PT-BR, ES (Fase 1), FR, DE (Fase 2) |
+| Critério             | Requisito                               |
+| -------------------- | --------------------------------------- |
+| Onboarding           | Primeiro valor em <30 minutos           |
+| Curva de aprendizado | Proficiência básica em <4 horas         |
+| Documentação         | 100% de features documentadas           |
+| Suporte              | Chat in-app, SLA de resposta <4h        |
+| Acessibilidade       | WCAG 2.1 AA                             |
+| Idiomas              | EN, PT-BR, ES (Fase 1), FR, DE (Fase 2) |
 
 ### 8.7 Manutenibilidade
 
-| Critério | Requisito |
-|----------|-----------|
-| Cobertura de testes | >80% |
-| Deployment | Zero-downtime deploys |
-| Rollback | <5 minutos |
-| Monitoramento | Logs centralizados, APM, alertas |
-| Documentação técnica | Atualizada a cada release |
+| Critério             | Requisito                        |
+| -------------------- | -------------------------------- |
+| Cobertura de testes  | >80%                             |
+| Deployment           | Zero-downtime deploys            |
+| Rollback             | <5 minutos                       |
+| Monitoramento        | Logs centralizados, APM, alertas |
+| Documentação técnica | Atualizada a cada release        |
 
 ---
 
@@ -1228,47 +1281,47 @@ Onde:
 
 #### 9.3.1 Backend
 
-| Camada | Tecnologia | Justificativa |
-|--------|------------|---------------|
-| Runtime | Node.js 20+ / Python 3.11+ | Performance + ML ecosystem |
-| Framework | NestJS / FastAPI | Enterprise-grade, type-safe |
-| API | REST + GraphQL | Flexibilidade |
-| Messaging | Kafka | Event streaming escalável |
-| Cache | Redis Cluster | Low latency, pub/sub |
-| Search | Elasticsearch | Full-text + aggregations |
-| Vector DB | Pinecone / Weaviate | Purpose-built para RAG |
+| Camada    | Tecnologia                 | Justificativa               |
+| --------- | -------------------------- | --------------------------- |
+| Runtime   | Node.js 20+ / Python 3.11+ | Performance + ML ecosystem  |
+| Framework | NestJS / FastAPI           | Enterprise-grade, type-safe |
+| API       | REST + GraphQL             | Flexibilidade               |
+| Messaging | Kafka                      | Event streaming escalável   |
+| Cache     | Redis Cluster              | Low latency, pub/sub        |
+| Search    | Elasticsearch              | Full-text + aggregations    |
+| Vector DB | Pinecone / Weaviate        | Purpose-built para RAG      |
 
 #### 9.3.2 Frontend
 
-| Camada | Tecnologia | Justificativa |
-|--------|------------|---------------|
-| Framework | React 18+ | Ecosystem, hiring |
-| State | Zustand / TanStack Query | Simplicity, caching |
-| UI Library | Radix + Tailwind | Accessibility, customization |
-| Editor | TipTap / ProseMirror | Rich text capabilities |
-| Charts | Recharts | React-native, performant |
+| Camada     | Tecnologia               | Justificativa                |
+| ---------- | ------------------------ | ---------------------------- |
+| Framework  | React 18+                | Ecosystem, hiring            |
+| State      | Zustand / TanStack Query | Simplicity, caching          |
+| UI Library | Radix + Tailwind         | Accessibility, customization |
+| Editor     | TipTap / ProseMirror     | Rich text capabilities       |
+| Charts     | Recharts                 | React-native, performant     |
 
 #### 9.3.3 Infrastructure
 
-| Camada | Tecnologia | Justificativa |
-|--------|------------|---------------|
-| Cloud | AWS (Primary) / GCP | FedRAMP availability |
-| Containers | Kubernetes (EKS/GKE) | Orchestration |
-| CI/CD | GitHub Actions | Integration, marketplace |
-| IaC | Terraform | Multi-cloud |
-| Monitoring | Datadog | Unified observability |
-| Secrets | HashiCorp Vault | Security compliance |
+| Camada     | Tecnologia           | Justificativa            |
+| ---------- | -------------------- | ------------------------ |
+| Cloud      | AWS (Primary) / GCP  | FedRAMP availability     |
+| Containers | Kubernetes (EKS/GKE) | Orchestration            |
+| CI/CD      | GitHub Actions       | Integration, marketplace |
+| IaC        | Terraform            | Multi-cloud              |
+| Monitoring | Datadog              | Unified observability    |
+| Secrets    | HashiCorp Vault      | Security compliance      |
 
 #### 9.3.4 AI/ML
 
-| Componente | Tecnologia | Justificativa |
-|------------|------------|---------------|
-| Primary LLM | Claude 3.5 Sonnet | Reasoning superiority |
-| Backup LLM | GPT-4o | Redundancy |
-| Embeddings | text-embedding-3-large | Quality + cost balance |
-| VLM | GPT-4o Vision | Table extraction |
-| ML Framework | scikit-learn / XGBoost | Pwin modeling |
-| Orchestration | LangChain / Custom | Agent coordination |
+| Componente    | Tecnologia             | Justificativa          |
+| ------------- | ---------------------- | ---------------------- |
+| Primary LLM   | Claude 3.5 Sonnet      | Reasoning superiority  |
+| Backup LLM    | GPT-4o                 | Redundancy             |
+| Embeddings    | text-embedding-3-large | Quality + cost balance |
+| VLM           | GPT-4o Vision          | Table extraction       |
+| ML Framework  | scikit-learn / XGBoost | Pwin modeling          |
+| Orchestration | LangChain / Custom     | Agent coordination     |
 
 ### 9.4 Decisões de Arquitetura (ADRs)
 
@@ -1279,6 +1332,7 @@ Onde:
 **Decisão:** Multi-Agent Architecture
 
 **Justificativa:**
+
 1. Especialização permite otimização por tarefa
 2. Falha isolada não compromete sistema inteiro
 3. Mais fácil de testar e iterar
@@ -1286,6 +1340,7 @@ Onde:
 5. Permite uso de modelos diferentes por capacidade
 
 **Consequências:**
+
 - (+) Maior resiliência e flexibilidade
 - (+) Melhor performance em tarefas complexas
 - (-) Maior latência por coordenação
@@ -1300,12 +1355,14 @@ Onde:
 **Decisão:** Pinecone (Primary) + Redis (Cache)
 
 **Justificativa:**
+
 1. Pinecone oferece performance superior em escala
 2. Managed service reduz overhead operacional
 3. Namespaces nativos para multi-tenancy
 4. Redis para hot cache reduz latência
 
 **Alternativas Consideradas:**
+
 - Weaviate: Self-hosted, mais controle, mais overhead
 - Milvus: Bom para on-prem, complexidade
 - pgvector: Simplicidade, mas scale limitations
@@ -1319,6 +1376,7 @@ Onde:
 **Decisão:** Contratos ZDR com todos os provedores de LLM
 
 **Implementação:**
+
 1. API Enterprise Agreements com cláusula ZDR
 2. Logs de requisições sanitizados
 3. Auditoria periódica de compliance
@@ -1328,13 +1386,13 @@ Onde:
 
 ### 9.5 Requisitos de Infraestrutura por Ambiente
 
-| Ambiente | Propósito | Specs |
-|----------|-----------|-------|
-| Development | Dev local | Docker Compose |
-| Staging | QA e UAT | 1/4 de Prod |
-| Production US | Clientes Comerciais | 3 AZs, auto-scale |
-| Production GovCloud | Clientes Federais | AWS GovCloud, FedRAMP |
-| Production EU | Clientes GDPR | eu-west-1, data residency |
+| Ambiente            | Propósito           | Specs                     |
+| ------------------- | ------------------- | ------------------------- |
+| Development         | Dev local           | Docker Compose            |
+| Staging             | QA e UAT            | 1/4 de Prod               |
+| Production US       | Clientes Comerciais | 3 AZs, auto-scale         |
+| Production GovCloud | Clientes Federais   | AWS GovCloud, FedRAMP     |
+| Production EU       | Clientes GDPR       | eu-west-1, data residency |
 
 ---
 
@@ -1397,12 +1455,12 @@ CREATE TABLE organizations (
     security_config JSONB DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Compliance
     data_residency VARCHAR(50) DEFAULT 'us-east-1',
     cui_enabled BOOLEAN DEFAULT FALSE,
     sso_provider VARCHAR(100),
-    
+
     -- Limits
     max_users INTEGER,
     max_proposals_per_year INTEGER,
@@ -1420,16 +1478,16 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL,
     avatar_url VARCHAR(500),
-    
+
     -- Auth
     auth_provider VARCHAR(50) NOT NULL,
     external_id VARCHAR(255),
     mfa_enabled BOOLEAN DEFAULT FALSE,
-    
+
     -- Preferences
     preferences JSONB DEFAULT '{}',
     notification_settings JSONB DEFAULT '{}',
-    
+
     -- Tracking
     last_login_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -1446,35 +1504,35 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE TABLE proposals (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID REFERENCES organizations(id),
-    
+
     -- Basic Info
     title VARCHAR(500) NOT NULL,
     client_name VARCHAR(255),
     opportunity_id VARCHAR(100),
-    
+
     -- Status
     status VARCHAR(50) NOT NULL DEFAULT 'draft',
     -- draft, in_progress, review, submitted, won, lost
-    
+
     -- Dates
     due_date TIMESTAMP WITH TIME ZONE,
     submitted_at TIMESTAMP WITH TIME ZONE,
-    
+
     -- Metadata
     estimated_value DECIMAL(15, 2),
     currency VARCHAR(3) DEFAULT 'USD',
     pwin_score DECIMAL(5, 2),
     win_themes TEXT[],
-    
+
     -- Source Document
     source_document_id UUID REFERENCES documents(id),
-    
+
     -- GovCon Specific
     solicitation_number VARCHAR(100),
     naics_code VARCHAR(10),
     contract_type VARCHAR(50),
     set_aside VARCHAR(50),
-    
+
     -- Tracking
     created_by UUID REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -1493,26 +1551,26 @@ CREATE TABLE questions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     proposal_id UUID REFERENCES proposals(id) ON DELETE CASCADE,
     section_id UUID REFERENCES sections(id),
-    
+
     -- Content
     question_text TEXT NOT NULL,
     question_number VARCHAR(50),
-    
+
     -- Requirements
     requirement_type VARCHAR(50), -- mandatory, optional, evaluation_criteria
     max_characters INTEGER,
     max_pages DECIMAL(5, 2),
-    
+
     -- Status
     status VARCHAR(50) DEFAULT 'pending',
     -- pending, draft_generated, sme_review, approved, submitted
-    
+
     assigned_to UUID REFERENCES users(id),
-    
+
     -- AI Metadata
     complexity_score DECIMAL(5, 2),
     suggested_topics TEXT[],
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -1527,26 +1585,26 @@ CREATE INDEX idx_questions_assigned ON questions(assigned_to);
 CREATE TABLE responses (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     question_id UUID REFERENCES questions(id) ON DELETE CASCADE,
-    
+
     -- Content
     content TEXT NOT NULL,
     content_html TEXT,
-    
+
     -- Versioning
     version INTEGER NOT NULL DEFAULT 1,
     is_current BOOLEAN DEFAULT TRUE,
-    
+
     -- AI Metadata
     generated_by VARCHAR(50), -- 'ai', 'human', 'hybrid'
     trust_score DECIMAL(5, 2),
     model_used VARCHAR(100),
     generation_metadata JSONB,
-    
+
     -- Review
     reviewed_by UUID REFERENCES users(id),
     reviewed_at TIMESTAMP WITH TIME ZONE,
     review_status VARCHAR(50),
-    
+
     -- Tracking
     created_by UUID REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -1562,43 +1620,43 @@ CREATE INDEX idx_responses_current ON responses(question_id) WHERE is_current = 
 CREATE TABLE library_entries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID REFERENCES organizations(id),
-    
+
     -- Content
     title VARCHAR(500) NOT NULL,
     content TEXT NOT NULL,
     content_embedding VECTOR(1536),
-    
+
     -- Classification
     category VARCHAR(100),
     tags TEXT[],
     topics TEXT[],
-    
+
     -- Lifecycle
     status VARCHAR(50) DEFAULT 'active',
     -- draft, review, approved, active, stale, archived
-    
+
     -- Authority
     authority_score DECIMAL(5, 2) DEFAULT 0.5,
     source_type VARCHAR(50), -- official_doc, proposal, conversation, manual
-    
+
     -- Ownership
     owner_id UUID REFERENCES users(id),
-    
+
     -- Usage Stats
     usage_count INTEGER DEFAULT 0,
     last_used_at TIMESTAMP WITH TIME ZONE,
     win_rate_when_used DECIMAL(5, 2),
-    
+
     -- Validation
     last_validated_at TIMESTAMP WITH TIME ZONE,
     validated_by UUID REFERENCES users(id),
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_library_org ON library_entries(organization_id);
-CREATE INDEX idx_library_embedding ON library_entries 
+CREATE INDEX idx_library_embedding ON library_entries
     USING ivfflat (content_embedding vector_cosine_ops);
 CREATE INDEX idx_library_status ON library_entries(status);
 ```
@@ -1609,35 +1667,35 @@ CREATE INDEX idx_library_status ON library_entries(status);
 CREATE TABLE documents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID REFERENCES organizations(id),
-    
+
     -- Basic Info
     filename VARCHAR(500) NOT NULL,
     file_type VARCHAR(50) NOT NULL,
     file_size_bytes BIGINT,
-    
+
     -- Storage
     storage_path VARCHAR(1000) NOT NULL,
     storage_provider VARCHAR(50) DEFAULT 's3',
-    
+
     -- Processing
     processing_status VARCHAR(50) DEFAULT 'pending',
     -- pending, processing, completed, failed
     processed_at TIMESTAMP WITH TIME ZONE,
     processing_error TEXT,
-    
+
     -- Metadata
     page_count INTEGER,
     word_count INTEGER,
     language VARCHAR(10),
-    
+
     -- Extracted Structure
     structure_json JSONB,
-    
+
     -- Source
     source_type VARCHAR(50), -- upload, integration, scrape
     source_url VARCHAR(1000),
     source_integration VARCHAR(100),
-    
+
     created_by UUID REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -1652,27 +1710,27 @@ CREATE INDEX idx_documents_status ON documents(processing_status);
 CREATE TABLE chunks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
-    
+
     -- Content
     content TEXT NOT NULL,
     content_embedding VECTOR(1536),
-    
+
     -- Position
     page_number INTEGER,
     section_title VARCHAR(500),
     hierarchy_path TEXT[], -- ['Document', 'Section 3', 'Subsection 3.2']
     sequence_number INTEGER,
-    
+
     -- Metadata
     chunk_type VARCHAR(50), -- text, table, list, header
     char_count INTEGER,
     token_count INTEGER,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_chunks_document ON chunks(document_id);
-CREATE INDEX idx_chunks_embedding ON chunks 
+CREATE INDEX idx_chunks_embedding ON chunks
     USING ivfflat (content_embedding vector_cosine_ops);
 ```
 
@@ -1682,24 +1740,24 @@ CREATE INDEX idx_chunks_embedding ON chunks
 CREATE TABLE citations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     response_id UUID REFERENCES responses(id) ON DELETE CASCADE,
-    
+
     -- Source Reference
     source_type VARCHAR(50) NOT NULL, -- library_entry, document, chunk
     source_id UUID NOT NULL,
-    
+
     -- Position in Response
     start_offset INTEGER,
     end_offset INTEGER,
     cited_text TEXT,
-    
+
     -- Source Details
     source_title VARCHAR(500),
     source_page INTEGER,
     source_section VARCHAR(500),
-    
+
     -- Confidence
     relevance_score DECIMAL(5, 2),
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -1714,11 +1772,11 @@ CREATE INDEX idx_citations_source ON citations(source_type, source_id);
 CREATE EXTENSION IF NOT EXISTS vector;
 
 -- Índice otimizado para similaridade de cosseno
-CREATE INDEX idx_library_cosine ON library_entries 
+CREATE INDEX idx_library_cosine ON library_entries
     USING ivfflat (content_embedding vector_cosine_ops)
     WITH (lists = 100);
 
-CREATE INDEX idx_chunks_cosine ON chunks 
+CREATE INDEX idx_chunks_cosine ON chunks
     USING ivfflat (content_embedding vector_cosine_ops)
     WITH (lists = 100);
 
@@ -1736,7 +1794,7 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         le.id,
         le.content,
         1 - (le.content_embedding <=> p_query_embedding) as similarity
@@ -1756,33 +1814,35 @@ $$ LANGUAGE plpgsql;
 
 ### 11.1 Matriz de Integrações
 
-| Integração | Tipo | Prioridade | Fase |
-|------------|------|------------|------|
-| Slack | Collaboration | P0 | 1 |
-| Microsoft Teams | Collaboration | P0 | 1 |
-| Salesforce | CRM | P0 | 1 |
-| HubSpot | CRM | P1 | 2 |
-| Google Drive | Storage | P0 | 1 |
-| SharePoint/OneDrive | Storage | P0 | 1 |
-| Confluence | Knowledge | P1 | 2 |
-| Jira | Project Mgmt | P1 | 2 |
-| DocuSign | Signature | P2 | 3 |
-| Ariba | Procurement Portal | P1 | 2 |
-| Coupa | Procurement Portal | P1 | 2 |
-| GovWin | GovCon Intel | P2 | 3 |
-| FPDS.gov | Contract Data | P2 | 3 |
+| Integração          | Tipo               | Prioridade | Fase |
+| ------------------- | ------------------ | ---------- | ---- |
+| Slack               | Collaboration      | P0         | 1    |
+| Microsoft Teams     | Collaboration      | P0         | 1    |
+| Salesforce          | CRM                | P0         | 1    |
+| HubSpot             | CRM                | P1         | 2    |
+| Google Drive        | Storage            | P0         | 1    |
+| SharePoint/OneDrive | Storage            | P0         | 1    |
+| Confluence          | Knowledge          | P1         | 2    |
+| Jira                | Project Mgmt       | P1         | 2    |
+| DocuSign            | Signature          | P2         | 3    |
+| Ariba               | Procurement Portal | P1         | 2    |
+| Coupa               | Procurement Portal | P1         | 2    |
+| GovWin              | GovCon Intel       | P2         | 3    |
+| FPDS.gov            | Contract Data      | P2         | 3    |
 
 ### 11.2 Especificações de Integração
 
 #### 11.2.1 Slack Integration
 
 **Escopo:**
+
 - Bot para notificações e colaboração
 - Comandos slash para ações rápidas
 - App Home para dashboard pessoal
 - Indexação de canais (opt-in)
 
 **OAuth Scopes:**
+
 ```
 bot:
   - chat:write
@@ -1791,12 +1851,13 @@ bot:
   - channels:read
   - groups:read
   - files:read (para anexos)
-  
+
 user:
   - channels:history (opt-in para indexação)
 ```
 
 **Eventos Subscritos:**
+
 ```
 - message.im
 - app_mention
@@ -1805,6 +1866,7 @@ user:
 ```
 
 **Workflow:**
+
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
 │  Sentinel   │───▶│   Slack     │───▶│    SME      │
@@ -1820,12 +1882,14 @@ user:
 #### 11.2.2 Salesforce Integration
 
 **Escopo:**
+
 - Sync bidirecional de Opportunities
 - Captura de histórico de relacionamento
 - Criação de Proposals a partir de Opportunities
 - Atualização de status e Pwin
 
 **Objetos:**
+
 ```
 - Opportunity (read/write)
 - Account (read)
@@ -1837,6 +1901,7 @@ user:
 ```
 
 **Connected App Scopes:**
+
 ```
 - api
 - refresh_token
@@ -1844,16 +1909,17 @@ user:
 ```
 
 **Sync Logic:**
+
 ```
 1. Opportunity criada com stage = "RFP Received"
    → Criar Proposal no Sentinel
-   
+
 2. Proposal status = "Submitted"
    → Atualizar Opportunity stage
-   
+
 3. Opportunity status = "Closed Won/Lost"
    → Atualizar Proposal e alimentar Pwin model
-   
+
 4. Relacionamento:
    → Contar Tasks/Events/Emails nos últimos 90 dias
    → Alimentar variável de relacionamento para Pwin
@@ -1862,11 +1928,13 @@ user:
 #### 11.2.3 Google Drive / SharePoint Integration
 
 **Escopo:**
+
 - Sincronização de documentos para biblioteca
 - Monitoramento de mudanças
 - Preservação de permissões
 
 **Google Drive:**
+
 ```
 Scopes:
 - https://www.googleapis.com/auth/drive.readonly
@@ -1879,6 +1947,7 @@ Sync:
 ```
 
 **SharePoint:**
+
 ```
 Permissions:
 - Sites.Read.All
@@ -2217,75 +2286,75 @@ Scale:
 
 #### Plano Growth (SaaS Puro)
 
-| Atributo | Valor |
-|----------|-------|
-| Preço | $999/mês (anual) ou $1,199/mês (mensal) |
-| Usuários | Ilimitados |
-| RFPs/ano | Até 20 |
-| Armazenamento | 10 GB |
-| Integrações | Slack, Drive |
-| Suporte | Email, Chat |
-| SLA | 99.5% |
+| Atributo      | Valor                                   |
+| ------------- | --------------------------------------- |
+| Preço         | $999/mês (anual) ou $1,199/mês (mensal) |
+| Usuários      | Ilimitados                              |
+| RFPs/ano      | Até 20                                  |
+| Armazenamento | 10 GB                                   |
+| Integrações   | Slack, Drive                            |
+| Suporte       | Email, Chat                             |
+| SLA           | 99.5%                                   |
 
 **Target:** Startups, PMEs, Consultores independentes
 
 #### Plano Scale (Plataforma + Consumo)
 
-| Atributo | Valor |
-|----------|-------|
-| Preço Base | $2,499/mês |
-| Usuários | Ilimitados |
-| RFPs/ano | Até 100 (inclusos) |
-| RFP Adicional | $50/RFP |
-| Armazenamento | 100 GB |
-| Integrações | Todas (CRM, Storage, Collab) |
-| Pwin | Básico |
-| Suporte | Email, Chat, Onboarding |
-| SLA | 99.9% |
+| Atributo      | Valor                        |
+| ------------- | ---------------------------- |
+| Preço Base    | $2,499/mês                   |
+| Usuários      | Ilimitados                   |
+| RFPs/ano      | Até 100 (inclusos)           |
+| RFP Adicional | $50/RFP                      |
+| Armazenamento | 100 GB                       |
+| Integrações   | Todas (CRM, Storage, Collab) |
+| Pwin          | Básico                       |
+| Suporte       | Email, Chat, Onboarding      |
+| SLA           | 99.9%                        |
 
 **Target:** Mid-Market Tech, Scale-ups
 
 #### Plano Enterprise (ACV Customizado)
 
-| Atributo | Valor |
-|----------|-------|
-| Preço | Customizado (ACV mínimo $50K) |
-| Usuários | Ilimitados |
-| RFPs | Ilimitados |
-| Armazenamento | Ilimitado |
-| Integrações | Todas + Custom |
-| Pwin | Avançado + ML customizado |
-| Suporte | Dedicated CSM, SLA prioritário |
-| SLA | 99.99% |
-| Features | SSO, SCIM, Audit logs avançados |
+| Atributo      | Valor                           |
+| ------------- | ------------------------------- |
+| Preço         | Customizado (ACV mínimo $50K)   |
+| Usuários      | Ilimitados                      |
+| RFPs          | Ilimitados                      |
+| Armazenamento | Ilimitado                       |
+| Integrações   | Todas + Custom                  |
+| Pwin          | Avançado + ML customizado       |
+| Suporte       | Dedicated CSM, SLA prioritário  |
+| SLA           | 99.99%                          |
+| Features      | SSO, SCIM, Audit logs avançados |
 
 **Target:** Enterprise Tech, Consultorias grandes
 
 #### Plano GovCon Enterprise
 
-| Atributo | Valor |
-|----------|-------|
-| Preço | Customizado (ACV mínimo $100K) |
-| Tudo de Enterprise | ✓ |
-| Seção L/M Parsing | ✓ |
-| Validação de Formatação | ✓ |
-| Ambiente CUI | ✓ |
-| FedRAMP | Ready |
-| CMMC | Nível 2 |
-| Data Residency | US GovCloud |
-| Suporte | Dedicated + GovCon expertise |
+| Atributo                | Valor                          |
+| ----------------------- | ------------------------------ |
+| Preço                   | Customizado (ACV mínimo $100K) |
+| Tudo de Enterprise      | ✓                              |
+| Seção L/M Parsing       | ✓                              |
+| Validação de Formatação | ✓                              |
+| Ambiente CUI            | ✓                              |
+| FedRAMP                 | Ready                          |
+| CMMC                    | Nível 2                        |
+| Data Residency          | US GovCloud                    |
+| Suporte                 | Dedicated + GovCon expertise   |
 
 **Target:** Prime Contractors, Empresas de Defesa
 
 ### 13.2 Métricas de Monetização
 
-| Métrica | Target |
-|---------|--------|
-| ACV Médio | $40K |
-| Net Revenue Retention | >120% |
-| Gross Margin | >75% |
-| CAC Payback | <12 meses |
-| LTV/CAC | >3x |
+| Métrica               | Target    |
+| --------------------- | --------- |
+| ACV Médio             | $40K      |
+| Net Revenue Retention | >120%     |
+| Gross Margin          | >75%      |
+| CAC Payback           | <12 meses |
+| LTV/CAC               | >3x       |
 
 ### 13.3 Estratégia de Upsell
 
@@ -2311,16 +2380,19 @@ Enterprise → GovCon:
 **Produto:** Sentinel Security Shredder (gratuito)
 
 **Funcionalidade:**
+
 - Upload de questionário de segurança (Excel)
 - Preenchimento automático via IA
 - Baseado em documentos públicos (privacy policy, etc.)
 
 **Objetivo:**
+
 - Capturar leads de alta intenção
 - Demonstrar valor da IA
 - Upsell para plataforma completa
 
 **Limites:**
+
 - 5 questionários/mês
 - Até 50 perguntas/questionário
 - Sem integrações
@@ -2335,6 +2407,7 @@ Enterprise → GovCon:
 **Tagline:** "From Searching to Winning: AI Agents That Close Deals"
 
 **Positioning Statement:**
+
 > Para equipes de propostas e pré-vendas em empresas de tecnologia e serviços, que perdem tempo excessivo em tarefas manuais de RFP, o Sentinel RFP é a plataforma de automação agêntica que orquestra todo o ciclo de vida da proposta autonomamente. Diferente de ferramentas legadas como Loopio e Responsive, o Sentinel elimina o trabalho repetitivo através de agentes de IA especializados que geram respostas de alta qualidade com rastreabilidade completa.
 
 ### 14.2 Canais de Aquisição
@@ -2342,47 +2415,55 @@ Enterprise → GovCon:
 #### Canal 1: Comunidade APMP
 
 **Tática:**
+
 - Parceria de conteúdo com APMP
 - Micro-certificações "AI for Proposals"
 - Presença em BPC (Bid & Proposal Con)
 - Contribuição para Body of Knowledge
 
 **Métricas:**
+
 - 500 profissionais certificados Y1
 - 20 leads qualificados/evento
 
 #### Canal 2: Marketplaces de CRM
 
 **Tática:**
+
 - Listagem no Salesforce AppExchange
 - Listagem no HubSpot Marketplace
 - Co-marketing com parceiros de CRM
 
 **Métricas:**
+
 - Top 10 na categoria em 12 meses
 - 30% dos leads via marketplace
 
 #### Canal 3: Content Marketing Técnico
 
 **Tática:**
+
 - Hub de recursos GovCon
 - Guias de automação FAR
 - Calculadoras de ROI
 - Case studies detalhados
 
 **Métricas:**
+
 - 50K visitors/mês em 12 meses
 - 5% conversion to trial
 
 #### Canal 4: Partner Channel
 
 **Tática:**
+
 - Programa para consultores de propostas
 - Licenças gratuitas para uso com clientes
 - Referral fee 20% do ACV Y1
 - Parceiros: Shipley, APMP-certified consultants
 
 **Métricas:**
+
 - 50 parceiros ativos Y1
 - 25% de pipeline via partners Y2
 
@@ -2393,12 +2474,14 @@ Enterprise → GovCon:
 **Foco:** Validar PMF com design partners
 
 **Ações:**
+
 - 10 design partners (uso gratuito)
 - Feedback loops semanais
 - Iteração rápida de produto
 - Primeiros case studies
 
 **Métricas:**
+
 - 10 clientes pagantes
 - NPS >50
 - 3 case studies publicados
@@ -2408,12 +2491,14 @@ Enterprise → GovCon:
 **Foco:** Escalar aquisição no segmento core
 
 **Ações:**
+
 - Lançamento público
 - PLG com freemium
 - Content marketing em escala
 - Primeiros eventos APMP
 
 **Métricas:**
+
 - 50 clientes pagantes
 - $500K ARR
 - 1000 usuários freemium
@@ -2423,12 +2508,14 @@ Enterprise → GovCon:
 **Foco:** Enterprise e GovCon
 
 **Ações:**
+
 - Lançamento de plano GovCon
 - Certificação FedRAMP iniciada
 - Equipe de vendas enterprise
 - Partner program em escala
 
 **Métricas:**
+
 - 150 clientes pagantes
 - $2M ARR
 - 5 enterprise logos
@@ -2513,75 +2600,75 @@ Enterprise → GovCon:
 
 #### Sprint 1-2: Arquitetura Base
 
-| Item | Descrição | Owner | Status |
-|------|-----------|-------|--------|
-| ARCH-001 | Setup de infraestrutura (Terraform) | DevOps | Planned |
-| ARCH-002 | Kubernetes cluster (EKS) | DevOps | Planned |
-| ARCH-003 | PostgreSQL + pgvector | Backend | Planned |
-| ARCH-004 | Redis cluster | Backend | Planned |
-| ARCH-005 | S3 para storage | DevOps | Planned |
-| ARCH-006 | CI/CD pipeline | DevOps | Planned |
-| ARCH-007 | Monitoring (Datadog) | DevOps | Planned |
+| Item     | Descrição                           | Owner   | Status  |
+| -------- | ----------------------------------- | ------- | ------- |
+| ARCH-001 | Setup de infraestrutura (Terraform) | DevOps  | Planned |
+| ARCH-002 | Kubernetes cluster (EKS)            | DevOps  | Planned |
+| ARCH-003 | PostgreSQL + pgvector               | Backend | Planned |
+| ARCH-004 | Redis cluster                       | Backend | Planned |
+| ARCH-005 | S3 para storage                     | DevOps  | Planned |
+| ARCH-006 | CI/CD pipeline                      | DevOps  | Planned |
+| ARCH-007 | Monitoring (Datadog)                | DevOps  | Planned |
 
 #### Sprint 3-4: Pipeline de Ingestão
 
-| Item | Descrição | Owner | Status |
-|------|-----------|-------|--------|
-| ING-001 | Upload handler | Backend | Planned |
-| ING-002 | Excel parser | Backend | Planned |
+| Item    | Descrição                    | Owner   | Status  |
+| ------- | ---------------------------- | ------- | ------- |
+| ING-001 | Upload handler               | Backend | Planned |
+| ING-002 | Excel parser                 | Backend | Planned |
 | ING-003 | PDF processor (Unstructured) | Backend | Planned |
-| ING-004 | Table extraction (VLM) | ML | Planned |
-| ING-005 | Chunking engine | Backend | Planned |
-| ING-006 | Embedding pipeline | ML | Planned |
-| ING-007 | Vector indexing (Pinecone) | Backend | Planned |
+| ING-004 | Table extraction (VLM)       | ML      | Planned |
+| ING-005 | Chunking engine              | Backend | Planned |
+| ING-006 | Embedding pipeline           | ML      | Planned |
+| ING-007 | Vector indexing (Pinecone)   | Backend | Planned |
 
 #### Sprint 5-6: RAG Básico
 
-| Item | Descrição | Owner | Status |
-|------|-----------|-------|--------|
+| Item    | Descrição               | Owner   | Status  |
+| ------- | ----------------------- | ------- | ------- |
 | RAG-001 | Semantic search service | Backend | Planned |
-| RAG-002 | Reranking layer | ML | Planned |
-| RAG-003 | Prompt templates | ML | Planned |
-| RAG-004 | Response generation | Backend | Planned |
-| RAG-005 | Citation extraction | Backend | Planned |
-| RAG-006 | Trust score calculation | ML | Planned |
+| RAG-002 | Reranking layer         | ML      | Planned |
+| RAG-003 | Prompt templates        | ML      | Planned |
+| RAG-004 | Response generation     | Backend | Planned |
+| RAG-005 | Citation extraction     | Backend | Planned |
+| RAG-006 | Trust score calculation | ML      | Planned |
 
 #### Sprint 7-10: Core Features
 
-| Item | Descrição | Owner | Status |
-|------|-----------|-------|--------|
-| CORE-001 | User auth (Clerk/Auth0) | Backend | Planned |
-| CORE-002 | Organization management | Backend | Planned |
-| CORE-003 | Proposal CRUD | Backend | Planned |
-| CORE-004 | Question extraction | Backend | Planned |
-| CORE-005 | Library management | Backend | Planned |
-| CORE-006 | Slack integration | Backend | Planned |
-| CORE-007 | Web app (React) | Frontend | Planned |
-| CORE-008 | Dashboard | Frontend | Planned |
-| CORE-009 | Editor de propostas | Frontend | Planned |
-| CORE-010 | Settings & admin | Frontend | Planned |
+| Item     | Descrição               | Owner    | Status  |
+| -------- | ----------------------- | -------- | ------- |
+| CORE-001 | User auth (Clerk/Auth0) | Backend  | Planned |
+| CORE-002 | Organization management | Backend  | Planned |
+| CORE-003 | Proposal CRUD           | Backend  | Planned |
+| CORE-004 | Question extraction     | Backend  | Planned |
+| CORE-005 | Library management      | Backend  | Planned |
+| CORE-006 | Slack integration       | Backend  | Planned |
+| CORE-007 | Web app (React)         | Frontend | Planned |
+| CORE-008 | Dashboard               | Frontend | Planned |
+| CORE-009 | Editor de propostas     | Frontend | Planned |
+| CORE-010 | Settings & admin        | Frontend | Planned |
 
 #### Sprint 11-12: Polish & Launch
 
-| Item | Descrição | Owner | Status |
-|------|-----------|-------|--------|
-| LAUNCH-001 | Design partner onboarding | Product | Planned |
-| LAUNCH-002 | Documentation | Product | Planned |
-| LAUNCH-003 | Security audit | Security | Planned |
-| LAUNCH-004 | Performance optimization | Engineering | Planned |
-| LAUNCH-005 | Beta landing page | Marketing | Planned |
-| LAUNCH-006 | Public beta launch | All | Planned |
+| Item       | Descrição                 | Owner       | Status  |
+| ---------- | ------------------------- | ----------- | ------- |
+| LAUNCH-001 | Design partner onboarding | Product     | Planned |
+| LAUNCH-002 | Documentation             | Product     | Planned |
+| LAUNCH-003 | Security audit            | Security    | Planned |
+| LAUNCH-004 | Performance optimization  | Engineering | Planned |
+| LAUNCH-005 | Beta landing page         | Marketing   | Planned |
+| LAUNCH-006 | Public beta launch        | All         | Planned |
 
 ### 15.3 Milestones e Deliverables
 
-| Milestone | Data | Deliverables | Success Criteria |
-|-----------|------|--------------|------------------|
-| M1 | M3 | MVP interno | Pipeline de ingestão funcional |
-| M2 | M6 | Public Beta | 10 design partners ativos |
-| M3 | M9 | GA v1.0 | 30 clientes pagantes, $250K ARR |
-| M4 | M12 | Enterprise Ready | SSO, API, 100 clientes |
-| M5 | M15 | GovCon Beta | Seção L/M parsing, 5 GovCon pilots |
-| M6 | M18 | GovCon GA | FedRAMP initiated, 20 GovCon clientes |
+| Milestone | Data | Deliverables     | Success Criteria                      |
+| --------- | ---- | ---------------- | ------------------------------------- |
+| M1        | M3   | MVP interno      | Pipeline de ingestão funcional        |
+| M2        | M6   | Public Beta      | 10 design partners ativos             |
+| M3        | M9   | GA v1.0          | 30 clientes pagantes, $250K ARR       |
+| M4        | M12  | Enterprise Ready | SSO, API, 100 clientes                |
+| M5        | M15  | GovCon Beta      | Seção L/M parsing, 5 GovCon pilots    |
+| M6        | M18  | GovCon GA        | FedRAMP initiated, 20 GovCon clientes |
 
 ---
 
@@ -2589,26 +2676,28 @@ Enterprise → GovCon:
 
 ### 16.1 Matriz de Riscos
 
-| ID | Risco | Probabilidade | Impacto | Score | Mitigação |
-|----|-------|---------------|---------|-------|-----------|
-| R1 | LLM cost explosion | Alta | Alto | 🔴 | Budget caps, caching, model optimization |
-| R2 | Competidor lança similar | Média | Alto | 🟡 | Speed to market, foco em nicho |
-| R3 | Precisão de IA insuficiente | Média | Alto | 🟡 | Human-in-loop, trust scores, fine-tuning |
-| R4 | Dificuldade de integração | Média | Médio | 🟡 | APIs robustas, partnership com CRMs |
-| R5 | FedRAMP demora/custo | Alta | Médio | 🟡 | Parceiro especializado, start early |
-| R6 | Churn alto | Baixa | Alto | 🟡 | Onboarding dedicado, CSM proativo |
-| R7 | Data breach | Baixa | Crítico | 🔴 | SOC2, pentest, ZDR policy |
-| R8 | Key person dependency | Média | Alto | 🟡 | Documentação, cross-training |
+| ID  | Risco                       | Probabilidade | Impacto | Score | Mitigação                                |
+| --- | --------------------------- | ------------- | ------- | ----- | ---------------------------------------- |
+| R1  | LLM cost explosion          | Alta          | Alto    | 🔴    | Budget caps, caching, model optimization |
+| R2  | Competidor lança similar    | Média         | Alto    | 🟡    | Speed to market, foco em nicho           |
+| R3  | Precisão de IA insuficiente | Média         | Alto    | 🟡    | Human-in-loop, trust scores, fine-tuning |
+| R4  | Dificuldade de integração   | Média         | Médio   | 🟡    | APIs robustas, partnership com CRMs      |
+| R5  | FedRAMP demora/custo        | Alta          | Médio   | 🟡    | Parceiro especializado, start early      |
+| R6  | Churn alto                  | Baixa         | Alto    | 🟡    | Onboarding dedicado, CSM proativo        |
+| R7  | Data breach                 | Baixa         | Crítico | 🔴    | SOC2, pentest, ZDR policy                |
+| R8  | Key person dependency       | Média         | Alto    | 🟡    | Documentação, cross-training             |
 
 ### 16.2 Planos de Contingência
 
 #### R1: LLM Cost Explosion
 
 **Triggers:**
+
 - Custo de LLM >40% da receita
 - Margem bruta <60%
 
 **Ações:**
+
 1. Implementar caching agressivo de respostas similares
 2. Migrar para modelos menores para tarefas simples
 3. Implementar rate limiting por cliente
@@ -2617,9 +2706,11 @@ Enterprise → GovCon:
 #### R7: Data Breach
 
 **Triggers:**
+
 - Qualquer acesso não autorizado a dados de cliente
 
 **Ações:**
+
 1. Ativar Incident Response Plan
 2. Notificar clientes afetados em <72h
 3. Engajar forensics externo
@@ -2634,35 +2725,35 @@ Enterprise → GovCon:
 
 #### Fase 1: Assistente de Segurança
 
-| Critério | Métrica | Target |
-|----------|---------|--------|
-| Ingestão funcional | Success rate | >99% |
-| Precisão de parsing | Accuracy | >95% |
-| Geração de respostas | Trust score médio | >80% |
-| Performance | Latência P95 | <5s |
-| Usabilidade | Task completion rate | >90% |
-| Adoção | DAU em design partners | >60% |
+| Critério             | Métrica                | Target |
+| -------------------- | ---------------------- | ------ |
+| Ingestão funcional   | Success rate           | >99%   |
+| Precisão de parsing  | Accuracy               | >95%   |
+| Geração de respostas | Trust score médio      | >80%   |
+| Performance          | Latência P95           | <5s    |
+| Usabilidade          | Task completion rate   | >90%   |
+| Adoção               | DAU em design partners | >60%   |
 
 #### Fase 2: RFPs Completas
 
-| Critério | Métrica | Target |
-|----------|---------|--------|
-| Multi-agent | Task success rate | >95% |
-| Auto-healing | Sugestões aceitas | >70% |
-| Pwin | Correlação com outcome | >0.6 |
-| Enterprise | SSO integration time | <1 dia |
-| API | Uptime | >99.9% |
-| Scale | Clientes simultâneos | >100 |
+| Critério     | Métrica                | Target |
+| ------------ | ---------------------- | ------ |
+| Multi-agent  | Task success rate      | >95%   |
+| Auto-healing | Sugestões aceitas      | >70%   |
+| Pwin         | Correlação com outcome | >0.6   |
+| Enterprise   | SSO integration time   | <1 dia |
+| API          | Uptime                 | >99.9% |
+| Scale        | Clientes simultâneos   | >100   |
 
 #### Fase 3: GovCon
 
-| Critério | Métrica | Target |
-|----------|---------|--------|
-| Seção L/M parsing | Accuracy | >90% |
-| Formatação | Validation coverage | >95% |
-| CUI | Security audit pass | 100% |
-| FedRAMP | Controls implemented | >80% |
-| CMMC | Assessment ready | Yes |
+| Critério          | Métrica              | Target |
+| ----------------- | -------------------- | ------ |
+| Seção L/M parsing | Accuracy             | >90%   |
+| Formatação        | Validation coverage  | >95%   |
+| CUI               | Security audit pass  | 100%   |
+| FedRAMP           | Controls implemented | >80%   |
+| CMMC              | Assessment ready     | Yes    |
 
 ### 17.2 Definition of Done (DoD)
 
@@ -2699,26 +2790,26 @@ Toda feature é considerada "Done" quando:
 
 ## 18. Glossário
 
-| Termo | Definição |
-|-------|-----------|
-| **Agentic Workflow** | Fluxo de trabalho onde agentes de IA autônomos executam tarefas com mínima supervisão humana |
-| **APMP** | Association of Proposal Management Professionals |
-| **CUI** | Controlled Unclassified Information - dados sensíveis do governo que requerem proteção |
-| **CMMC** | Cybersecurity Maturity Model Certification - framework de segurança para contratantes de defesa |
-| **FAR** | Federal Acquisition Regulation - regulamentos para compras federais dos EUA |
-| **FedRAMP** | Federal Risk and Authorization Management Program - programa de autorização de segurança para cloud |
-| **GovCon** | Government Contracting - mercado de contratos com o governo |
-| **Pwin** | Probability of Win - probabilidade estimada de vencer uma proposta |
-| **PTW** | Price-to-Win - preço estimado necessário para vencer |
-| **RAG** | Retrieval-Augmented Generation - técnica de IA que combina busca com geração |
-| **RFP** | Request for Proposal - solicitação formal de proposta comercial |
-| **Seção L** | Seção de instruções para ofertantes em RFPs federais |
-| **Seção M** | Seção de critérios de avaliação em RFPs federais |
-| **SME** | Subject Matter Expert - especialista técnico |
-| **SOW/PWS** | Statement of Work / Performance Work Statement - descrição do trabalho a ser realizado |
-| **Trust Score** | Métrica de confiança na resposta gerada por IA |
-| **VLM** | Vision Language Model - modelo de IA que processa imagens e texto |
-| **ZDR** | Zero Data Retention - política de não retenção de dados pelos provedores de LLM |
+| Termo                | Definição                                                                                           |
+| -------------------- | --------------------------------------------------------------------------------------------------- |
+| **Agentic Workflow** | Fluxo de trabalho onde agentes de IA autônomos executam tarefas com mínima supervisão humana        |
+| **APMP**             | Association of Proposal Management Professionals                                                    |
+| **CUI**              | Controlled Unclassified Information - dados sensíveis do governo que requerem proteção              |
+| **CMMC**             | Cybersecurity Maturity Model Certification - framework de segurança para contratantes de defesa     |
+| **FAR**              | Federal Acquisition Regulation - regulamentos para compras federais dos EUA                         |
+| **FedRAMP**          | Federal Risk and Authorization Management Program - programa de autorização de segurança para cloud |
+| **GovCon**           | Government Contracting - mercado de contratos com o governo                                         |
+| **Pwin**             | Probability of Win - probabilidade estimada de vencer uma proposta                                  |
+| **PTW**              | Price-to-Win - preço estimado necessário para vencer                                                |
+| **RAG**              | Retrieval-Augmented Generation - técnica de IA que combina busca com geração                        |
+| **RFP**              | Request for Proposal - solicitação formal de proposta comercial                                     |
+| **Seção L**          | Seção de instruções para ofertantes em RFPs federais                                                |
+| **Seção M**          | Seção de critérios de avaliação em RFPs federais                                                    |
+| **SME**              | Subject Matter Expert - especialista técnico                                                        |
+| **SOW/PWS**          | Statement of Work / Performance Work Statement - descrição do trabalho a ser realizado              |
+| **Trust Score**      | Métrica de confiança na resposta gerada por IA                                                      |
+| **VLM**              | Vision Language Model - modelo de IA que processa imagens e texto                                   |
+| **ZDR**              | Zero Data Retention - política de não retenção de dados pelos provedores de LLM                     |
 
 ---
 
@@ -2737,9 +2828,9 @@ Toda feature é considerada "Done" quando:
 
 ## 20. Histórico de Revisões
 
-| Versão | Data | Autor | Descrição |
-|--------|------|-------|-----------|
-| 1.0.0 | Jan 2026 | [Autor] | Versão inicial do PRD |
+| Versão | Data     | Autor   | Descrição             |
+| ------ | -------- | ------- | --------------------- |
+| 1.0.0  | Jan 2026 | [Autor] | Versão inicial do PRD |
 
 ---
 
@@ -2747,4 +2838,4 @@ Toda feature é considerada "Done" quando:
 
 ---
 
-*Este PRD é um documento vivo e será atualizado conforme o produto evolui. Todas as métricas e datas são estimativas sujeitas a revisão baseada em feedback de mercado e capacidade de execução.*
+_Este PRD é um documento vivo e será atualizado conforme o produto evolui. Todas as métricas e datas são estimativas sujeitas a revisão baseada em feedback de mercado e capacidade de execução._

@@ -1,6 +1,7 @@
 # ADR-005: Row-Level Tenant Isolation Strategy
 
 ## Status
+
 **Accepted** - January 2026
 
 ## Context
@@ -13,6 +14,7 @@ Sentinel RFP is a multi-tenant SaaS platform where each organization's data must
 4. **Hybrid**: Combination approaches
 
 ### Requirements
+
 - Strong data isolation for compliance (SOC2, future FedRAMP)
 - Cost-effective for large number of tenants
 - Simple operational model
@@ -58,14 +60,18 @@ Sentinel RFP is a multi-tenant SaaS platform where each organization's data must
 // packages/database/src/middleware/tenant.middleware.ts
 import { Prisma } from '@prisma/client';
 
-export function tenantMiddleware(
-  tenantId: string
-): Prisma.Middleware {
+export function tenantMiddleware(tenantId: string): Prisma.Middleware {
   return async (params, next) => {
     // Tables that require tenant isolation
     const tenantTables = [
-      'Proposal', 'Question', 'Response', 'Document',
-      'LibraryEntry', 'Chunk', 'Integration', 'User'
+      'Proposal',
+      'Question',
+      'Response',
+      'Document',
+      'LibraryEntry',
+      'Chunk',
+      'Integration',
+      'User',
     ];
 
     if (tenantTables.includes(params.model)) {
@@ -199,22 +205,16 @@ describe('Tenant Isolation', () => {
   });
 
   it('should not allow tenant B to access tenant A proposals', async () => {
-    const service = new ProposalService(
-      prismaWithTenant(tenantB.id)
-    );
+    const service = new ProposalService(prismaWithTenant(tenantB.id));
 
     const result = await service.findById(proposalA.id);
     expect(result).toBeNull();
   });
 
   it('should not allow tenant B to update tenant A proposals', async () => {
-    const service = new ProposalService(
-      prismaWithTenant(tenantB.id)
-    );
+    const service = new ProposalService(prismaWithTenant(tenantB.id));
 
-    await expect(
-      service.update(proposalA.id, { title: 'Hacked' })
-    ).rejects.toThrow('Not found');
+    await expect(service.update(proposalA.id, { title: 'Hacked' })).rejects.toThrow('Not found');
   });
 });
 ```
@@ -222,6 +222,7 @@ describe('Tenant Isolation', () => {
 ## Consequences
 
 ### Positive
+
 - **Strong isolation**: Double enforcement (app + DB)
 - **Cost-effective**: Single database, shared infrastructure
 - **Simple ops**: One database to backup/monitor
@@ -229,12 +230,14 @@ describe('Tenant Isolation', () => {
 - **Audit trail**: All access logged with tenant context
 
 ### Negative
+
 - **Performance**: Extra WHERE clause on every query
 - **Complexity**: Must ensure middleware always applied
 - **Noisy neighbor**: Shared resources could impact performance
 - **Migration complexity**: Schema changes affect all tenants
 
 ### Mitigations
+
 - Index all organization_id columns
 - Connection pooling per tenant (future)
 - Monitoring for slow queries by tenant
@@ -267,9 +270,11 @@ For Enterprise/GovCon customers requiring dedicated resources:
 ```
 
 ## Related ADRs
+
 - ADR-001: Event-Driven Architecture
 - ADR-003: Vector Storage Strategy
 
 ## References
+
 - [PostgreSQL Row Level Security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
 - [Multi-Tenant SaaS Patterns](https://docs.microsoft.com/en-us/azure/architecture/guide/multitenant/overview)
