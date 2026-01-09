@@ -223,11 +223,29 @@ Sentinel RFP follows a Domain-Driven Design with event-driven patterns, ensuring
 
 ### Prerequisites
 
-- Node.js 20.x or higher
+- **Node.js 20.x or higher** (specified in `.nvmrc`)
+- **pnpm 8.x or higher** (package manager)
 - PostgreSQL 16 with pgvector extension
 - Redis 7.x
 - Meilisearch 1.x
-- pnpm (recommended) or npm
+
+### Monorepo Structure
+
+Sentinel RFP uses a Turborepo monorepo with pnpm workspaces:
+
+```
+sentinel-rfp/
+├── apps/
+│   ├── api/          # NestJS backend application
+│   └── web/          # Next.js frontend application
+├── packages/
+│   ├── shared/       # Shared utilities and types
+│   ├── database/     # Prisma schema and migrations
+│   └── ai/           # AI agent orchestration
+├── turbo.json        # Turborepo pipeline configuration
+├── package.json      # Root workspace configuration
+└── pnpm-workspace.yaml
+```
 
 ### Installation
 
@@ -239,6 +257,8 @@ cd sentinel-rfp
 ```
 
 2. **Install dependencies**
+
+Turborepo will automatically install all workspace dependencies:
 
 ```bash
 pnpm install
@@ -283,14 +303,27 @@ pnpm db:seed
 
 5. **Start development servers**
 
+Turborepo will orchestrate builds and run all services in parallel:
+
 ```bash
-# Start all services
+# Start all services (via Turborepo)
 pnpm dev
 
-# Or start individually
-pnpm dev:backend   # NestJS API on port 4000
-pnpm dev:frontend  # Next.js on port 3000
-pnpm dev:worker    # BullMQ worker
+# Or use Turborepo commands directly
+turbo run dev          # Run dev for all apps
+turbo run build        # Build all apps
+turbo run lint         # Lint all apps
+turbo run test         # Test all apps
+turbo run typecheck    # Type-check all apps
+```
+
+Individual workspace commands:
+
+```bash
+# Run specific workspace
+pnpm --filter api dev       # NestJS API on port 4000
+pnpm --filter web dev       # Next.js on port 3000
+pnpm --filter shared build  # Build shared package
 ```
 
 6. **Access the application**
