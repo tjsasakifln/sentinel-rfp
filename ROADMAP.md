@@ -26,7 +26,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 #### Milestone 1.1: Project Bootstrap ([EPIC #2](https://github.com/tjsasakifln/sentinel-rfp/issues/2))
 
 - [x] Monorepo setup (Turborepo) - [#13](https://github.com/tjsasakifln/sentinel-rfp/issues/13)
-- [ ] NestJS backend scaffolding - [#14](https://github.com/tjsasakifln/sentinel-rfp/issues/14)
+- [x] NestJS backend scaffolding - [#14](https://github.com/tjsasakifln/sentinel-rfp/issues/14) - [PR #89](https://github.com/tjsasakifln/sentinel-rfp/pull/89)
 - [ ] Next.js frontend scaffolding - [#15](https://github.com/tjsasakifln/sentinel-rfp/issues/15)
 - [ ] Docker development environment - [#16](https://github.com/tjsasakifln/sentinel-rfp/issues/16)
 - [ ] CI/CD pipeline (GitHub Actions) - [#17](https://github.com/tjsasakifln/sentinel-rfp/issues/17)
