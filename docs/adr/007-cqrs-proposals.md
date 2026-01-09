@@ -1,6 +1,7 @@
 # ADR-007: CQRS for Proposals Domain
 
 ## Status
+
 **Accepted** - January 2026
 
 ## Context
@@ -8,6 +9,7 @@
 The Proposals domain in Sentinel RFP has distinct read and write patterns:
 
 **Write Operations (Commands)**:
+
 - Create proposal from RFP document
 - Add/update questions and responses
 - Generate AI responses
@@ -15,6 +17,7 @@ The Proposals domain in Sentinel RFP has distinct read and write patterns:
 - Complex workflows with validations
 
 **Read Operations (Queries)**:
+
 - Dashboard views (aggregated stats)
 - Proposal list with filters
 - Full proposal detail with relations
@@ -22,11 +25,13 @@ The Proposals domain in Sentinel RFP has distinct read and write patterns:
 - Analytics and reporting
 
 These patterns have different requirements:
+
 - Writes need strong consistency and validation
 - Reads need fast response times and flexible queries
 - Some reads need eventual consistency is acceptable
 
 We need to decide between:
+
 1. **Traditional CRUD**: Single model for read/write
 2. **CQRS**: Separate read and write models
 3. **Full Event Sourcing**: Events as source of truth
@@ -103,9 +108,7 @@ export class CreateProposalCommand {
 
 // Handler
 @CommandHandler(CreateProposalCommand)
-export class CreateProposalHandler
-  implements ICommandHandler<CreateProposalCommand>
-{
+export class CreateProposalHandler implements ICommandHandler<CreateProposalCommand> {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
@@ -170,9 +173,7 @@ export class GetProposalQuery {
 
 // Handler with caching
 @QueryHandler(GetProposalQuery)
-export class GetProposalHandler
-  implements IQueryHandler<GetProposalQuery>
-{
+export class GetProposalHandler implements IQueryHandler<GetProposalQuery> {
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
@@ -297,17 +298,11 @@ const QueryHandlers = [
   GetProposalStatsHandler,
 ];
 
-const EventHandlers = [
-  ProposalEventsHandler,
-];
+const EventHandlers = [ProposalEventsHandler];
 
 @Module({
   imports: [CqrsModule],
-  providers: [
-    ...CommandHandlers,
-    ...QueryHandlers,
-    ...EventHandlers,
-  ],
+  providers: [...CommandHandlers, ...QueryHandlers, ...EventHandlers],
 })
 export class ProposalModule {}
 ```
@@ -322,11 +317,11 @@ interface ProposalListItem {
   clientName: string;
   status: string;
   dueDate: Date;
-  progress: number;        // Pre-calculated
-  questionCount: number;   // Pre-calculated
-  answeredCount: number;   // Pre-calculated
+  progress: number; // Pre-calculated
+  questionCount: number; // Pre-calculated
+  answeredCount: number; // Pre-calculated
   pwinScore: number;
-  createdByName: string;   // Denormalized
+  createdByName: string; // Denormalized
   updatedAt: Date;
 }
 
@@ -337,6 +332,7 @@ interface ProposalListItem {
 ## Consequences
 
 ### Positive
+
 - **Performance**: Optimized queries for read paths
 - **Scalability**: Read and write scale independently
 - **Flexibility**: Different models for different needs
@@ -344,12 +340,14 @@ interface ProposalListItem {
 - **Maintainability**: Clear separation of concerns
 
 ### Negative
+
 - **Complexity**: More code than simple CRUD
 - **Eventual consistency**: Reads may lag writes briefly
 - **Learning curve**: Team needs CQRS understanding
 - **Over-engineering risk**: Not needed for simple domains
 
 ### Mitigations
+
 - Apply CQRS only to Proposals (complex domain)
 - Keep simple domains as traditional CRUD
 - Document patterns clearly
@@ -358,14 +356,17 @@ interface ProposalListItem {
 ## When NOT to Use CQRS
 
 Keep traditional CRUD for:
+
 - User management (simple reads/writes)
 - Settings (low traffic)
 - Simple lookup tables
 
 ## Related ADRs
+
 - ADR-001: Event-Driven Architecture
 - ADR-008: Saga Pattern for Distributed Transactions
 
 ## References
+
 - [CQRS by Martin Fowler](https://martinfowler.com/bliki/CQRS.html)
 - [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)

@@ -1,6 +1,7 @@
 # ADR-008: Saga Pattern for Distributed Transactions
 
 ## Status
+
 **Accepted** - January 2026
 
 ## Context
@@ -13,6 +14,7 @@ Sentinel RFP has several workflows that span multiple services/modules:
 4. **Proposal Submission**: Validate → Export → Upload → Confirm
 
 These workflows require:
+
 - Coordination across multiple steps
 - Failure handling and compensation
 - Progress tracking
@@ -32,13 +34,13 @@ We need to decide how to handle distributed transactions:
 
 ### Why Saga over 2PC
 
-| Factor | 2PC | Saga |
-|--------|-----|------|
-| Locking | Distributed locks (complex) | No locks |
-| Availability | Lower (coordinator required) | Higher |
-| Performance | Slower (sync) | Faster (async) |
-| Recovery | Complex rollback | Compensating actions |
-| Railway support | Not practical | Natural fit |
+| Factor          | 2PC                          | Saga                 |
+| --------------- | ---------------------------- | -------------------- |
+| Locking         | Distributed locks (complex)  | No locks             |
+| Availability    | Lower (coordinator required) | Higher               |
+| Performance     | Slower (sync)                | Faster (async)       |
+| Recovery        | Complex rollback             | Compensating actions |
+| Railway support | Not practical                | Natural fit          |
 
 ### Architecture
 
@@ -185,17 +187,15 @@ export const documentIngestionSaga: SagaDefinition<DocumentIngestionContext> = {
           where: { documentId: ctx.documentId },
         });
 
-        const embeddings = await embeddingService.batchEmbed(
-          chunks.map(c => c.content)
-        );
+        const embeddings = await embeddingService.batchEmbed(chunks.map((c) => c.content));
 
         await Promise.all(
           chunks.map((chunk, i) =>
             prisma.chunk.update({
               where: { id: chunk.id },
               data: { contentEmbedding: embeddings[i] },
-            })
-          )
+            }),
+          ),
         );
 
         return ctx;
@@ -255,10 +255,7 @@ export class SagaOrchestrator {
     private readonly logger: Logger,
   ) {}
 
-  async start<T>(
-    saga: SagaDefinition<T>,
-    initialContext: T
-  ): Promise<string> {
+  async start<T>(saga: SagaDefinition<T>, initialContext: T): Promise<string> {
     // Create execution record
     const execution = await this.prisma.sagaExecution.create({
       data: {
@@ -276,10 +273,7 @@ export class SagaOrchestrator {
     return execution.id;
   }
 
-  private async processAsync<T>(
-    executionId: string,
-    saga: SagaDefinition<T>
-  ): Promise<void> {
+  private async processAsync<T>(executionId: string, saga: SagaDefinition<T>): Promise<void> {
     let execution = await this.prisma.sagaExecution.findUnique({
       where: { id: executionId },
     });
@@ -314,7 +308,6 @@ export class SagaOrchestrator {
       if (saga.onComplete) {
         await saga.onComplete(context);
       }
-
     } catch (error) {
       this.logger.error(`Saga failed: ${error.message}`);
 
@@ -342,11 +335,11 @@ export class SagaOrchestrator {
   private async compensate<T>(
     saga: SagaDefinition<T>,
     completedSteps: string[],
-    context: T
+    context: T,
   ): Promise<void> {
     // Reverse order
     for (const stepName of completedSteps.reverse()) {
-      const step = saga.steps.find(s => s.name === stepName);
+      const step = saga.steps.find((s) => s.name === stepName);
       if (step?.compensate) {
         try {
           this.logger.log(`Compensating step: ${stepName}`);
@@ -359,10 +352,7 @@ export class SagaOrchestrator {
     }
   }
 
-  private async executeWithRetry<T>(
-    step: SagaStep<T>,
-    context: T
-  ): Promise<T> {
+  private async executeWithRetry<T>(step: SagaStep<T>, context: T): Promise<T> {
     const policy = step.retryPolicy ?? { maxAttempts: 1, backoffMs: 0 };
 
     for (let attempt = 1; attempt <= policy.maxAttempts; attempt++) {
@@ -389,18 +379,12 @@ export class SagaProcessor {
 
   @Process('document-ingestion')
   async handleDocumentIngestion(job: Job<DocumentIngestionContext>) {
-    await this.orchestrator.start(
-      documentIngestionSaga,
-      job.data
-    );
+    await this.orchestrator.start(documentIngestionSaga, job.data);
   }
 
   @Process('response-generation')
   async handleResponseGeneration(job: Job<ResponseGenerationContext>) {
-    await this.orchestrator.start(
-      responseGenerationSaga,
-      job.data
-    );
+    await this.orchestrator.start(responseGenerationSaga, job.data);
   }
 }
 ```
@@ -410,9 +394,9 @@ export class SagaProcessor {
 ```typescript
 // Saga execution tracking
 interface SagaMetrics {
-  saga_executions_total: Counter;      // By saga name, status
-  saga_step_duration_seconds: Histogram;// By saga name, step
-  saga_compensations_total: Counter;    // By saga name
+  saga_executions_total: Counter; // By saga name, status
+  saga_step_duration_seconds: Histogram; // By saga name, step
+  saga_compensations_total: Counter; // By saga name
 }
 
 // Dashboard query
@@ -425,6 +409,7 @@ const pendingSagas = await prisma.sagaExecution.findMany({
 ## Consequences
 
 ### Positive
+
 - **Resilience**: Automatic rollback on failure
 - **Visibility**: Clear progress tracking
 - **Retry handling**: Built-in retry policies
@@ -432,12 +417,14 @@ const pendingSagas = await prisma.sagaExecution.findMany({
 - **Testable**: Each step testable in isolation
 
 ### Negative
+
 - **Complexity**: More code than simple jobs
 - **Eventual consistency**: State may be inconsistent during saga
 - **Compensations**: Must design reversible operations
 - **Debugging**: Distributed tracing required
 
 ### Mitigations
+
 - Start with simple sagas, add complexity as needed
 - Implement comprehensive logging
 - Build admin UI for saga management
@@ -445,17 +432,19 @@ const pendingSagas = await prisma.sagaExecution.findMany({
 
 ## Sagas in Sentinel RFP
 
-| Saga | Steps | Compensations |
-|------|-------|---------------|
-| Document Ingestion | Upload → Parse → Chunk → Embed → Index | Delete file/chunks/vectors |
-| Response Generation | Plan → Search → Generate → Review | Mark question as pending |
-| Integration Sync | Fetch → Transform → Store → Notify | Revert to previous state |
-| Proposal Export | Validate → Generate → Upload → Confirm | Delete generated files |
+| Saga                | Steps                                  | Compensations              |
+| ------------------- | -------------------------------------- | -------------------------- |
+| Document Ingestion  | Upload → Parse → Chunk → Embed → Index | Delete file/chunks/vectors |
+| Response Generation | Plan → Search → Generate → Review      | Mark question as pending   |
+| Integration Sync    | Fetch → Transform → Store → Notify     | Revert to previous state   |
+| Proposal Export     | Validate → Generate → Upload → Confirm | Delete generated files     |
 
 ## Related ADRs
+
 - ADR-001: Event-Driven Architecture
 - ADR-007: CQRS for Proposals Domain
 
 ## References
+
 - [Saga Pattern by Chris Richardson](https://microservices.io/patterns/data/saga.html)
 - [Compensating Transactions](https://docs.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction)

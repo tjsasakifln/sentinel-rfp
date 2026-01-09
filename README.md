@@ -121,42 +121,42 @@ Subject matter experts respond to RFP questions directly in Slack or Microsoft T
 
 ### Backend Infrastructure
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Framework | NestJS 10.x (TypeScript) | API server and business logic |
-| Database | PostgreSQL 16 + pgvector | Relational data and vector embeddings |
-| Queue System | BullMQ (Redis) | Async job processing and workflows |
-| Search Engine | Meilisearch | Full-text search with typo tolerance |
-| Cache Layer | Redis | Session management and caching |
-| ORM | Prisma | Type-safe database access |
+| Component     | Technology               | Purpose                               |
+| ------------- | ------------------------ | ------------------------------------- |
+| Framework     | NestJS 10.x (TypeScript) | API server and business logic         |
+| Database      | PostgreSQL 16 + pgvector | Relational data and vector embeddings |
+| Queue System  | BullMQ (Redis)           | Async job processing and workflows    |
+| Search Engine | Meilisearch              | Full-text search with typo tolerance  |
+| Cache Layer   | Redis                    | Session management and caching        |
+| ORM           | Prisma                   | Type-safe database access             |
 
 ### Frontend Application
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
+| Component | Technology              | Purpose                         |
+| --------- | ----------------------- | ------------------------------- |
 | Framework | Next.js 14 (App Router) | Server-side rendering and React |
-| Styling | Tailwind CSS | Utility-first CSS framework |
-| State | React Query | Server state management |
-| Editor | TipTap | Rich text proposal editing |
+| Styling   | Tailwind CSS            | Utility-first CSS framework     |
+| State     | React Query             | Server state management         |
+| Editor    | TipTap                  | Rich text proposal editing      |
 
 ### AI and Machine Learning
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Primary LLM | Opus 4.5 (200K context) | Response generation and reasoning |
-| Fallback LLM | GPT-4.1 | Redundancy and specific tasks |
-| Embeddings | OpenAI Embeddings API | Vector representations |
-| Vision | GPT-4o Vision | Document OCR and table extraction |
-| Document Parsing | Unstructured.io | Multi-format document processing |
+| Component        | Technology              | Purpose                           |
+| ---------------- | ----------------------- | --------------------------------- |
+| Primary LLM      | Opus 4.5 (200K context) | Response generation and reasoning |
+| Fallback LLM     | GPT-4.1                 | Redundancy and specific tasks     |
+| Embeddings       | OpenAI Embeddings API   | Vector representations            |
+| Vision           | GPT-4o Vision           | Document OCR and table extraction |
+| Document Parsing | Unstructured.io         | Multi-format document processing  |
 
 ### Infrastructure and DevOps
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Platform | Railway | Container orchestration and deployment |
-| Object Storage | Cloudflare R2 | S3-compatible file storage |
-| CDN | Cloudflare | Content delivery and WAF |
-| Monitoring | Sentry | Error tracking and performance |
+| Component      | Technology    | Purpose                                |
+| -------------- | ------------- | -------------------------------------- |
+| Platform       | Railway       | Container orchestration and deployment |
+| Object Storage | Cloudflare R2 | S3-compatible file storage             |
+| CDN            | Cloudflare    | Content delivery and WAF               |
+| Monitoring     | Sentry        | Error tracking and performance         |
 
 ---
 
@@ -336,11 +336,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 Sentinel RFP follows an 18-month development roadmap across four phases:
 
-| Phase | Focus | Key Deliverables |
-|-------|-------|------------------|
-| **Phase 1** | Foundation MVP | Core platform, document ingestion, basic AI responses, trust scoring |
-| **Phase 2** | Scale & Integrations | Slack/Teams integration, Salesforce sync, multi-agent AI, collaboration features |
-| **Phase 3** | GovCon & Compliance | FAR/DFARS compliance, Pwin prediction, SOC 2 Type I, security hardening |
+| Phase       | Focus                 | Key Deliverables                                                                   |
+| ----------- | --------------------- | ---------------------------------------------------------------------------------- |
+| **Phase 1** | Foundation MVP        | Core platform, document ingestion, basic AI responses, trust scoring               |
+| **Phase 2** | Scale & Integrations  | Slack/Teams integration, Salesforce sync, multi-agent AI, collaboration features   |
+| **Phase 3** | GovCon & Compliance   | FAR/DFARS compliance, Pwin prediction, SOC 2 Type I, security hardening            |
 | **Phase 4** | Intelligence Platform | Autonomous agents, predictive intelligence, API marketplace, FedRAMP authorization |
 
 For detailed roadmap information, see [ROADMAP.md](ROADMAP.md).
@@ -356,6 +356,7 @@ For detailed roadmap information, see [ROADMAP.md](ROADMAP.md).
 Sales teams at 200-2,000 employee SaaS and technology companies will use Sentinel RFP to respond to 50-200 RFPs annually. The platform aims to reduce response time from 5 days to 2 days while maintaining quality standards.
 
 **Planned Benefits:**
+
 - 50% reduction in proposal response time
 - Centralized knowledge library accessible to all teams
 - Consistent messaging across proposals
@@ -366,6 +367,7 @@ Sales teams at 200-2,000 employee SaaS and technology companies will use Sentine
 Large enterprises managing complex, multi-stakeholder proposals will leverage Sentinel RFP for competitive differentiation. The platform is designed to handle 200-500 RFPs per year with sophisticated approval workflows.
 
 **Planned Benefits:**
+
 - Scalable proposal operations
 - Advanced analytics and win rate tracking
 - Integration with Salesforce and existing CRM systems
@@ -376,6 +378,7 @@ Large enterprises managing complex, multi-stakeholder proposals will leverage Se
 Federal contractors pursuing $50M+ opportunities will use Sentinel RFP for FAR/DFARS compliance and efficient Section L/M response management. The platform will address the unique requirements of government proposals.
 
 **Planned Benefits:**
+
 - Pre-built compliance clause libraries
 - Automated compliance matrix generation
 - CMMC-ready security controls

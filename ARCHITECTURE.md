@@ -1,4 +1,5 @@
 # Architecture Document
+
 # Sentinel RFP (Sentinel RFP)
 
 **Version:** 1.0.0
@@ -35,15 +36,15 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 
 ### 1.2 Key Architectural Decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| **Backend Framework** | NestJS + TypeScript | Enterprise patterns, type safety, DI built-in |
-| **Frontend Framework** | Next.js 14 | SSR, App Router, Railway compatible |
-| **Database** | PostgreSQL + pgvector | Single DB for relational + vector, Railway native |
-| **Queue System** | BullMQ (Redis) | TypeScript native, simple, reliable |
-| **AI Orchestration** | Multi-Agent RAG | Specialized agents > monolithic prompts |
-| **Deployment Platform** | Railway | PaaS simplicity, cost-effective for Phases 1-2 |
-| **Architecture Style** | Domain-Driven + Event-Driven | Clear boundaries, auditability |
+| Decision                | Choice                       | Rationale                                         |
+| ----------------------- | ---------------------------- | ------------------------------------------------- |
+| **Backend Framework**   | NestJS + TypeScript          | Enterprise patterns, type safety, DI built-in     |
+| **Frontend Framework**  | Next.js 14                   | SSR, App Router, Railway compatible               |
+| **Database**            | PostgreSQL + pgvector        | Single DB for relational + vector, Railway native |
+| **Queue System**        | BullMQ (Redis)               | TypeScript native, simple, reliable               |
+| **AI Orchestration**    | Multi-Agent RAG              | Specialized agents > monolithic prompts           |
+| **Deployment Platform** | Railway                      | PaaS simplicity, cost-effective for Phases 1-2    |
+| **Architecture Style**  | Domain-Driven + Event-Driven | Clear boundaries, auditability                    |
 
 ### 1.3 Strategic Trade-offs
 
@@ -70,13 +71,13 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 
 ### 1.4 Target Metrics
 
-| Metric | Target | Strategy |
-|--------|--------|----------|
-| Document ingestion (100pg) | <60s | Async pipeline, VLM parallel |
-| Response generation | <3s | Cached embeddings, prompt optimization |
-| Search latency | <500ms | pgvector + Redis cache |
-| Uptime SLA | 99.9% | Railway redundancy, health checks |
-| Concurrent users | 1000+ | Horizontal scaling, connection pooling |
+| Metric                     | Target | Strategy                               |
+| -------------------------- | ------ | -------------------------------------- |
+| Document ingestion (100pg) | <60s   | Async pipeline, VLM parallel           |
+| Response generation        | <3s    | Cached embeddings, prompt optimization |
+| Search latency             | <500ms | pgvector + Redis cache                 |
+| Uptime SLA                 | 99.9%  | Railway redundancy, health checks      |
+| Concurrent users           | 1000+  | Horizontal scaling, connection pooling |
 
 ---
 
@@ -125,6 +126,7 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 ### 2.2 Design Guidelines
 
 **Do:**
+
 - Use dependency injection for all services
 - Write tests before complex implementations
 - Use feature flags for new capabilities
@@ -132,6 +134,7 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 - Cache aggressively, invalidate precisely
 
 **Don't:**
+
 - Hard-code configuration values
 - Create circular dependencies between modules
 - Store secrets in code or environment files
@@ -196,19 +199,19 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 
 ### 3.2 External Systems
 
-| System | Integration Type | Purpose | Priority |
-|--------|------------------|---------|----------|
-| **Anthropic Claude** | API | Primary LLM for reasoning | P0 |
-| **OpenAI** | API | Fallback LLM, embeddings | P0 |
-| **Slack** | Bot + API | SME collaboration | P0 |
-| **Microsoft Teams** | Bot + API | SME collaboration (enterprise) | P0 |
-| **Salesforce** | REST API | CRM sync, opportunity data | P0 |
-| **Google Drive** | API + Webhooks | Document source | P0 |
-| **SharePoint** | Graph API | Document source (enterprise) | P0 |
-| **Cloudflare R2** | S3 API | Object storage | P0 |
-| **HubSpot** | REST API | CRM (mid-market) | P1 |
-| **Confluence** | REST API | Knowledge base | P1 |
-| **DocuSign** | API | E-signatures | P2 |
+| System               | Integration Type | Purpose                        | Priority |
+| -------------------- | ---------------- | ------------------------------ | -------- |
+| **Anthropic Claude** | API              | Primary LLM for reasoning      | P0       |
+| **OpenAI**           | API              | Fallback LLM, embeddings       | P0       |
+| **Slack**            | Bot + API        | SME collaboration              | P0       |
+| **Microsoft Teams**  | Bot + API        | SME collaboration (enterprise) | P0       |
+| **Salesforce**       | REST API         | CRM sync, opportunity data     | P0       |
+| **Google Drive**     | API + Webhooks   | Document source                | P0       |
+| **SharePoint**       | Graph API        | Document source (enterprise)   | P0       |
+| **Cloudflare R2**    | S3 API           | Object storage                 | P0       |
+| **HubSpot**          | REST API         | CRM (mid-market)               | P1       |
+| **Confluence**       | REST API         | Knowledge base                 | P1       |
+| **DocuSign**         | API              | E-signatures                   | P2       |
 
 ---
 
@@ -282,14 +285,14 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 
 ### 4.2 Container Responsibilities
 
-| Container | Technology | Responsibilities | Scaling |
-|-----------|------------|------------------|---------|
-| **Web App** | Next.js 14 | UI, SSR, Static Assets | Horizontal (Railway) |
-| **API Server** | NestJS | Business Logic, Auth, API | Horizontal (Railway) |
-| **Worker** | Node.js + BullMQ | Background Jobs, AI Tasks | Horizontal (Railway) |
-| **PostgreSQL** | PostgreSQL 16 + pgvector | Primary Data, Vectors | Vertical (Railway Managed) |
-| **Redis** | Redis 7 | Cache, Queue, Sessions | Vertical (Railway Managed) |
-| **Meilisearch** | Meilisearch | Full-text Search | Vertical (Railway) |
+| Container       | Technology               | Responsibilities          | Scaling                    |
+| --------------- | ------------------------ | ------------------------- | -------------------------- |
+| **Web App**     | Next.js 14               | UI, SSR, Static Assets    | Horizontal (Railway)       |
+| **API Server**  | NestJS                   | Business Logic, Auth, API | Horizontal (Railway)       |
+| **Worker**      | Node.js + BullMQ         | Background Jobs, AI Tasks | Horizontal (Railway)       |
+| **PostgreSQL**  | PostgreSQL 16 + pgvector | Primary Data, Vectors     | Vertical (Railway Managed) |
+| **Redis**       | Redis 7                  | Cache, Queue, Sessions    | Vertical (Railway Managed) |
+| **Meilisearch** | Meilisearch              | Full-text Search          | Vertical (Railway)         |
 
 ### 4.3 Inter-Container Communication
 
@@ -1415,18 +1418,18 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 
 ### Summary Table
 
-| ADR | Decision | Status | Consequences |
-|-----|----------|--------|--------------|
-| ADR-001 | Event-Driven Architecture | Accepted | Async by default, Redis Streams |
-| ADR-002 | Multi-Agent RAG | Accepted | Specialized agents, orchestration |
+| ADR     | Decision                   | Status   | Consequences                      |
+| ------- | -------------------------- | -------- | --------------------------------- |
+| ADR-001 | Event-Driven Architecture  | Accepted | Async by default, Redis Streams   |
+| ADR-002 | Multi-Agent RAG            | Accepted | Specialized agents, orchestration |
 | ADR-003 | pgvector + Pinecone Hybrid | Accepted | pgvector first, Pinecone at scale |
-| ADR-004 | NestJS over FastAPI | Accepted | TypeScript ecosystem, DI |
-| ADR-005 | Row-Level Tenant Isolation | Accepted | RLS + middleware |
-| ADR-006 | LLM Provider Abstraction | Accepted | Multi-provider support |
-| ADR-007 | CQRS for Proposals | Accepted | Separate read/write models |
-| ADR-008 | Saga Pattern for Workflows | Accepted | Distributed transactions |
+| ADR-004 | NestJS over FastAPI        | Accepted | TypeScript ecosystem, DI          |
+| ADR-005 | Row-Level Tenant Isolation | Accepted | RLS + middleware                  |
+| ADR-006 | LLM Provider Abstraction   | Accepted | Multi-provider support            |
+| ADR-007 | CQRS for Proposals         | Accepted | Separate read/write models        |
+| ADR-008 | Saga Pattern for Workflows | Accepted | Distributed transactions          |
 
-*Full ADRs available in `/docs/adr/` directory.*
+_Full ADRs available in `/docs/adr/` directory._
 
 ---
 
@@ -1745,20 +1748,20 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 
 ## Appendix A: Glossary
 
-| Term | Definition |
-|------|------------|
-| **ADR** | Architecture Decision Record |
-| **Bounded Context** | DDD concept for defining module boundaries |
-| **C4 Model** | Architecture diagramming approach (Context, Container, Component, Code) |
-| **CQRS** | Command Query Responsibility Segregation |
-| **CUI** | Controlled Unclassified Information |
-| **pgvector** | PostgreSQL extension for vector similarity search |
-| **Pwin** | Probability of Win |
-| **RAG** | Retrieval-Augmented Generation |
-| **RLS** | Row-Level Security |
-| **SME** | Subject Matter Expert |
-| **VLM** | Vision Language Model |
-| **ZDR** | Zero Data Retention |
+| Term                | Definition                                                              |
+| ------------------- | ----------------------------------------------------------------------- |
+| **ADR**             | Architecture Decision Record                                            |
+| **Bounded Context** | DDD concept for defining module boundaries                              |
+| **C4 Model**        | Architecture diagramming approach (Context, Container, Component, Code) |
+| **CQRS**            | Command Query Responsibility Segregation                                |
+| **CUI**             | Controlled Unclassified Information                                     |
+| **pgvector**        | PostgreSQL extension for vector similarity search                       |
+| **Pwin**            | Probability of Win                                                      |
+| **RAG**             | Retrieval-Augmented Generation                                          |
+| **RLS**             | Row-Level Security                                                      |
+| **SME**             | Subject Matter Expert                                                   |
+| **VLM**             | Vision Language Model                                                   |
+| **ZDR**             | Zero Data Retention                                                     |
 
 ---
 
@@ -1777,10 +1780,10 @@ Sentinel RFP is an **agentic AI platform** for RFP response automation. Unlike l
 
 **Document Control**
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0.0 | Jan 2026 | Architecture Team | Initial release |
+| Version | Date     | Author            | Changes         |
+| ------- | -------- | ----------------- | --------------- |
+| 1.0.0   | Jan 2026 | Architecture Team | Initial release |
 
 ---
 
-*This document is the authoritative source for Sentinel RFP architecture. All implementation decisions should align with the principles and patterns documented here.*
+_This document is the authoritative source for Sentinel RFP architecture. All implementation decisions should align with the principles and patterns documented here._

@@ -1,6 +1,7 @@
 # ADR-002: Multi-Agent RAG Architecture
 
 ## Status
+
 **Accepted** - January 2026
 
 ## Context
@@ -12,6 +13,7 @@ Sentinel RFP's primary value is generating high-quality RFP responses using AI. 
 3. **Multi-Agent RAG**: Specialized agents with orchestration
 
 ### Requirements
+
 - Complex queries require multi-step reasoning
 - Responses need citations and traceability
 - Trust scores must be explainable
@@ -64,6 +66,7 @@ Sentinel RFP's primary value is generating high-quality RFP responses using AI. 
 ### Agent Specifications
 
 #### 1. Orchestrator (Conductor)
+
 - **Role**: Route queries, manage agent lifecycle, merge results
 - **Model**: Claude 3.5 Sonnet (fast, good reasoning)
 - **Responsibilities**:
@@ -73,6 +76,7 @@ Sentinel RFP's primary value is generating high-quality RFP responses using AI. 
   - Aggregate final response
 
 #### 2. Knowledge Agent
+
 - **Role**: Information retrieval from knowledge base
 - **Model**: None (algorithmic)
 - **Components**:
@@ -82,9 +86,11 @@ Sentinel RFP's primary value is generating high-quality RFP responses using AI. 
 - **Output**: Ranked document chunks with relevance scores
 
 #### 3. Planner Agent
+
 - **Role**: Decompose complex queries into sub-queries
 - **Model**: Claude 3.5 Sonnet
 - **Example**:
+
 ```
 Input: "Describe your security approach and GDPR compliance"
 
@@ -97,6 +103,7 @@ Output Plan:
 ```
 
 #### 4. Reasoning Agent
+
 - **Role**: Generate final response from retrieved context
 - **Model**: Claude 3.5 Sonnet (200K context)
 - **Responsibilities**:
@@ -106,6 +113,7 @@ Output Plan:
   - Generate structured response
 
 #### 5. Reviewer Agent
+
 - **Role**: Quality assurance and scoring
 - **Model**: Claude 3.5 Sonnet
 - **Output**:
@@ -131,14 +139,9 @@ class AgentOrchestrator {
 
     // 3. Complex queries: full pipeline
     const plan = await this.plannerAgent.decompose(query);
-    const contexts = await Promise.all(
-      plan.searches.map(s => this.knowledgeAgent.search(s))
-    );
+    const contexts = await Promise.all(plan.searches.map((s) => this.knowledgeAgent.search(s)));
 
-    const response = await this.reasoningAgent.generate(
-      query,
-      this.mergeContexts(contexts)
-    );
+    const response = await this.reasoningAgent.generate(query, this.mergeContexts(contexts));
 
     // 4. Always run reviewer
     return this.reviewerAgent.review(response);
@@ -149,6 +152,7 @@ class AgentOrchestrator {
 ## Consequences
 
 ### Positive
+
 - **Specialization**: Each agent optimized for its task
 - **Explainability**: Clear trace of decision path
 - **Flexibility**: Easy to swap/upgrade individual agents
@@ -156,12 +160,14 @@ class AgentOrchestrator {
 - **Cost control**: Can use smaller models for simple tasks
 
 ### Negative
+
 - **Latency**: Multiple LLM calls increase response time
 - **Complexity**: More moving parts to maintain
 - **Cost**: More LLM calls (mitigated by caching)
 - **Debugging**: Harder to trace issues across agents
 
 ### Mitigations
+
 - Implement response streaming for perceived performance
 - Cache intermediate results aggressively
 - Build comprehensive logging/tracing
@@ -169,17 +175,19 @@ class AgentOrchestrator {
 
 ## Cost Optimization
 
-| Strategy | Impact |
-|----------|--------|
-| Semantic caching | -40% LLM calls |
-| Query classification | -30% (skip planner for simple) |
-| Batch embeddings | -60% embedding costs |
-| Model tiering | -25% (GPT-3.5 for classification) |
+| Strategy             | Impact                            |
+| -------------------- | --------------------------------- |
+| Semantic caching     | -40% LLM calls                    |
+| Query classification | -30% (skip planner for simple)    |
+| Batch embeddings     | -60% embedding costs              |
+| Model tiering        | -25% (GPT-3.5 for classification) |
 
 ## Related ADRs
+
 - ADR-006: LLM Provider Abstraction
 - ADR-001: Event-Driven Architecture
 
 ## References
+
 - [Anthropic Claude Best Practices](https://docs.anthropic.com/claude/docs/prompt-engineering)
 - [Multi-Agent Systems in LLM Applications](https://www.anthropic.com/research)

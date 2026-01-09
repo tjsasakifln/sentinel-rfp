@@ -812,24 +812,24 @@ enum SagaStatus {
 
 ### Read Patterns
 
-| Pattern | Storage | Strategy |
-|---------|---------|----------|
-| Proposal list | PostgreSQL + Redis | Cache-aside, 5 min TTL |
-| Proposal detail | PostgreSQL | Cache-aside, event invalidation |
-| Dashboard stats | Redis | Pre-computed, refresh on event |
-| Semantic search | pgvector | Direct query with filters |
-| Full-text search | Meilisearch | Sync from PostgreSQL |
-| Document preview | Cloudflare R2 | Signed URLs, 1 hour |
+| Pattern          | Storage            | Strategy                        |
+| ---------------- | ------------------ | ------------------------------- |
+| Proposal list    | PostgreSQL + Redis | Cache-aside, 5 min TTL          |
+| Proposal detail  | PostgreSQL         | Cache-aside, event invalidation |
+| Dashboard stats  | Redis              | Pre-computed, refresh on event  |
+| Semantic search  | pgvector           | Direct query with filters       |
+| Full-text search | Meilisearch        | Sync from PostgreSQL            |
+| Document preview | Cloudflare R2      | Signed URLs, 1 hour             |
 
 ### Write Patterns
 
-| Pattern | Strategy |
-|---------|----------|
-| Create proposal | Write-through, emit event |
+| Pattern           | Strategy                      |
+| ----------------- | ----------------------------- |
+| Create proposal   | Write-through, emit event     |
 | Generate response | Async job, saga orchestration |
-| Upload document | Write to R2, process async |
-| Update library | Write-through, reindex async |
-| Bulk import | Batch processing, chunked |
+| Upload document   | Write to R2, process async    |
+| Update library    | Write-through, reindex async  |
+| Bulk import       | Batch processing, chunked     |
 
 ## Cache Strategy
 
@@ -904,8 +904,8 @@ const EMBEDDING_CONFIG = {
   dimensions: 1536,
 
   // Chunking
-  chunkSize: 512,        // tokens
-  chunkOverlap: 50,      // tokens
+  chunkSize: 512, // tokens
+  chunkOverlap: 50, // tokens
 
   // Batch processing
   batchSize: 100,
@@ -939,7 +939,7 @@ SET ivfflat.probes = 10;  -- Higher = more accurate, slower
 async function semanticSearch(
   organizationId: string,
   query: string,
-  options: SearchOptions
+  options: SearchOptions,
 ): Promise<SearchResult[]> {
   const embedding = await embeddings.embed(query);
 
@@ -965,14 +965,14 @@ async function semanticSearch(
 
 ### Retention Policies
 
-| Data Type | Retention | Action |
-|-----------|-----------|--------|
-| Active proposals | Indefinite | Archive after 2 years |
-| Completed proposals | 7 years | Required for compliance |
-| Audit logs | 2 years | Archive to cold storage |
-| Session data | 30 days | Auto-expire |
-| Temp files | 24 hours | Auto-delete |
-| Embeddings | Matches source | Delete with source |
+| Data Type           | Retention      | Action                  |
+| ------------------- | -------------- | ----------------------- |
+| Active proposals    | Indefinite     | Archive after 2 years   |
+| Completed proposals | 7 years        | Required for compliance |
+| Audit logs          | 2 years        | Archive to cold storage |
+| Session data        | 30 days        | Auto-expire             |
+| Temp files          | 24 hours       | Auto-delete             |
+| Embeddings          | Matches source | Delete with source      |
 
 ### Data Archival
 

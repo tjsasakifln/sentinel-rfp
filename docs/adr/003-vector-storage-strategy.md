@@ -1,29 +1,34 @@
 # ADR-003: Vector Storage Strategy (pgvector + Pinecone Hybrid)
 
 ## Status
+
 **Accepted** - January 2026
 
 ## Context
 
 Sentinel RFP requires vector similarity search for:
+
 - Semantic search in knowledge library
 - Document chunk retrieval
 - Similar question matching
 - Response caching
 
 We need to choose between:
+
 1. **pgvector**: PostgreSQL extension for vectors
 2. **Pinecone**: Managed vector database
 3. **Weaviate**: Self-hosted vector DB
 4. **Hybrid**: Combination approach
 
 ### Scale Requirements (Phase 1-2)
+
 - ~100K vectors per tenant (avg)
 - ~1M total vectors (10 tenants)
 - Query latency <100ms P95
 - 1536-dimensional embeddings (OpenAI)
 
 ### Scale Requirements (Phase 3+)
+
 - ~1M vectors per tenant
 - ~50M total vectors (50 tenants)
 - Query latency <50ms P95
@@ -35,15 +40,15 @@ We need to choose between:
 
 ### Rationale
 
-| Factor | pgvector | Pinecone |
-|--------|----------|----------|
-| Setup complexity | Low (extension) | Medium (new service) |
-| Cost (Phase 1) | $0 (included) | ~$70/month |
-| Railway native | Yes | External service |
-| Performance (1M vectors) | Good | Excellent |
-| Performance (10M+ vectors) | Degrades | Excellent |
-| Metadata joins | Native SQL | Separate query |
-| Backup/recovery | PostgreSQL native | Pinecone managed |
+| Factor                     | pgvector          | Pinecone             |
+| -------------------------- | ----------------- | -------------------- |
+| Setup complexity           | Low (extension)   | Medium (new service) |
+| Cost (Phase 1)             | $0 (included)     | ~$70/month           |
+| Railway native             | Yes               | External service     |
+| Performance (1M vectors)   | Good              | Excellent            |
+| Performance (10M+ vectors) | Degrades          | Excellent            |
+| Metadata joins             | Native SQL        | Separate query       |
+| Backup/recovery            | PostgreSQL native | Pinecone managed     |
 
 ### Implementation
 
@@ -100,7 +105,7 @@ class PineconeStore implements VectorStore {
       vector: query,
       topK,
       filter: { organizationId: filter.organizationId },
-      includeMetadata: true
+      includeMetadata: true,
     });
     return results.matches;
   }
@@ -109,15 +114,16 @@ class PineconeStore implements VectorStore {
 
 ### Performance Benchmarks
 
-| Operation | pgvector (100K) | pgvector (1M) | Target |
-|-----------|-----------------|---------------|--------|
-| Single query | 15ms | 45ms | <100ms |
-| Batch query (10) | 50ms | 180ms | <500ms |
-| Insert (1K batch) | 200ms | 300ms | <1s |
+| Operation         | pgvector (100K) | pgvector (1M) | Target |
+| ----------------- | --------------- | ------------- | ------ |
+| Single query      | 15ms            | 45ms          | <100ms |
+| Batch query (10)  | 50ms            | 180ms         | <500ms |
+| Insert (1K batch) | 200ms           | 300ms         | <1s    |
 
 ### Migration Trigger to Pinecone
 
 Migrate when ANY of these occur:
+
 - Query latency P95 >100ms
 - Vector count per tenant >1M
 - Total vectors >10M
@@ -150,6 +156,7 @@ Phase 4: Cleanup
 ## Consequences
 
 ### Positive
+
 - **Simplicity**: Single database for Phase 1-2
 - **Cost**: No additional service costs initially
 - **Transactions**: Vectors and metadata in same transaction
@@ -157,11 +164,13 @@ Phase 4: Cleanup
 - **Railway native**: No external dependencies
 
 ### Negative
+
 - **Scale limit**: Performance degrades >1M vectors
 - **Features**: Missing Pinecone features (hybrid search, sparse vectors)
 - **Migration work**: Will need to migrate eventually
 
 ### Mitigations
+
 - Build abstraction layer from day one
 - Monitor vector counts and latency
 - Document migration procedure
@@ -186,10 +195,12 @@ SET ivfflat.probes = 10;
 ```
 
 ## Related ADRs
+
 - ADR-002: Multi-Agent RAG Architecture
 - ADR-006: LLM Provider Abstraction
 
 ## References
+
 - [pgvector Documentation](https://github.com/pgvector/pgvector)
 - [Pinecone Documentation](https://docs.pinecone.io/)
 - [ANN Benchmarks](http://ann-benchmarks.com/)

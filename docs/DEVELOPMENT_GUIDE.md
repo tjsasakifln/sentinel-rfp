@@ -8,13 +8,13 @@ This guide provides everything developers need to set up, develop, test, and con
 
 ### Required Software
 
-| Software | Version | Purpose |
-|----------|---------|---------|
-| Node.js | 20.x LTS | Runtime |
-| npm | 10.x | Package manager |
-| Docker | 24.x | Local services |
-| Git | 2.40+ | Version control |
-| VS Code | Latest | Recommended IDE |
+| Software | Version  | Purpose         |
+| -------- | -------- | --------------- |
+| Node.js  | 20.x LTS | Runtime         |
+| npm      | 10.x     | Package manager |
+| Docker   | 24.x     | Local services  |
+| Git      | 2.40+    | Version control |
+| VS Code  | Latest   | Recommended IDE |
 
 ### Recommended VS Code Extensions
 
@@ -279,10 +279,7 @@ export class ProposalController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() dto: CreateProposalDto,
-    @CurrentUser() user: User,
-  ): Promise<Proposal> {
+  async create(@Body() dto: CreateProposalDto, @CurrentUser() user: User): Promise<Proposal> {
     return this.proposalService.create({
       ...dto,
       organizationId: user.organizationId,
@@ -387,10 +384,7 @@ describe('ProposalService', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [
-        ProposalService,
-        { provide: PrismaService, useValue: mockDeep<PrismaClient>() },
-      ],
+      providers: [ProposalService, { provide: PrismaService, useValue: mockDeep<PrismaClient>() }],
     }).compile();
 
     service = module.get(ProposalService);
@@ -629,6 +623,7 @@ logger.error('Error occurred', error.stack);
 ### Common Issues
 
 **Database connection refused**
+
 ```bash
 # Ensure PostgreSQL is running
 docker-compose ps
@@ -636,11 +631,13 @@ docker-compose up -d postgres
 ```
 
 **Prisma client out of sync**
+
 ```bash
 npx prisma generate
 ```
 
 **Port already in use**
+
 ```bash
 # Find process
 lsof -i :4000
@@ -649,6 +646,7 @@ kill -9 <PID>
 ```
 
 **Node modules issues**
+
 ```bash
 rm -rf node_modules
 rm package-lock.json
@@ -656,6 +654,7 @@ npm install
 ```
 
 **TypeScript errors after schema change**
+
 ```bash
 npm run build:packages
 npx prisma generate
@@ -684,12 +683,14 @@ npx prisma generate
 ### Code Review Guidelines
 
 **For Authors:**
+
 - Keep PRs focused and small
 - Provide context in description
 - Respond to feedback promptly
 - Update based on feedback
 
 **For Reviewers:**
+
 - Be constructive and specific
 - Approve when satisfied
 - Request changes for issues

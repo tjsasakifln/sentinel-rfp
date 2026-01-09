@@ -499,14 +499,14 @@ Sentry.init({
 
 ### Alerts
 
-| Metric | Warning | Critical | Action |
-|--------|---------|----------|--------|
-| API Response Time P95 | >500ms | >2s | Scale backend |
-| Error Rate | >1% | >5% | Page on-call |
-| Database Connections | >70% | >90% | Increase pool |
-| Redis Memory | >70% | >90% | Review TTLs |
-| Queue Depth | >100 | >500 | Scale workers |
-| Storage Usage | >70% | >90% | Archive data |
+| Metric                | Warning | Critical | Action        |
+| --------------------- | ------- | -------- | ------------- |
+| API Response Time P95 | >500ms  | >2s      | Scale backend |
+| Error Rate            | >1%     | >5%      | Page on-call  |
+| Database Connections  | >70%    | >90%     | Increase pool |
+| Redis Memory          | >70%    | >90%     | Review TTLs   |
+| Queue Depth           | >100    | >500     | Scale workers |
+| Storage Usage         | >70%    | >90%     | Archive data  |
 
 ## Networking
 
@@ -534,13 +534,13 @@ API_INTERNAL_URL=http://backend.railway.internal:4000
 
 ### Backup Strategy
 
-| Component | Method | Frequency | Retention |
-|-----------|--------|-----------|-----------|
-| PostgreSQL | Railway snapshots | Continuous | 7 days PITR |
-| PostgreSQL | Manual export to R2 | Daily | 30 days |
-| Redis | Not backed up | N/A | Cache only |
-| R2 Storage | Cross-region replication | Continuous | Indefinite |
-| Meilisearch | Rebuild from PostgreSQL | On-demand | N/A |
+| Component   | Method                   | Frequency  | Retention   |
+| ----------- | ------------------------ | ---------- | ----------- |
+| PostgreSQL  | Railway snapshots        | Continuous | 7 days PITR |
+| PostgreSQL  | Manual export to R2      | Daily      | 30 days     |
+| Redis       | Not backed up            | N/A        | Cache only  |
+| R2 Storage  | Cross-region replication | Continuous | Indefinite  |
+| Meilisearch | Rebuild from PostgreSQL  | On-demand  | N/A         |
 
 ### Recovery Procedures
 
@@ -560,25 +560,25 @@ curl https://api.sentinel-rfp.com/health
 
 ### RTO/RPO Targets
 
-| Scenario | RTO | RPO |
-|----------|-----|-----|
-| Single service failure | 5 min | 0 |
-| Database corruption | 30 min | 1 hour |
-| Full region outage | 4 hours | 1 hour |
+| Scenario               | RTO     | RPO    |
+| ---------------------- | ------- | ------ |
+| Single service failure | 5 min   | 0      |
+| Database corruption    | 30 min  | 1 hour |
+| Full region outage     | 4 hours | 1 hour |
 
 ## Cost Optimization
 
 ### Railway Pricing Estimate
 
-| Component | Tier | Monthly Cost |
-|-----------|------|--------------|
-| Frontend | Starter | ~$5-20 |
-| Backend | Pro | ~$20-50 |
-| Worker | Pro | ~$10-30 |
-| PostgreSQL | Starter/Pro | ~$5-25 |
-| Redis | Starter | ~$5-10 |
-| Meilisearch | Template | ~$5-15 |
-| **Total** | | **~$50-150/mo** |
+| Component   | Tier        | Monthly Cost    |
+| ----------- | ----------- | --------------- |
+| Frontend    | Starter     | ~$5-20          |
+| Backend     | Pro         | ~$20-50         |
+| Worker      | Pro         | ~$10-30         |
+| PostgreSQL  | Starter/Pro | ~$5-25          |
+| Redis       | Starter     | ~$5-10          |
+| Meilisearch | Template    | ~$5-15          |
+| **Total**   |             | **~$50-150/mo** |
 
 ### Cost Monitoring
 

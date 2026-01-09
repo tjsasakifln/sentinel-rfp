@@ -59,39 +59,39 @@ Staging:    https://api.staging.sentinel-rfp.com/v1
 
 ### Resource Naming
 
-| Pattern | Example | Description |
-|---------|---------|-------------|
-| Plural nouns | `/proposals` | Collections |
-| Lowercase | `/library-entries` | Kebab-case for multi-word |
-| No verbs in URL | `/proposals` not `/getProposals` | Actions via HTTP methods |
-| Hierarchical | `/proposals/{id}/questions` | Nested resources |
+| Pattern         | Example                          | Description               |
+| --------------- | -------------------------------- | ------------------------- |
+| Plural nouns    | `/proposals`                     | Collections               |
+| Lowercase       | `/library-entries`               | Kebab-case for multi-word |
+| No verbs in URL | `/proposals` not `/getProposals` | Actions via HTTP methods  |
+| Hierarchical    | `/proposals/{id}/questions`      | Nested resources          |
 
 ### HTTP Methods
 
-| Method | Usage | Idempotent | Example |
-|--------|-------|------------|---------|
-| GET | Read resource(s) | Yes | `GET /proposals` |
-| POST | Create resource | No | `POST /proposals` |
-| PUT | Replace resource | Yes | `PUT /proposals/{id}` |
-| PATCH | Partial update | Yes | `PATCH /proposals/{id}` |
-| DELETE | Remove resource | Yes | `DELETE /proposals/{id}` |
+| Method | Usage            | Idempotent | Example                  |
+| ------ | ---------------- | ---------- | ------------------------ |
+| GET    | Read resource(s) | Yes        | `GET /proposals`         |
+| POST   | Create resource  | No         | `POST /proposals`        |
+| PUT    | Replace resource | Yes        | `PUT /proposals/{id}`    |
+| PATCH  | Partial update   | Yes        | `PATCH /proposals/{id}`  |
+| DELETE | Remove resource  | Yes        | `DELETE /proposals/{id}` |
 
 ### Status Codes
 
-| Code | Meaning | Usage |
-|------|---------|-------|
-| 200 | OK | Successful GET, PUT, PATCH |
-| 201 | Created | Successful POST |
-| 204 | No Content | Successful DELETE |
-| 400 | Bad Request | Validation error, malformed request |
-| 401 | Unauthorized | Missing/invalid authentication |
-| 403 | Forbidden | Authenticated but not authorized |
-| 404 | Not Found | Resource doesn't exist |
-| 409 | Conflict | Concurrent modification, duplicate |
-| 422 | Unprocessable Entity | Semantic validation error |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Server-side error |
-| 503 | Service Unavailable | Maintenance, overload |
+| Code | Meaning               | Usage                               |
+| ---- | --------------------- | ----------------------------------- |
+| 200  | OK                    | Successful GET, PUT, PATCH          |
+| 201  | Created               | Successful POST                     |
+| 204  | No Content            | Successful DELETE                   |
+| 400  | Bad Request           | Validation error, malformed request |
+| 401  | Unauthorized          | Missing/invalid authentication      |
+| 403  | Forbidden             | Authenticated but not authorized    |
+| 404  | Not Found             | Resource doesn't exist              |
+| 409  | Conflict              | Concurrent modification, duplicate  |
+| 422  | Unprocessable Entity  | Semantic validation error           |
+| 429  | Too Many Requests     | Rate limit exceeded                 |
+| 500  | Internal Server Error | Server-side error                   |
+| 503  | Service Unavailable   | Maintenance, overload               |
 
 ## Request Format
 
@@ -703,17 +703,17 @@ POST /v1/webhooks/{id}/logs/{logId}/retry
 
 ### Webhook Events
 
-| Event | Description |
-|-------|-------------|
-| `proposal.created` | New proposal created |
-| `proposal.updated` | Proposal details changed |
-| `proposal.status_changed` | Proposal status transitioned |
-| `proposal.submitted` | Proposal marked as submitted |
-| `question.assigned` | Question assigned to user |
-| `response.generated` | AI response generated |
-| `response.approved` | Response approved |
-| `document.processed` | Document processing completed |
-| `export.completed` | Export ready for download |
+| Event                     | Description                   |
+| ------------------------- | ----------------------------- |
+| `proposal.created`        | New proposal created          |
+| `proposal.updated`        | Proposal details changed      |
+| `proposal.status_changed` | Proposal status transitioned  |
+| `proposal.submitted`      | Proposal marked as submitted  |
+| `question.assigned`       | Question assigned to user     |
+| `response.generated`      | AI response generated         |
+| `response.approved`       | Response approved             |
+| `document.processed`      | Document processing completed |
+| `export.completed`        | Export ready for download     |
 
 ### Webhook Payload
 
@@ -751,11 +751,11 @@ const signature = crypto
 
 ### Limits
 
-| Tier | Requests/min | Requests/hour | AI Generations/hour |
-|------|--------------|---------------|---------------------|
-| Free | 60 | 1,000 | 10 |
-| Professional | 300 | 10,000 | 100 |
-| Enterprise | 1,000 | 50,000 | 500 |
+| Tier         | Requests/min | Requests/hour | AI Generations/hour |
+| ------------ | ------------ | ------------- | ------------------- |
+| Free         | 60           | 1,000         | 10                  |
+| Professional | 300          | 10,000        | 100                 |
+| Enterprise   | 1,000        | 50,000        | 500                 |
 
 ### Headers
 
@@ -829,10 +829,7 @@ type Mutation {
   updateProposal(id: ID!, input: UpdateProposalInput!): Proposal!
   deleteProposal(id: ID!): Boolean!
 
-  generateResponse(
-    questionId: ID!
-    options: GenerationOptions
-  ): GenerationJob!
+  generateResponse(questionId: ID!, options: GenerationOptions): GenerationJob!
 }
 
 type Subscription {
@@ -953,20 +950,20 @@ job = client.questions.generate_response(
 
 ## Error Codes Reference
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| `AUTHENTICATION_REQUIRED` | 401 | No valid authentication provided |
-| `INVALID_TOKEN` | 401 | Token is expired or invalid |
-| `PERMISSION_DENIED` | 403 | User lacks required permission |
-| `RESOURCE_NOT_FOUND` | 404 | Requested resource doesn't exist |
-| `VALIDATION_ERROR` | 400 | Request validation failed |
-| `DUPLICATE_RESOURCE` | 409 | Resource already exists |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
-| `QUOTA_EXCEEDED` | 402 | Plan limits exceeded |
-| `INTERNAL_ERROR` | 500 | Unexpected server error |
-| `SERVICE_UNAVAILABLE` | 503 | Service temporarily unavailable |
-| `AI_GENERATION_FAILED` | 500 | AI response generation failed |
-| `DOCUMENT_PROCESSING_FAILED` | 500 | Document processing failed |
+| Code                         | HTTP Status | Description                      |
+| ---------------------------- | ----------- | -------------------------------- |
+| `AUTHENTICATION_REQUIRED`    | 401         | No valid authentication provided |
+| `INVALID_TOKEN`              | 401         | Token is expired or invalid      |
+| `PERMISSION_DENIED`          | 403         | User lacks required permission   |
+| `RESOURCE_NOT_FOUND`         | 404         | Requested resource doesn't exist |
+| `VALIDATION_ERROR`           | 400         | Request validation failed        |
+| `DUPLICATE_RESOURCE`         | 409         | Resource already exists          |
+| `RATE_LIMIT_EXCEEDED`        | 429         | Too many requests                |
+| `QUOTA_EXCEEDED`             | 402         | Plan limits exceeded             |
+| `INTERNAL_ERROR`             | 500         | Unexpected server error          |
+| `SERVICE_UNAVAILABLE`        | 503         | Service temporarily unavailable  |
+| `AI_GENERATION_FAILED`       | 500         | AI response generation failed    |
+| `DOCUMENT_PROCESSING_FAILED` | 500         | Document processing failed       |
 
 ## References
 
