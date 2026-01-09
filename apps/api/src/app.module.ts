@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
-import { HealthModule } from './health/health.module';
+
 import { CommonModule } from './common/common.module';
 import { configValidationSchema } from './config/config.schema';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [

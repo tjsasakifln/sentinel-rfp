@@ -1,6 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import { Test, TestingModule } from '@nestjs/testing';
+import request from 'supertest';
+
 import { AppModule } from '../src/app.module';
 
 describe('Health (e2e)', () => {
@@ -24,7 +25,7 @@ describe('Health (e2e)', () => {
     return request(app.getHttpServer())
       .get('/api/health')
       .expect(200)
-      .expect((res) => {
+      .expect((res: request.Response) => {
         expect(res.body).toHaveProperty('data');
         expect(res.body.data).toHaveProperty('status', 'ok');
         expect(res.body.data).toHaveProperty('timestamp');

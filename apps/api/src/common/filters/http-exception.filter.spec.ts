@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+
 import { HttpExceptionFilter } from './http-exception.filter';
 
 describe('HttpExceptionFilter', () => {
@@ -38,7 +39,7 @@ describe('HttpExceptionFilter', () => {
 
     const exception = new HttpException('Test error', HttpStatus.BAD_REQUEST);
 
-    filter.catch(exception, mockArgumentsHost as any);
+    filter.catch(exception, mockArgumentsHost as unknown as import('@nestjs/common').ArgumentsHost);
 
     expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
     expect(mockJson).toHaveBeenCalledWith(
@@ -78,7 +79,7 @@ describe('HttpExceptionFilter', () => {
 
     const exception = new Error('Unexpected error');
 
-    filter.catch(exception, mockArgumentsHost as any);
+    filter.catch(exception, mockArgumentsHost as unknown as import('@nestjs/common').ArgumentsHost);
 
     expect(mockStatus).toHaveBeenCalledWith(
       HttpStatus.INTERNAL_SERVER_ERROR,

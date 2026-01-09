@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
+
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { TransformInterceptor } from './interceptors/transform.interceptor';

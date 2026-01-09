@@ -1,8 +1,9 @@
-import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
+import { Logger } from 'nestjs-pino';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {
