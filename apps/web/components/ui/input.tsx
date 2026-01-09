@@ -2,6 +2,15 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Input field component with consistent styling.
+ * Supports all standard HTML input types and attributes.
+ * Includes focus states, disabled states, and file upload styling.
+ *
+ * @example
+ * <Input type="email" placeholder="Enter your email" />
+ * <Input type="password" disabled />
+ */
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   ({ className, type, ...props }, ref) => {
     return (
