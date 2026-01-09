@@ -5,7 +5,7 @@
 [![NestJS](https://img.shields.io/badge/NestJS-10.x-red?logo=nestjs)](https://nestjs.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
-[![AI Powered](https://img.shields.io/badge/AI-LLM_Powered-orange)]()
+[![Opus 4.5](https://img.shields.io/badge/LLM-Opus_4.5-orange)]()
 
 **Sentinel RFP is an agentic AI platform for RFP response automation that transforms how organizations win proposals.** By leveraging multi-agent orchestration and trust-scored AI responses, Sentinel RFP reduces proposal response time by 50% while improving win rates by 8-15 percentage points. Built for mid-market tech companies and government contractors who need FAR/DFARS compliant proposal management software.
 
@@ -77,9 +77,9 @@ Subject matter experts respond to RFP questions directly in Slack or Microsoft T
 ### AI-Powered Response Generation
 
 - **Hybrid RAG Search**: Combines vector similarity and keyword matching for optimal retrieval
-- **200K Context Window**: Powered by advanced LLM for comprehensive document understanding
+- **200K Context Window**: Powered by Opus 4.5 for comprehensive document understanding
 - **Response Streaming**: Real-time generation with live progress indicators
-- **Multi-Provider Fallback**: Automatic failover to OpenAI GPT-4o ensures reliability
+- **Multi-Provider Fallback**: Automatic failover to GPT-4.1 ensures reliability
 
 ### Trust Score and Citation System
 
@@ -144,8 +144,8 @@ Subject matter experts respond to RFP questions directly in Slack or Microsoft T
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
-| Primary LLM | Advanced LLM (200K context) | Response generation and reasoning |
-| Fallback LLM | OpenAI GPT-4o | Redundancy and specific tasks |
+| Primary LLM | Opus 4.5 (200K context) | Response generation and reasoning |
+| Fallback LLM | GPT-4.1 | Redundancy and specific tasks |
 | Embeddings | OpenAI Embeddings API | Vector representations |
 | Vision | GPT-4o Vision | Document OCR and table extraction |
 | Document Parsing | Unstructured.io | Multi-format document processing |
