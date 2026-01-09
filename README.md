@@ -19,7 +19,7 @@
 - [Architecture Overview](#architecture-overview)
 - [Getting Started](#getting-started)
 - [Roadmap](#roadmap)
-- [Use Cases](#use-cases)
+- [Target Audience & Typical Use Cases](#target-audience--typical-use-cases)
 - [Contact](#contact)
 - [License](#license)
 
@@ -314,9 +314,9 @@ For detailed roadmap information, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
-## Use Cases
+## Target Audience & Typical Use Cases
 
-> **Note**: Sentinel RFP is currently in early development. The following describes our target use cases and planned capabilities.
+> **Note**: Sentinel RFP is currently in early development. The following describes our target audience and planned capabilities for RFP automation software.
 
 ### Mid-Market Technology Companies
 
