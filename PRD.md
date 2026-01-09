@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-# Nexus Response Core
+# Sentinel RFP
 ## Plataforma de Automação Agêntica para Respostas a RFP
 
 ---
@@ -69,7 +69,7 @@
 
 ### 2.1 Declaração do Produto
 
-O **Nexus Response Core** é uma plataforma de automação de respostas a RFP (Request for Proposal) baseada em arquitetura de agentes autônomos de IA. A plataforma representa uma mudança paradigmática: de sistemas passivos de gerenciamento de conteúdo para uma força de trabalho digital que orquestra autonomamente todo o ciclo de vida da proposta.
+O **Sentinel RFP** é uma plataforma de automação de respostas a RFP (Request for Proposal) baseada em arquitetura de agentes autônomos de IA. A plataforma representa uma mudança paradigmática: de sistemas passivos de gerenciamento de conteúdo para uma força de trabalho digital que orquestra autonomamente todo o ciclo de vida da proposta.
 
 ### 2.2 Proposta de Valor Única
 
@@ -85,7 +85,7 @@ O **Nexus Response Core** é uma plataforma de automação de respostas a RFP (R
 
 ### 2.4 Diferencial Competitivo
 
-| Aspecto | Incumbentes (Loopio, Responsive) | Nexus Response Core |
+| Aspecto | Incumbentes (Loopio, Responsive) | Sentinel RFP |
 |---------|----------------------------------|---------------------|
 | Arquitetura | CMS passivo + RAG básico | Agentic Workflow First |
 | Processamento de Docs | OCR simples | VLM híbrido multimodal |
@@ -699,7 +699,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 
 **Workflow de Solicitação:**
 ```
-1. Proposal Manager marca @SME no Nexus
+1. Proposal Manager marca @SME no Sentinel
 2. Bot envia DM para SME no Slack:
    "Marina precisa de validação técnica para Acme Corp RFP:
    
@@ -934,7 +934,7 @@ DRAFT → REVIEW → APPROVED → ACTIVE → STALE → ARCHIVED
 ```
 1. Detectar campos de pergunta/resposta no DOM
 2. Extrair contexto (pergunta, limite de caracteres)
-3. Buscar resposta no Nexus
+3. Buscar resposta no Sentinel
 4. Ajustar resposta para caber no limite
 5. Preencher campo com um clique
 6. Capturar resposta final para biblioteca
@@ -1807,12 +1807,12 @@ user:
 **Workflow:**
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Nexus     │───▶│   Slack     │───▶│    SME      │
+│  Sentinel   │───▶│   Slack     │───▶│    SME      │
 │   Request   │    │    Bot      │    │   Review    │
 └─────────────┘    └─────────────┘    └──────┬──────┘
                                              │
                    ┌─────────────┐           │
-                   │   Nexus     │◀──────────┘
+                   │  Sentinel   │◀──────────┘
                    │   Updated   │   (Approve/Edit/Reject)
                    └─────────────┘
 ```
@@ -1846,7 +1846,7 @@ user:
 **Sync Logic:**
 ```
 1. Opportunity criada com stage = "RFP Received"
-   → Criar Proposal no Nexus
+   → Criar Proposal no Sentinel
    
 2. Proposal status = "Submitted"
    → Atualizar Opportunity stage
@@ -2077,7 +2077,7 @@ integration.sync_failed
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  🤖 Nexus Bot                                           10:30 AM     │   │
+│  │  🤖 Sentinel Bot                                           10:30 AM     │   │
 │  ├─────────────────────────────────────────────────────────────────────┤   │
 │  │                                                                      │   │
 │  │  📋 **Validação Técnica Necessária**                                │   │
@@ -2308,7 +2308,7 @@ Enterprise → GovCon:
 
 ### 13.4 Freemium Estratégico
 
-**Produto:** Nexus Security Shredder (gratuito)
+**Produto:** Sentinel Security Shredder (gratuito)
 
 **Funcionalidade:**
 - Upload de questionário de segurança (Excel)
@@ -2335,7 +2335,7 @@ Enterprise → GovCon:
 **Tagline:** "From Searching to Winning: AI Agents That Close Deals"
 
 **Positioning Statement:**
-> Para equipes de propostas e pré-vendas em empresas de tecnologia e serviços, que perdem tempo excessivo em tarefas manuais de RFP, o Nexus Response Core é a plataforma de automação agêntica que orquestra todo o ciclo de vida da proposta autonomamente. Diferente de ferramentas legadas como Loopio e Responsive, o Nexus elimina o trabalho repetitivo através de agentes de IA especializados que geram respostas de alta qualidade com rastreabilidade completa.
+> Para equipes de propostas e pré-vendas em empresas de tecnologia e serviços, que perdem tempo excessivo em tarefas manuais de RFP, o Sentinel RFP é a plataforma de automação agêntica que orquestra todo o ciclo de vida da proposta autonomamente. Diferente de ferramentas legadas como Loopio e Responsive, o Sentinel elimina o trabalho repetitivo através de agentes de IA especializados que geram respostas de alta qualidade com rastreabilidade completa.
 
 ### 14.2 Canais de Aquisição
 
