@@ -15,6 +15,38 @@ This document outlines the phased development roadmap for Sentinel RFP. Each pha
 
 ---
 
+## Decomposição de Issues
+
+Issues grandes (size:L) e Epics amplos foram decompostos em sub-issues atômicas (máx 1 dia/8h cada) para melhor tracking e paralelização.
+
+### Issues Decompostas
+
+| Parent Issue | Título | Sub-Issues | Status |
+|--------------|--------|------------|--------|
+| #15 | Next.js Frontend Scaffolding | #90-#95 (6 sub-issues) | ✅ Completo |
+| #19 | Prisma Schema Design | #102-#108 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/19) |
+| #21 | User Authentication (JWT) | #109-#115 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/21) |
+| #52 | Basic Dashboard | #128-#130 (3 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/52) |
+| #61 | Error Handling & Logging | #117-#119 (3 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/61) |
+| #87 | Developer Experience | #122-#125 (4 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/87) |
+
+**Convenção de Nomenclatura:** Sub-issues seguem padrão `[PREFIX-NUMletter]`
+- Exemplo: #87 (Developer Experience) → #87a, #87b, #87c...
+- Parent issues marcados com label `parent-issue`
+
+**Próximas Decomposições Planejadas:**
+- #57 (Word Export) → 6 sub-issues
+- #41 (Hybrid Search) → 6 sub-issues
+- #63 (Documentation) → 5 sub-issues
+- #85 (Testing Infrastructure) → 5 sub-issues
+- #86 (Observability) → 5 sub-issues
+- #67 (Multi-Agent Architecture) → 7 sub-issues
+- #72 (Content Auto-Healing) → 6 sub-issues
+
+**Script de Automação:** `scripts/create-sub-issues.sh` disponível para criar sub-issues em batch.
+
+---
+
 ## Phase 1: Foundation MVP (Months 1-4)
 
 ### Objective
@@ -27,7 +59,13 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 
 - [x] Monorepo setup (Turborepo) - [#13](https://github.com/tjsasakifln/sentinel-rfp/issues/13)
 - [x] NestJS backend scaffolding - [#14](https://github.com/tjsasakifln/sentinel-rfp/issues/14) - [PR #89](https://github.com/tjsasakifln/sentinel-rfp/pull/89)
-- [ ] Next.js frontend scaffolding - [#15](https://github.com/tjsasakifln/sentinel-rfp/issues/15)
+- [x] Next.js frontend scaffolding - [#15](https://github.com/tjsasakifln/sentinel-rfp/issues/15)
+  - [x] [#90](https://github.com/tjsasakifln/sentinel-rfp/issues/90) - Setup Next.js 14 App Router Base
+  - [x] [#91](https://github.com/tjsasakifln/sentinel-rfp/issues/91) - Setup Tailwind CSS & Theming
+  - [x] [#92](https://github.com/tjsasakifln/sentinel-rfp/issues/92) - Initialize shadcn/ui Components
+  - [x] [#93](https://github.com/tjsasakifln/sentinel-rfp/issues/93) - Setup React Query Provider
+  - [x] [#94](https://github.com/tjsasakifln/sentinel-rfp/issues/94) - Setup Zustand Client State
+  - [x] [#95](https://github.com/tjsasakifln/sentinel-rfp/issues/95) - Create Layout Base (Header, Sidebar, Main)
 - [ ] Docker development environment - [#16](https://github.com/tjsasakifln/sentinel-rfp/issues/16)
 - [ ] CI/CD pipeline (GitHub Actions) - [#17](https://github.com/tjsasakifln/sentinel-rfp/issues/17)
 - [ ] Railway deployment configuration - [#18](https://github.com/tjsasakifln/sentinel-rfp/issues/18)
@@ -35,8 +73,22 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 #### Milestone 1.2: Database & Auth ([EPIC #1](https://github.com/tjsasakifln/sentinel-rfp/issues/1))
 
 - [ ] Prisma schema design - [#19](https://github.com/tjsasakifln/sentinel-rfp/issues/19)
+  - [ ] [#102](https://github.com/tjsasakifln/sentinel-rfp/issues/102) - Criar packages/database structure
+  - [ ] [#103](https://github.com/tjsasakifln/sentinel-rfp/issues/103) - Definir modelos de Identity (Organization, User)
+  - [ ] [#104](https://github.com/tjsasakifln/sentinel-rfp/issues/104) - Definir modelos de Proposal (Proposal, Section, Question, Response)
+  - [ ] [#105](https://github.com/tjsasakifln/sentinel-rfp/issues/105) - Definir modelos de Knowledge (Document, Chunk, LibraryEntry)
+  - [ ] [#106](https://github.com/tjsasakifln/sentinel-rfp/issues/106) - Configurar pgvector extension e indexes
+  - [ ] [#107](https://github.com/tjsasakifln/sentinel-rfp/issues/107) - Criar seed script com dados de teste
+  - [ ] [#108](https://github.com/tjsasakifln/sentinel-rfp/issues/108) - Criar migration inicial e validar schema completo
 - [ ] PostgreSQL + pgvector setup - [#20](https://github.com/tjsasakifln/sentinel-rfp/issues/20)
 - [ ] User authentication (JWT) - [#21](https://github.com/tjsasakifln/sentinel-rfp/issues/21)
+  - [ ] [#109](https://github.com/tjsasakifln/sentinel-rfp/issues/109) - Setup JWT module e Argon2id password hashing
+  - [ ] [#110](https://github.com/tjsasakifln/sentinel-rfp/issues/110) - Implementar endpoint de registro (POST /v1/auth/register)
+  - [ ] [#111](https://github.com/tjsasakifln/sentinel-rfp/issues/111) - Implementar endpoint de login (POST /v1/auth/login)
+  - [ ] [#112](https://github.com/tjsasakifln/sentinel-rfp/issues/112) - Implementar refresh token flow com rotation
+  - [ ] [#113](https://github.com/tjsasakifln/sentinel-rfp/issues/113) - Implementar logout com token blacklisting
+  - [ ] [#114](https://github.com/tjsasakifln/sentinel-rfp/issues/114) - Adicionar rate limiting nos endpoints de autenticação
+  - [ ] [#115](https://github.com/tjsasakifln/sentinel-rfp/issues/115) - Criar testes de integração E2E para autenticação
 - [ ] Organization multi-tenancy - [#22](https://github.com/tjsasakifln/sentinel-rfp/issues/22)
 - [ ] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
 - [ ] Password reset flow - [#24](https://github.com/tjsasakifln/sentinel-rfp/issues/24)
@@ -116,7 +168,10 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 - [ ] Proposal CRUD - [#53](https://github.com/tjsasakifln/sentinel-rfp/issues/53)
 - [ ] Question status workflow - [#54](https://github.com/tjsasakifln/sentinel-rfp/issues/54)
 - [ ] Progress tracking - [#55](https://github.com/tjsasakifln/sentinel-rfp/issues/55)
-- [ ] Basic dashboard - [#56](https://github.com/tjsasakifln/sentinel-rfp/issues/56)
+- [ ] Basic dashboard - [#52](https://github.com/tjsasakifln/sentinel-rfp/issues/52)
+  - [ ] [#128](https://github.com/tjsasakifln/sentinel-rfp/issues/128) - Dashboard Layout & Metrics Cards
+  - [ ] [#129](https://github.com/tjsasakifln/sentinel-rfp/issues/129) - Proposals List Component com Filters
+  - [ ] [#130](https://github.com/tjsasakifln/sentinel-rfp/issues/130) - Quick Actions Menu & Create Proposal Button
 
 #### Milestone 4.2: Response Editing ([EPIC #10](https://github.com/tjsasakifln/sentinel-rfp/issues/10))
 
@@ -127,16 +182,24 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 
 #### Milestone 4.3: Export ([EPIC #11](https://github.com/tjsasakifln/sentinel-rfp/issues/11))
 
-- [ ] Word document export - [#61](https://github.com/tjsasakifln/sentinel-rfp/issues/61)
+- [ ] Word document export - [#57](https://github.com/tjsasakifln/sentinel-rfp/issues/57)
 - [ ] Basic formatting - [#62](https://github.com/tjsasakifln/sentinel-rfp/issues/62)
 - [ ] Citation appendix - [#63](https://github.com/tjsasakifln/sentinel-rfp/issues/63)
 
 #### Milestone 4.4: Beta Launch ([EPIC #12](https://github.com/tjsasakifln/sentinel-rfp/issues/12))
 
 - [ ] Performance optimization - [#64 (Phase 2)](https://github.com/tjsasakifln/sentinel-rfp/issues/64)
-- [ ] Error handling & logging - [#86](https://github.com/tjsasakifln/sentinel-rfp/issues/86)
+- [ ] Error handling & logging - [#61](https://github.com/tjsasakifln/sentinel-rfp/issues/61)
+  - [ ] [#117](https://github.com/tjsasakifln/sentinel-rfp/issues/117) - Structured Logging com Pino
+  - [ ] [#118](https://github.com/tjsasakifln/sentinel-rfp/issues/118) - Request ID Tracking & Correlation
+  - [ ] [#119](https://github.com/tjsasakifln/sentinel-rfp/issues/119) - Sentry Integration para Error Tracking
+- [ ] Observability - [#86](https://github.com/tjsasakifln/sentinel-rfp/issues/86)
 - [ ] User onboarding flow
-- [ ] Documentation - [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87)
+- [ ] Developer Experience - [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87)
+  - [ ] [#122](https://github.com/tjsasakifln/sentinel-rfp/issues/122) - Configure Storybook para Web App
+  - [ ] [#123](https://github.com/tjsasakifln/sentinel-rfp/issues/123) - Create Development Scripts & CLI Tools
+  - [ ] [#124](https://github.com/tjsasakifln/sentinel-rfp/issues/124) - Setup Git Hooks com Husky + lint-staged
+  - [ ] [#125](https://github.com/tjsasakifln/sentinel-rfp/issues/125) - VS Code Workspace Configuration
 - [ ] Beta user recruitment
 
 **Exit Criteria:**
@@ -473,10 +536,12 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 ## Changelog
 
-| Version | Date       | Changes                                     |
-| ------- | ---------- | ------------------------------------------- |
-| 1.0     | 2026-01-09 | Initial roadmap creation                    |
-| 1.1     | 2026-01-09 | Added GitHub issue links for all milestones |
+| Version | Date       | Changes                                                                           |
+| ------- | ---------- | --------------------------------------------------------------------------------- |
+| 1.3     | 2026-01-12 | Comprehensive audit sync: Added 30 sub-issues, fixed issue number mappings, updated progress (123 total issues, 9 closed) |
+| 1.2     | 2026-01-12 | Decomposed 3 issues into 16 atomic sub-issues (#61→#116-120, #87→#121-126, #52→#127-131) |
+| 1.1     | 2026-01-09 | Added GitHub issue links for all milestones                                       |
+| 1.0     | 2026-01-09 | Initial roadmap creation                                                          |
 
 ---
 
@@ -484,22 +549,25 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 These epics run in parallel throughout the development cycle:
 
-| Epic                   | Description                        | Link                                                         |
-| ---------------------- | ---------------------------------- | ------------------------------------------------------------ |
-| Testing Infrastructure | Unit, Integration, E2E, Load Tests | [#85](https://github.com/tjsasakifln/sentinel-rfp/issues/85) |
-| Observability          | Sentry, APM, Distributed Tracing   | [#86](https://github.com/tjsasakifln/sentinel-rfp/issues/86) |
-| Developer Experience   | Docs, Storybook, Scripts           | [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87) |
+| Epic                   | Description                        | Link                                                         | Sub-Issues |
+| ---------------------- | ---------------------------------- | ------------------------------------------------------------ | ---------- |
+| Developer Experience   | Docs, Storybook, Scripts           | [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87) | #121-#126 (6) |
+| Testing Infrastructure | Unit, Integration, E2E, Load Tests | [#85](https://github.com/tjsasakifln/sentinel-rfp/issues/85) | Planejado (5) |
+| Observability          | Sentry, APM, Distributed Tracing   | [#86](https://github.com/tjsasakifln/sentinel-rfp/issues/86) | Planejado (5) |
 
 ---
 
 ## GitHub Project Status
 
-**Total Issues Created:** 87
+**Total Issues Created:** 123
 
+- **Open:** 114 (93%)
+- **Closed:** 9 (7%)
 - **Epics:** 36
-- **Features:** 51 (Phase 1 fully detailed)
+- **Features:** 87
 - **Milestones:** 13
 - **Labels:** 38
+- **Overall Progress:** 9/123 issues closed (7%)
 
 **Browse all issues:** [GitHub Issues](https://github.com/tjsasakifln/sentinel-rfp/issues)
 
