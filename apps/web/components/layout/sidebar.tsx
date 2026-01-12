@@ -10,10 +10,12 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useUIStore } from '@/stores/ui-store';
+import { useEffect } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useEffect } from 'react';
+import { useUIStore } from '@/stores/ui-store';
+
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },

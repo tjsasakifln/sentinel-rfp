@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-import { QueryProvider } from '@/providers/query-provider';
 import { Layout } from '@/components/layout/layout';
+import { QueryProvider } from '@/providers/query-provider';
 
 import './globals.css';
 

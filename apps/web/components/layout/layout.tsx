@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
+
+import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/ui-store';
+
 import { Header } from './header';
 import { Sidebar } from './sidebar';
-import { cn } from '@/lib/utils';
 
 interface LayoutProps {
   children: React.ReactNode;

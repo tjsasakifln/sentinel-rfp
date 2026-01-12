@@ -2,8 +2,9 @@
 
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
-import { useUIStore } from '@/stores/ui-store';
+
 import { Button } from '@/components/ui/button';
+import { useUIStore } from '@/stores/ui-store';
 
 export function Header() {
   const { toggleSidebar, isMobile } = useUIStore();
