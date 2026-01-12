@@ -74,7 +74,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 
 - [ ] Prisma schema design - [#19](https://github.com/tjsasakifln/sentinel-rfp/issues/19)
   - [x] [#102](https://github.com/tjsasakifln/sentinel-rfp/issues/102) - Criar packages/database structure
-  - [ ] [#103](https://github.com/tjsasakifln/sentinel-rfp/issues/103) - Definir modelos de Identity (Organization, User)
+  - [x] [#103](https://github.com/tjsasakifln/sentinel-rfp/issues/103) - Definir modelos de Identity (Organization, User)
   - [ ] [#104](https://github.com/tjsasakifln/sentinel-rfp/issues/104) - Definir modelos de Proposal (Proposal, Section, Question, Response)
   - [ ] [#105](https://github.com/tjsasakifln/sentinel-rfp/issues/105) - Definir modelos de Knowledge (Document, Chunk, LibraryEntry)
   - [ ] [#106](https://github.com/tjsasakifln/sentinel-rfp/issues/106) - Configurar pgvector extension e indexes
