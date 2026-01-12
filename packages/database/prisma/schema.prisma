@@ -1,0 +1,36 @@
+// Sentinel RFP - Prisma Schema
+// This is the main database schema for the Sentinel RFP application
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres", "postgresqlExtensions"]
+  binaryTargets   = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+// ==========================================
+// PLACEHOLDER MODELS
+// ==========================================
+// These models will be replaced by actual schema definitions
+// in subsequent issues (#103, #104, #105, #106)
+
+// Identity models (Organization, User) - Issue #103
+// Proposal models (Proposal, Section, Question, Response) - Issue #104
+// Knowledge models (Document, Chunk, LibraryEntry) - Issue #105
+// Indexes and pgvector configuration - Issue #106
+
+// Temporary placeholder to make schema valid
+model SystemConfig {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_config")
+}
