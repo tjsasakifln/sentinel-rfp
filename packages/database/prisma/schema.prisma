@@ -39,8 +39,10 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   // Relations
-  users     User[]
-  proposals Proposal[]
+  users          User[]
+  proposals      Proposal[]
+  documents      Document[]
+  libraryEntries LibraryEntry[]
 
   @@map("organizations")
 }
@@ -206,9 +208,76 @@ model Response {
 }
 
 // ==========================================
+// KNOWLEDGE DOMAIN - Issue #105
+// ==========================================
+
+/// Document model - Uploaded files for knowledge base
+/// Represents source documents (PDFs, DOCX) stored in R2/S3
+model Document {
+  id             String       @id @default(uuid()) @db.Uuid
+  filename       String       @db.VarChar(500)
+  mimeType       String       @db.VarChar(100)
+  sizeBytes      Int
+  storageKey     String       @db.VarChar(1000) // R2/S3 object key
+  organizationId String       @db.Uuid
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Relations
+  chunks DocumentChunk[]
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@map("documents")
+}
+
+/// DocumentChunk model - Chunked text segments from documents
+/// Includes vector embeddings for semantic search
+model DocumentChunk {
+  id         String                       @id @default(uuid()) @db.Uuid
+  content    String                       @db.Text
+  embedding  Unsupported("vector(1536)")? // OpenAI ada-002 embeddings
+  metadata   Json? // Arbitrary chunk metadata (page number, etc.)
+  documentId String                       @db.Uuid
+  document   Document                     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([documentId])
+  @@map("document_chunks")
+}
+
+/// LibraryEntry model - Reusable content snippets
+/// Manually curated or auto-learned responses with expiration support
+model LibraryEntry {
+  id             String                       @id @default(uuid()) @db.Uuid
+  title          String                       @db.VarChar(500)
+  content        String                       @db.Text
+  category       String?                      @db.VarChar(100)
+  tags           String[] // Array of searchable tags
+  embedding      Unsupported("vector(1536)")? // OpenAI ada-002 embeddings
+  organizationId String                       @db.Uuid
+  organization   Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Content lifecycle
+  expiresAt DateTime? // Optional expiration date for time-sensitive content
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([category])
+  @@map("library_entries")
+}
+
+// ==========================================
 // PLACEHOLDER MODELS (TO BE REPLACED)
 // ==========================================
-// Knowledge models (Document, Chunk, LibraryEntry) - Issue #105
 // Indexes and pgvector configuration - Issue #106
 
 // Temporary placeholder to make schema valid
