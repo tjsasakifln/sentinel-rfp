@@ -39,7 +39,8 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   // Relations
-  users User[]
+  users     User[]
+  proposals Proposal[]
 
   @@map("organizations")
 }
@@ -112,9 +113,101 @@ enum UserStatus {
 }
 
 // ==========================================
+// PROPOSAL DOMAIN - Issue #104
+// ==========================================
+
+/// Proposal model - Represents an RFP/RFQ response proposal
+/// Organized hierarchically: Proposal → Section → Question → Response
+model Proposal {
+  id        String  @id @default(uuid()) @db.Uuid
+  title     String  @db.VarChar(500)
+  rfpNumber String? @db.VarChar(100)
+  status    String  @default("draft") @db.VarChar(50)
+
+  // Multi-tenancy
+  organizationId String       @db.Uuid
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Relations
+  sections ProposalSection[]
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([status])
+  @@map("proposals")
+}
+
+/// ProposalSection model - Logical sections within a proposal
+/// Maps to RFP document structure (e.g., "Technical Approach", "Past Performance")
+model ProposalSection {
+  id    String @id @default(uuid()) @db.Uuid
+  title String @db.VarChar(500)
+  order Int // Determines display order within proposal
+
+  // Hierarchy
+  proposalId String   @db.Uuid
+  proposal   Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  // Relations
+  questions Question[]
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([proposalId])
+  @@map("proposal_sections")
+}
+
+/// Question model - Individual RFP questions/requirements
+/// Extracted from RFP documents via VLM processing
+model Question {
+  id    String @id @default(uuid()) @db.Uuid
+  text  String @db.Text
+  order Int // Determines display order within section
+
+  // Hierarchy
+  sectionId String          @db.Uuid
+  section   ProposalSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  // Relations
+  responses Response[]
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sectionId])
+  @@map("questions")
+}
+
+/// Response model - AI-generated or human-written answers to questions
+/// Includes trust scoring and versioning support
+model Response {
+  id         String @id @default(uuid()) @db.Uuid
+  content    String @db.Text
+  trustScore Float? // AI trust score (0.0 - 1.0)
+  status     String @default("draft") @db.VarChar(50)
+
+  // Hierarchy
+  questionId String   @db.Uuid
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([questionId])
+  @@index([status])
+  @@map("responses")
+}
+
+// ==========================================
 // PLACEHOLDER MODELS (TO BE REPLACED)
 // ==========================================
-// Proposal models (Proposal, Section, Question, Response) - Issue #104
 // Knowledge models (Document, Chunk, LibraryEntry) - Issue #105
 // Indexes and pgvector configuration - Issue #106
 
