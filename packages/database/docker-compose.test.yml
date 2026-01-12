@@ -1,0 +1,25 @@
+# Docker Compose para testes locais do database package
+# Issue #106 - Validar migration pgvector
+
+version: '3.9'
+
+services:
+  postgres:
+    image: ankane/pgvector:v0.5.1
+    container_name: sentinel-db-test
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinel_dev_pass
+      POSTGRES_DB: sentinel_rfp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinel -d sentinel_rfp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
