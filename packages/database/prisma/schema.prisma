@@ -14,12 +14,106 @@ datasource db {
 }
 
 // ==========================================
-// PLACEHOLDER MODELS
+// IDENTITY DOMAIN - Issue #103
 // ==========================================
-// These models will be replaced by actual schema definitions
-// in subsequent issues (#103, #104, #105, #106)
 
-// Identity models (Organization, User) - Issue #103
+/// Organization model - Multi-tenant root entity
+/// Implements row-level isolation for all tenant data
+model Organization {
+  id     String    @id @default(uuid()) @db.Uuid
+  name   String    @db.VarChar(200)
+  slug   String    @unique @db.VarChar(100)
+  plan   Plan      @default(PROFESSIONAL)
+  status OrgStatus @default(ACTIVE)
+
+  // Limits
+  maxUsersPerMonth    Int @default(50)
+  maxProposalsPerYear Int @default(100)
+  maxStorageGb        Int @default(50)
+
+  // Settings
+  settings Json @default("{}")
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users User[]
+
+  @@map("organizations")
+}
+
+/// User model - Organization members with authentication
+/// Supports password-based auth, MFA, and SSO
+model User {
+  id             String     @id @default(uuid()) @db.Uuid
+  organizationId String     @db.Uuid
+  email          String     @db.VarChar(255)
+  passwordHash   String?    @db.VarChar(255)
+  name           String     @db.VarChar(200)
+  role           UserRole   @default(MEMBER)
+  status         UserStatus @default(ACTIVE)
+
+  // MFA
+  mfaEnabled Boolean @default(false)
+  mfaSecret  String? @db.VarChar(255)
+
+  // SSO
+  ssoProvider String? @db.VarChar(50)
+  ssoId       String? @db.VarChar(255)
+
+  // Profile
+  avatarUrl   String? @db.VarChar(500)
+  timezone    String  @default("UTC") @db.VarChar(50)
+  preferences Json    @default("{}")
+
+  // Metadata
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, email])
+  @@index([organizationId])
+  @@map("users")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Plan {
+  FREE
+  PROFESSIONAL
+  ENTERPRISE
+  GOVCON
+}
+
+enum OrgStatus {
+  ACTIVE
+  SUSPENDED
+  CHURNED
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+}
+
+// ==========================================
+// PLACEHOLDER MODELS (TO BE REPLACED)
+// ==========================================
 // Proposal models (Proposal, Section, Question, Response) - Issue #104
 // Knowledge models (Document, Chunk, LibraryEntry) - Issue #105
 // Indexes and pgvector configuration - Issue #106

@@ -44,20 +44,20 @@ pnpm db:seed
 
 ## Available Scripts
 
-| Script                | Description                                 |
-| --------------------- | ------------------------------------------- |
-| `pnpm build`          | Compile TypeScript to dist/                 |
-| `pnpm dev`            | Watch mode for development                  |
-| `pnpm typecheck`      | Type-check without emitting files           |
-| `pnpm db:generate`    | Generate Prisma Client from schema          |
-| `pnpm db:push`        | Push schema changes (no migrations)         |
-| `pnpm db:migrate:dev` | Create and apply migrations (development)   |
-| `pnpm db:migrate:deploy` | Apply migrations (production)            |
-| `pnpm db:studio`      | Open Prisma Studio (GUI for database)       |
-| `pnpm db:seed`        | Run seed script                             |
-| `pnpm db:reset`       | Reset database (drop all data and re-seed)  |
-| `pnpm prisma:format`  | Format schema.prisma file                   |
-| `pnpm prisma:validate`| Validate schema.prisma file                 |
+| Script                   | Description                                |
+| ------------------------ | ------------------------------------------ |
+| `pnpm build`             | Compile TypeScript to dist/                |
+| `pnpm dev`               | Watch mode for development                 |
+| `pnpm typecheck`         | Type-check without emitting files          |
+| `pnpm db:generate`       | Generate Prisma Client from schema         |
+| `pnpm db:push`           | Push schema changes (no migrations)        |
+| `pnpm db:migrate:dev`    | Create and apply migrations (development)  |
+| `pnpm db:migrate:deploy` | Apply migrations (production)              |
+| `pnpm db:studio`         | Open Prisma Studio (GUI for database)      |
+| `pnpm db:seed`           | Run seed script                            |
+| `pnpm db:reset`          | Reset database (drop all data and re-seed) |
+| `pnpm prisma:format`     | Format schema.prisma file                  |
+| `pnpm prisma:validate`   | Validate schema.prisma file                |
 
 ## Usage in Other Packages
 
@@ -162,10 +162,10 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 ## Environment Variables
 
-| Variable        | Description                     | Required |
-| --------------- | ------------------------------- | -------- |
-| `DATABASE_URL`  | PostgreSQL connection string    | Yes      |
-| `NODE_ENV`      | Environment (development/prod)  | No       |
+| Variable       | Description                    | Required |
+| -------------- | ------------------------------ | -------- |
+| `DATABASE_URL` | PostgreSQL connection string   | Yes      |
+| `NODE_ENV`     | Environment (development/prod) | No       |
 
 ## Troubleshooting
 
