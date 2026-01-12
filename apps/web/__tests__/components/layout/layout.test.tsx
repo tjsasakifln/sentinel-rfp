@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach, jest, afterEach } from '@jest/globals';
 import { render, screen, waitFor } from '@testing-library/react';
 import { Layout } from '@/components/layout/layout';
 import { useUIStore } from '@/stores/ui-store';
