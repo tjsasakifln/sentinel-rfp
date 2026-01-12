@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { Layout } from '@/components/layout/layout';
 import { QueryProvider } from '@/providers/query-provider';
 
 import './globals.css';
@@ -17,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <Layout>{children}</Layout>
+        </QueryProvider>
       </body>
     </html>
   );
