@@ -21,6 +21,7 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
 
 @Controller('v1/auth')
@@ -81,5 +82,40 @@ export class AuthController {
     dto: LoginDto,
   ): Promise<AuthResponseDto> {
     return this.authService.login(dto);
+  }
+
+  /**
+   * POST /v1/auth/refresh - Refresh access token
+   *
+   * Public endpoint (no authentication required).
+   * Exchanges refresh token for new access + refresh tokens.
+   *
+   * Rate Limiting: 10 requests per minute per IP
+   *
+   * Security - Refresh Token Rotation:
+   * - Each refresh generates a NEW refresh token
+   * - Old refresh token is blacklisted immediately
+   * - Reusing a blacklisted token results in 401 Unauthorized
+   * - Prevents replay attacks and token theft
+   *
+   * Implementation Note:
+   * - Currently uses in-memory blacklist (single instance)
+   * - TODO: Migrate to Redis for distributed blacklist (#120)
+   *
+   * @param dto - Refresh token
+   * @returns AuthResponseDto with new tokens and fresh user info
+   * @throws UnauthorizedException if token invalid, expired, or already used (401)
+   * @throws BadRequestException if validation fails (400)
+   * @throws ThrottlerException if rate limit exceeded (429)
+   */
+  @Public()
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 req/min
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    dto: RefreshDto,
+  ): Promise<AuthResponseDto> {
+    return this.authService.refresh(dto);
   }
 }
