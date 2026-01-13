@@ -7,6 +7,7 @@ import { CommonModule } from './common/common.module';
 import { configValidationSchema } from './config/config.schema';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './identity/auth/auth.module';
+import { ProposalModule } from './proposal/proposal.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { AuthModule } from './identity/auth/auth.module';
     CommonModule,
     HealthModule,
     AuthModule,
+    ProposalModule,
   ],
 })
 export class AppModule {}
