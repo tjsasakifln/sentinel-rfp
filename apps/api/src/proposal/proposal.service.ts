@@ -7,28 +7,39 @@
  * @module ProposalService
  */
 
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotImplementedException, Logger } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
 import { CreateProposalDto, UpdateProposalDto } from './dto';
 
+const prisma = new PrismaClient();
+
 @Injectable()
 export class ProposalService {
+  private readonly logger = new Logger(ProposalService.name);
+
   /**
    * Create a new proposal
    *
    * @param createProposalDto - Proposal data
    * @param organizationId - Organization ID from authenticated user
    * @returns Created proposal
-   * @throws NotImplementedException - To be implemented in #145
    */
-  async create(
-    _createProposalDto: CreateProposalDto,
-    _organizationId: string,
-  ): Promise<any> {
-    // Implementation in issue #145 (PROP-49b)
-    throw new NotImplementedException(
-      'Proposal creation not yet implemented. See issue #145',
-    );
+  async create(createProposalDto: CreateProposalDto, organizationId: string): Promise<any> {
+    this.logger.log(`Creating proposal for organization ${organizationId}`);
+
+    const proposal = await prisma.proposal.create({
+      data: {
+        title: createProposalDto.title,
+        rfpNumber: createProposalDto.rfpNumber,
+        status: createProposalDto.status || 'draft',
+        organizationId,
+      },
+    });
+
+    this.logger.log(`Proposal created successfully: ${proposal.id}`);
+
+    return proposal;
   }
 
   /**
@@ -40,9 +51,7 @@ export class ProposalService {
    */
   async findAll(_organizationId: string): Promise<any[]> {
     // Implementation in issue #146 (PROP-49c)
-    throw new NotImplementedException(
-      'Proposal listing not yet implemented. See issue #146',
-    );
+    throw new NotImplementedException('Proposal listing not yet implemented. See issue #146');
   }
 
   /**
@@ -56,9 +65,7 @@ export class ProposalService {
    */
   async findOne(_id: string, _organizationId: string): Promise<any> {
     // Implementation in issue #146 (PROP-49c)
-    throw new NotImplementedException(
-      'Proposal retrieval not yet implemented. See issue #146',
-    );
+    throw new NotImplementedException('Proposal retrieval not yet implemented. See issue #146');
   }
 
   /**
@@ -77,9 +84,7 @@ export class ProposalService {
     _organizationId: string,
   ): Promise<any> {
     // Implementation in issue #147 (PROP-49d)
-    throw new NotImplementedException(
-      'Proposal update not yet implemented. See issue #147',
-    );
+    throw new NotImplementedException('Proposal update not yet implemented. See issue #147');
   }
 
   /**
@@ -93,8 +98,6 @@ export class ProposalService {
    */
   async remove(_id: string, _organizationId: string): Promise<void> {
     // Implementation in issue #148 (PROP-49e)
-    throw new NotImplementedException(
-      'Proposal deletion not yet implemented. See issue #148',
-    );
+    throw new NotImplementedException('Proposal deletion not yet implemented. See issue #148');
   }
 }
