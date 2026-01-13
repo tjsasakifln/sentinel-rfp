@@ -25,6 +25,7 @@
     "@nestjs/config": "^3.1.1",
     "@nestjs/swagger": "^7.1.17",
     "@nestjs/throttler": "^5.1.1",
+    "@prisma/client": "^6.19.1",
     "helmet": "^7.1.0",
     "pino": "^8.17.2",
     "pino-http": "^8.6.1",

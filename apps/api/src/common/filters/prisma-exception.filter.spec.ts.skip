@@ -1,0 +1,282 @@
+import { HttpStatus, ArgumentsHost } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaExceptionFilter } from './prisma-exception.filter';
+import { ProblemDetails } from './problem-details.interface';
+
+describe('PrismaExceptionFilter', () => {
+  let filter: PrismaExceptionFilter;
+  let mockJson: jest.Mock;
+  let mockStatus: jest.Mock;
+  let mockGetResponse: jest.Mock;
+  let mockGetRequest: jest.Mock;
+  let mockHttpArgumentsHost: jest.Mock;
+  let mockArgumentsHost: ArgumentsHost;
+
+  beforeEach(() => {
+    filter = new PrismaExceptionFilter();
+
+    mockJson = jest.fn();
+    mockStatus = jest.fn().mockReturnValue({ json: mockJson });
+    mockGetResponse = jest.fn().mockReturnValue({
+      status: mockStatus,
+    });
+    mockGetRequest = jest.fn().mockReturnValue({
+      url: '/api/users',
+      method: 'POST',
+      headers: {
+        'x-request-id': 'prisma-test-123',
+      },
+    });
+    mockHttpArgumentsHost = jest.fn().mockReturnValue({
+      getResponse: mockGetResponse,
+      getRequest: mockGetRequest,
+    });
+
+    mockArgumentsHost = {
+      switchToHttp: mockHttpArgumentsHost,
+      getArgByIndex: jest.fn(),
+      getArgs: jest.fn(),
+      getType: jest.fn(),
+      switchToRpc: jest.fn(),
+      switchToWs: jest.fn(),
+    };
+  });
+
+  it('should be defined', () => {
+    expect(filter).toBeDefined();
+  });
+
+  describe('PrismaClientKnownRequestError', () => {
+    it('should handle P2002 unique constraint violation', () => {
+      const exception = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '5.0.0',
+          meta: { target: ['email'] },
+        },
+      );
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.CONFLICT);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/duplicate-record',
+          title: 'Unique Constraint Violation',
+          status: HttpStatus.CONFLICT,
+          detail: 'A record with this email already exists',
+          requestId: 'prisma-test-123',
+        } as Partial<ProblemDetails>),
+      );
+    });
+
+    it('should handle P2001 record not found', () => {
+      const exception = new Prisma.PrismaClientKnownRequestError('Record not found', {
+        code: 'P2001',
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/not-found',
+          title: 'Record Not Found',
+          status: HttpStatus.NOT_FOUND,
+          detail: 'The requested record does not exist',
+        }),
+      );
+    });
+
+    it('should handle P2025 record not found for update/delete', () => {
+      const exception = new Prisma.PrismaClientKnownRequestError('Record to update not found', {
+        code: 'P2025',
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/not-found',
+          title: 'Record Not Found',
+          detail: 'Could not find the record to update or delete',
+        }),
+      );
+    });
+
+    it('should handle P2003 foreign key constraint violation', () => {
+      const exception = new Prisma.PrismaClientKnownRequestError('Foreign key constraint failed', {
+        code: 'P2003',
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/invalid-reference',
+          title: 'Foreign Key Constraint Failed',
+          detail: 'The referenced record does not exist',
+        }),
+      );
+    });
+
+    it('should handle P2011 null constraint violation', () => {
+      const exception = new Prisma.PrismaClientKnownRequestError('Null constraint violation', {
+        code: 'P2011',
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/null-constraint',
+          title: 'Null Constraint Violation',
+          detail: 'A required field is missing',
+        }),
+      );
+    });
+
+    it('should handle P2000 value too long', () => {
+      const exception = new Prisma.PrismaClientKnownRequestError('Value too long', {
+        code: 'P2000',
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/value-too-long',
+          title: 'Value Too Long',
+          detail: 'The provided value is too long for the column',
+        }),
+      );
+    });
+
+    it('should handle unknown Prisma error codes', () => {
+      const exception = new Prisma.PrismaClientKnownRequestError('Unknown error', {
+        code: 'P9999',
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/database-error',
+          title: 'Database Error',
+          detail: 'Database error occurred (code: P9999)',
+        }),
+      );
+    });
+  });
+
+  describe('PrismaClientUnknownRequestError', () => {
+    it('should handle unknown database errors', () => {
+      const exception = new Prisma.PrismaClientUnknownRequestError('Unknown database error', {
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/database-error',
+          title: 'Database Error',
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          detail: 'An unknown database error occurred',
+        }),
+      );
+    });
+  });
+
+  describe('PrismaClientValidationError', () => {
+    it('should handle validation errors', () => {
+      const exception = new Prisma.PrismaClientValidationError('Validation error', {
+        clientVersion: '5.0.0',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/validation-error',
+          title: 'Validation Error',
+          status: HttpStatus.BAD_REQUEST,
+          detail: 'Invalid data provided to database query',
+        }),
+      );
+    });
+  });
+
+  describe('PrismaClientInitializationError', () => {
+    it('should handle database initialization errors', () => {
+      const exception = new Prisma.PrismaClientInitializationError('Cannot connect to database', {
+        clientVersion: '5.0.0',
+        errorCode: 'P1001',
+      });
+
+      filter.catch(exception, mockArgumentsHost);
+
+      expect(mockStatus).toHaveBeenCalledWith(HttpStatus.SERVICE_UNAVAILABLE);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'https://sentinel-rfp.com/errors/database-unavailable',
+          title: 'Database Unavailable',
+          status: HttpStatus.SERVICE_UNAVAILABLE,
+          detail: 'Database connection could not be established',
+        }),
+      );
+    });
+  });
+
+  it('should default to unknown requestId when header is missing', () => {
+    mockGetRequest = jest.fn().mockReturnValue({
+      url: '/api/users',
+      method: 'POST',
+      headers: {},
+    });
+    mockHttpArgumentsHost = jest.fn().mockReturnValue({
+      getResponse: mockGetResponse,
+      getRequest: mockGetRequest,
+    });
+    mockArgumentsHost.switchToHttp = mockHttpArgumentsHost;
+
+    const exception = new Prisma.PrismaClientKnownRequestError('Test error', {
+      code: 'P2001',
+      clientVersion: '5.0.0',
+    });
+
+    filter.catch(exception, mockArgumentsHost);
+
+    expect(mockJson).toHaveBeenCalledWith(
+      expect.objectContaining({
+        requestId: 'unknown',
+      }),
+    );
+  });
+
+  it('should include timestamp in ISO 8601 format', () => {
+    const exception = new Prisma.PrismaClientKnownRequestError('Test error', {
+      code: 'P2001',
+      clientVersion: '5.0.0',
+    });
+
+    filter.catch(exception, mockArgumentsHost);
+
+    const callArgs = mockJson.mock.calls[0][0] as ProblemDetails;
+    expect(callArgs.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+  });
+});

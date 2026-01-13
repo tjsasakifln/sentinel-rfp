@@ -5,6 +5,9 @@ import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -36,6 +39,13 @@ async function bootstrap() {
         enableImplicitConversion: true,
       },
     }),
+  );
+
+  // Global exception filters (order matters - most specific last)
+  app.useGlobalFilters(
+    new AllExceptionsFilter(), // Catch-all fallback
+    new PrismaExceptionFilter(), // Prisma-specific errors
+    new HttpExceptionFilter(), // HTTP exceptions
   );
 
   // Swagger/OpenAPI
