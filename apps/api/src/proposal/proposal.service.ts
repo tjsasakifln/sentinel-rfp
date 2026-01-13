@@ -7,28 +7,42 @@
  * @module ProposalService
  */
 
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotImplementedException, Logger } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
 import { CreateProposalDto, UpdateProposalDto } from './dto';
 
+const prisma = new PrismaClient();
+
 @Injectable()
 export class ProposalService {
+  private readonly logger = new Logger(ProposalService.name);
+
   /**
    * Create a new proposal
    *
    * @param createProposalDto - Proposal data
    * @param organizationId - Organization ID from authenticated user
    * @returns Created proposal
-   * @throws NotImplementedException - To be implemented in #145
    */
   async create(
-    _createProposalDto: CreateProposalDto,
-    _organizationId: string,
+    createProposalDto: CreateProposalDto,
+    organizationId: string,
   ): Promise<any> {
-    // Implementation in issue #145 (PROP-49b)
-    throw new NotImplementedException(
-      'Proposal creation not yet implemented. See issue #145',
-    );
+    this.logger.log(`Creating proposal for organization ${organizationId}`);
+
+    const proposal = await prisma.proposal.create({
+      data: {
+        title: createProposalDto.title,
+        rfpNumber: createProposalDto.rfpNumber,
+        status: createProposalDto.status || 'draft',
+        organizationId,
+      },
+    });
+
+    this.logger.log(`Proposal created successfully: ${proposal.id}`);
+
+    return proposal;
   }
 
   /**
