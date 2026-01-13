@@ -454,9 +454,7 @@ describe('Authentication (e2e)', () => {
 
       // Make 5 requests (should succeed or fail with 401, but not 429)
       for (let i = 0; i < 5; i++) {
-        await request(app.getHttpServer())
-          .post('/api/v1/auth/login')
-          .send(loginDto);
+        await request(app.getHttpServer()).post('/api/v1/auth/login').send(loginDto);
       }
 
       // 6th request should be rate limited
