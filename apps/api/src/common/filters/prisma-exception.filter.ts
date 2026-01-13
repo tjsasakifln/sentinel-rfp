@@ -5,8 +5,9 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
+import { Request, Response } from 'express';
+
 import { ProblemDetails } from './problem-details.interface';
 
 /**
@@ -158,7 +159,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
           type: `${baseUri}/not-found`,
         };
 
-      case 'P2002':
+      case 'P2002': {
         // Unique constraint violation
         const target = exception.meta?.target as string[] | undefined;
         const fields = target ? target.join(', ') : 'field';
@@ -168,6 +169,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
           detail: `A record with this ${fields} already exists`,
           type: `${baseUri}/duplicate-record`,
         };
+      }
 
       case 'P2003':
         return {
