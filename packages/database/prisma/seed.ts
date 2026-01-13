@@ -61,10 +61,10 @@ async function seedOrganizations() {
           timezone: 'America/New_York',
           notifications: {
             email: true,
-            slack: false
-          }
-        }
-      }
+            slack: false,
+          },
+        },
+      },
     }),
     prisma.organization.create({
       data: {
@@ -81,11 +81,11 @@ async function seedOrganizations() {
           notifications: {
             email: true,
             slack: true,
-            slackWebhook: 'https://hooks.slack.com/services/EXAMPLE'
-          }
-        }
-      }
-    })
+            slackWebhook: 'https://hooks.slack.com/services/EXAMPLE',
+          },
+        },
+      },
+    }),
   ]);
 
   console.log(`✅ Created ${orgs.length} organizations`);
@@ -102,7 +102,7 @@ async function seedUsers(organizations: any[]) {
     type: argon2.argon2id,
     memoryCost: 65536, // 64 MB
     timeCost: 3,
-    parallelism: 4
+    parallelism: 4,
   });
 
   const users = await prisma.$transaction([
@@ -118,9 +118,9 @@ async function seedUsers(organizations: any[]) {
         timezone: 'America/New_York',
         preferences: {
           language: 'en',
-          emailNotifications: true
-        }
-      }
+          emailNotifications: true,
+        },
+      },
     }),
     prisma.user.create({
       data: {
@@ -133,9 +133,9 @@ async function seedUsers(organizations: any[]) {
         timezone: 'America/New_York',
         preferences: {
           language: 'en',
-          emailNotifications: false
-        }
-      }
+          emailNotifications: false,
+        },
+      },
     }),
 
     // TechStart users
@@ -152,9 +152,9 @@ async function seedUsers(organizations: any[]) {
         preferences: {
           language: 'en',
           emailNotifications: true,
-          slackNotifications: true
-        }
-      }
+          slackNotifications: true,
+        },
+      },
     }),
     prisma.user.create({
       data: {
@@ -167,10 +167,10 @@ async function seedUsers(organizations: any[]) {
         timezone: 'America/Los_Angeles',
         preferences: {
           language: 'en',
-          emailNotifications: false
-        }
-      }
-    })
+          emailNotifications: false,
+        },
+      },
+    }),
   ]);
 
   console.log(`✅ Created ${users.length} users (password: password123)`);
@@ -204,25 +204,27 @@ async function seedProposals(organizations: any[]) {
                   order: 1,
                   responses: {
                     create: {
-                      content: 'Our proven cloud migration methodology follows a phased approach: Assessment → Planning → Migration → Optimization. We leverage automated tooling and experienced migration architects to ensure minimal downtime.',
+                      content:
+                        'Our proven cloud migration methodology follows a phased approach: Assessment → Planning → Migration → Optimization. We leverage automated tooling and experienced migration architects to ensure minimal downtime.',
                       trustScore: 0.87,
-                      status: 'approved'
-                    }
-                  }
+                      status: 'approved',
+                    },
+                  },
                 },
                 {
                   text: 'What security measures will you implement during and after migration?',
                   order: 2,
                   responses: {
                     create: {
-                      content: 'Security is paramount in our migration process. We implement end-to-end encryption, multi-factor authentication, continuous security monitoring, and compliance with FedRAMP standards.',
+                      content:
+                        'Security is paramount in our migration process. We implement end-to-end encryption, multi-factor authentication, continuous security monitoring, and compliance with FedRAMP standards.',
                       trustScore: 0.92,
-                      status: 'approved'
-                    }
-                  }
-                }
-              ]
-            }
+                      status: 'approved',
+                    },
+                  },
+                },
+              ],
+            },
           },
           {
             title: 'Past Performance',
@@ -234,18 +236,19 @@ async function seedProposals(organizations: any[]) {
                   order: 1,
                   responses: {
                     create: {
-                      content: 'We have successfully completed 15+ cloud migrations for government agencies, including: 1) Department of Energy (500+ servers), 2) Veterans Affairs (2PB data migration), 3) National Science Foundation (hybrid cloud).',
+                      content:
+                        'We have successfully completed 15+ cloud migrations for government agencies, including: 1) Department of Energy (500+ servers), 2) Veterans Affairs (2PB data migration), 3) National Science Foundation (hybrid cloud).',
                       trustScore: 0.95,
-                      status: 'approved'
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
+                      status: 'approved',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
   });
   proposals.push(proposal1);
 
@@ -268,29 +271,31 @@ async function seedProposals(organizations: any[]) {
                   order: 1,
                   responses: {
                     create: {
-                      content: 'TechStart Solutions is a veteran-owned small business with 12 years of IT consulting experience. Our core competencies include cloud architecture, cybersecurity, and agile software development.',
+                      content:
+                        'TechStart Solutions is a veteran-owned small business with 12 years of IT consulting experience. Our core competencies include cloud architecture, cybersecurity, and agile software development.',
                       trustScore: 0.78,
-                      status: 'draft'
-                    }
-                  }
+                      status: 'draft',
+                    },
+                  },
                 },
                 {
                   text: 'What is your NAICS code and business size standard?',
                   order: 2,
                   responses: {
                     create: {
-                      content: 'Primary NAICS: 541512 (Computer Systems Design Services). We are a certified small business under SBA size standards with average annual revenue of $8M.',
+                      content:
+                        'Primary NAICS: 541512 (Computer Systems Design Services). We are a certified small business under SBA size standards with average annual revenue of $8M.',
                       trustScore: 0.85,
-                      status: 'draft'
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
+                      status: 'draft',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
   });
   proposals.push(proposal2);
 
@@ -316,18 +321,20 @@ async function seedDocuments(organizations: any[]) {
         chunks: {
           create: [
             {
-              content: 'Acme Corp provides comprehensive cloud migration services with proven methodologies and certified architects.',
+              content:
+                'Acme Corp provides comprehensive cloud migration services with proven methodologies and certified architects.',
               embedding: `[${generateMockEmbedding().join(',')}]`,
-              metadata: { page: 1, section: 'Overview' }
+              metadata: { page: 1, section: 'Overview' },
             },
             {
-              content: 'Our security practices include FedRAMP compliance, NIST 800-53 controls, and continuous monitoring with SIEM integration.',
+              content:
+                'Our security practices include FedRAMP compliance, NIST 800-53 controls, and continuous monitoring with SIEM integration.',
               embedding: `[${generateMockEmbedding().join(',')}]`,
-              metadata: { page: 3, section: 'Security' }
-            }
-          ]
-        }
-      }
+              metadata: { page: 3, section: 'Security' },
+            },
+          ],
+        },
+      },
     }),
 
     prisma.document.create({
@@ -340,13 +347,14 @@ async function seedDocuments(organizations: any[]) {
         chunks: {
           create: [
             {
-              content: 'Department of Defense Cloud Migration - Successfully migrated 500+ servers to AWS GovCloud with zero downtime. Contract value: $12M.',
+              content:
+                'Department of Defense Cloud Migration - Successfully migrated 500+ servers to AWS GovCloud with zero downtime. Contract value: $12M.',
               embedding: `[${generateMockEmbedding().join(',')}]`,
-              metadata: { page: 1, project: 'DOD-CM-2024' }
-            }
-          ]
-        }
-      }
+              metadata: { page: 1, project: 'DOD-CM-2024' },
+            },
+          ],
+        },
+      },
     }),
 
     // TechStart documents
@@ -360,18 +368,20 @@ async function seedDocuments(organizations: any[]) {
         chunks: {
           create: [
             {
-              content: 'TechStart Solutions is a veteran-owned small business specializing in cloud architecture and cybersecurity for federal agencies.',
+              content:
+                'TechStart Solutions is a veteran-owned small business specializing in cloud architecture and cybersecurity for federal agencies.',
               embedding: `[${generateMockEmbedding().join(',')}]`,
-              metadata: { page: 1, section: 'About' }
+              metadata: { page: 1, section: 'About' },
             },
             {
-              content: 'Our certifications include AWS Advanced Consulting Partner, CMMC Level 2, and ISO 27001.',
+              content:
+                'Our certifications include AWS Advanced Consulting Partner, CMMC Level 2, and ISO 27001.',
               embedding: `[${generateMockEmbedding().join(',')}]`,
-              metadata: { page: 2, section: 'Certifications' }
-            }
-          ]
-        }
-      }
+              metadata: { page: 2, section: 'Certifications' },
+            },
+          ],
+        },
+      },
     }),
 
     prisma.document.create({
@@ -384,13 +394,14 @@ async function seedDocuments(organizations: any[]) {
         chunks: {
           create: [
             {
-              content: 'Labor Category: Cloud Architect - GSA Rate: $185/hr. Labor Category: Cybersecurity Analyst - GSA Rate: $165/hr.',
+              content:
+                'Labor Category: Cloud Architect - GSA Rate: $185/hr. Labor Category: Cybersecurity Analyst - GSA Rate: $165/hr.',
               embedding: `[${generateMockEmbedding().join(',')}]`,
-              metadata: { sheet: 'Labor Categories', row: 5 }
-            }
-          ]
-        }
-      }
+              metadata: { sheet: 'Labor Categories', row: 5 },
+            },
+          ],
+        },
+      },
     }),
 
     prisma.document.create({
@@ -403,17 +414,20 @@ async function seedDocuments(organizations: any[]) {
         chunks: {
           create: [
             {
-              content: 'TechStart Solutions is certified under the SBA 8(a) Business Development Program, valid through December 2027.',
+              content:
+                'TechStart Solutions is certified under the SBA 8(a) Business Development Program, valid through December 2027.',
               embedding: `[${generateMockEmbedding().join(',')}]`,
-              metadata: { page: 1, type: 'certification' }
-            }
-          ]
-        }
-      }
-    })
+              metadata: { page: 1, type: 'certification' },
+            },
+          ],
+        },
+      },
+    }),
   ]);
 
-  console.log(`✅ Created ${documents.length} documents with ${documents.reduce((sum, doc) => sum + (doc.chunks?.length || 0), 0)} chunks`);
+  console.log(
+    `✅ Created ${documents.length} documents with ${documents.reduce((sum, doc) => sum + (doc.chunks?.length || 0), 0)} chunks`,
+  );
   return documents;
 }
 
@@ -429,56 +443,61 @@ async function seedLibraryEntries(organizations: any[]) {
       data: {
         organizationId: organizations[0].id,
         title: 'Standard Cloud Migration Approach',
-        content: 'Our cloud migration methodology follows industry best practices: Discovery → Assessment → Planning → Migration → Optimization. We use automated tools for workload analysis and prioritization.',
+        content:
+          'Our cloud migration methodology follows industry best practices: Discovery → Assessment → Planning → Migration → Optimization. We use automated tools for workload analysis and prioritization.',
         category: 'Technical Approach',
         tags: ['cloud', 'migration', 'methodology'],
-        embedding: `[${generateMockEmbedding().join(',')}]`
-      }
+        embedding: `[${generateMockEmbedding().join(',')}]`,
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[0].id,
         title: 'FedRAMP Compliance Statement',
-        content: 'Our cloud solutions are FedRAMP authorized at the Moderate impact level. We maintain continuous monitoring and comply with all NIST 800-53 controls.',
+        content:
+          'Our cloud solutions are FedRAMP authorized at the Moderate impact level. We maintain continuous monitoring and comply with all NIST 800-53 controls.',
         category: 'Compliance',
         tags: ['fedramp', 'compliance', 'security'],
         embedding: `[${generateMockEmbedding().join(',')}]`,
-        expiresAt: new Date('2027-12-31')
-      }
+        expiresAt: new Date('2027-12-31'),
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[0].id,
         title: 'Past Performance Summary',
-        content: 'Acme Corp has 15+ years of federal IT experience with contracts totaling $150M. Notable clients include DOD, VA, DOE, and GSA.',
+        content:
+          'Acme Corp has 15+ years of federal IT experience with contracts totaling $150M. Notable clients include DOD, VA, DOE, and GSA.',
         category: 'Past Performance',
         tags: ['experience', 'federal', 'contracts'],
-        embedding: `[${generateMockEmbedding().join(',')}]`
-      }
+        embedding: `[${generateMockEmbedding().join(',')}]`,
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[0].id,
         title: 'Security Monitoring Capabilities',
-        content: 'We provide 24/7 security monitoring using SIEM tools (Splunk, Sentinel), threat intelligence feeds, and automated incident response playbooks.',
+        content:
+          'We provide 24/7 security monitoring using SIEM tools (Splunk, Sentinel), threat intelligence feeds, and automated incident response playbooks.',
         category: 'Security',
         tags: ['security', 'monitoring', 'siem'],
-        embedding: `[${generateMockEmbedding().join(',')}]`
-      }
+        embedding: `[${generateMockEmbedding().join(',')}]`,
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[0].id,
         title: 'Agile Development Process',
-        content: 'Our agile development follows Scrum framework with 2-week sprints, daily standups, and continuous integration/deployment pipelines.',
+        content:
+          'Our agile development follows Scrum framework with 2-week sprints, daily standups, and continuous integration/deployment pipelines.',
         category: 'Development',
         tags: ['agile', 'scrum', 'development'],
-        embedding: `[${generateMockEmbedding().join(',')}]`
-      }
+        embedding: `[${generateMockEmbedding().join(',')}]`,
+      },
     }),
 
     // TechStart library
@@ -486,59 +505,64 @@ async function seedLibraryEntries(organizations: any[]) {
       data: {
         organizationId: organizations[1].id,
         title: 'Veteran-Owned Small Business Status',
-        content: 'TechStart Solutions is a certified Service-Disabled Veteran-Owned Small Business (SDVOSB) and maintains 8(a) certification.',
+        content:
+          'TechStart Solutions is a certified Service-Disabled Veteran-Owned Small Business (SDVOSB) and maintains 8(a) certification.',
         category: 'Company Profile',
         tags: ['sdvosb', '8a', 'small-business'],
         embedding: `[${generateMockEmbedding().join(',')}]`,
-        expiresAt: new Date('2027-06-30')
-      }
+        expiresAt: new Date('2027-06-30'),
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[1].id,
         title: 'AWS Partnership',
-        content: 'TechStart is an AWS Advanced Consulting Partner with competencies in Migration, Security, and Government.',
+        content:
+          'TechStart is an AWS Advanced Consulting Partner with competencies in Migration, Security, and Government.',
         category: 'Certifications',
         tags: ['aws', 'partner', 'cloud'],
-        embedding: `[${generateMockEmbedding().join(',')}]`
-      }
+        embedding: `[${generateMockEmbedding().join(',')}]`,
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[1].id,
         title: 'CMMC Compliance',
-        content: 'TechStart maintains CMMC Level 2 certification and assists clients with DFARS 252.204-7012 compliance.',
+        content:
+          'TechStart maintains CMMC Level 2 certification and assists clients with DFARS 252.204-7012 compliance.',
         category: 'Compliance',
         tags: ['cmmc', 'dfars', 'cybersecurity'],
         embedding: `[${generateMockEmbedding().join(',')}]`,
-        expiresAt: new Date('2026-09-30')
-      }
+        expiresAt: new Date('2026-09-30'),
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[1].id,
         title: 'Labor Rates GSA Schedule 70',
-        content: 'Standard labor rates under GSA Schedule 70: Cloud Architect ($185/hr), Senior Developer ($155/hr), Security Analyst ($165/hr), Project Manager ($145/hr).',
+        content:
+          'Standard labor rates under GSA Schedule 70: Cloud Architect ($185/hr), Senior Developer ($155/hr), Security Analyst ($165/hr), Project Manager ($145/hr).',
         category: 'Pricing',
         tags: ['gsa', 'rates', 'labor'],
         embedding: `[${generateMockEmbedding().join(',')}]`,
-        expiresAt: new Date('2026-12-31')
-      }
+        expiresAt: new Date('2026-12-31'),
+      },
     }),
 
     prisma.libraryEntry.create({
       data: {
         organizationId: organizations[1].id,
         title: 'Key Personnel Qualifications',
-        content: 'Our key personnel average 15+ years of federal IT experience with active security clearances and relevant certifications (CISSP, CISM, AWS Solutions Architect).',
+        content:
+          'Our key personnel average 15+ years of federal IT experience with active security clearances and relevant certifications (CISSP, CISM, AWS Solutions Architect).',
         category: 'Personnel',
         tags: ['personnel', 'qualifications', 'clearances'],
-        embedding: `[${generateMockEmbedding().join(',')}]`
-      }
-    })
+        embedding: `[${generateMockEmbedding().join(',')}]`,
+      },
+    }),
   ]);
 
   console.log(`✅ Created ${entries.length} library entries`);
@@ -584,7 +608,6 @@ async function main() {
     console.log('   Acme Corp Member: member@acme.com / password123');
     console.log('   TechStart Owner: owner@techstart.com / password123');
     console.log('   TechStart Viewer: viewer@techstart.com / password123');
-
   } catch (error) {
     console.error('❌ Seed failed:', error);
     throw error;
