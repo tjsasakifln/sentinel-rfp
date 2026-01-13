@@ -77,7 +77,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#103](https://github.com/tjsasakifln/sentinel-rfp/issues/103) - Definir modelos de Identity (Organization, User)
   - [x] [#104](https://github.com/tjsasakifln/sentinel-rfp/issues/104) - Definir modelos de Proposal (Proposal, Section, Question, Response)
   - [x] [#105](https://github.com/tjsasakifln/sentinel-rfp/issues/105) - Definir modelos de Knowledge (Document, Chunk, LibraryEntry)
-  - [ ] [#106](https://github.com/tjsasakifln/sentinel-rfp/issues/106) - Configurar pgvector extension e indexes
+  - [x] [#106](https://github.com/tjsasakifln/sentinel-rfp/issues/106) - Configurar pgvector extension e indexes
   - [ ] [#107](https://github.com/tjsasakifln/sentinel-rfp/issues/107) - Criar seed script com dados de teste
   - [ ] [#108](https://github.com/tjsasakifln/sentinel-rfp/issues/108) - Criar migration inicial e validar schema completo
 - [ ] PostgreSQL + pgvector setup - [#20](https://github.com/tjsasakifln/sentinel-rfp/issues/20)
