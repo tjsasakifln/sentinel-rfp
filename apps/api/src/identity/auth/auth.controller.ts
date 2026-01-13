@@ -18,9 +18,9 @@ import {
 import { Throttle } from '@nestjs/throttler';
 
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { AuthResponseDto } from './dto/auth-response.dto';
 import { Public } from './decorators/public.decorator';
+import { AuthResponseDto } from './dto/auth-response.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('v1/auth')
 export class AuthController {

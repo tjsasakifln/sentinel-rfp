@@ -15,15 +15,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole } from '@prisma/client';
-import { PrismaClient } from '@prisma/client';
+import { UserRole , PrismaClient } from '@prisma/client';
+
 
 const prisma = new PrismaClient();
 
-import { RegisterDto } from './dto/register.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
-import { hashPassword } from './utils/password.util';
+import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
+import { hashPassword } from './utils/password.util';
 
 @Injectable()
 export class AuthService {

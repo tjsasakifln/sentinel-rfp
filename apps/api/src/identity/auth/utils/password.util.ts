@@ -68,7 +68,12 @@ export async function verifyPassword(
   } catch (error) {
     // If verification fails due to invalid hash format, return false
     // This prevents information leakage about hash validity
-    if (error instanceof Error && error.message?.includes('Invalid hash')) {
+    if (
+      error instanceof Error &&
+      (error.message?.includes('Invalid hash') ||
+        error.message?.includes('pchstr') ||
+        error.message?.includes('must contain'))
+    ) {
       return false;
     }
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
