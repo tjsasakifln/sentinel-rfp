@@ -27,7 +27,7 @@ Issues grandes (size:L) e Epics amplos foram decompostos em sub-issues atômicas
 | #19 | Prisma Schema Design | #102-#108 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/19) |
 | #21 | User Authentication (JWT) | #109-#115 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/21) |
 | #52 | Basic Dashboard | #128-#130 (3 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/52) |
-| #61 | Error Handling & Logging | #117-#119 (3 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/61) |
+| #61 | Error Handling & Logging | #116-#120 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/61) |
 | #87 | Developer Experience | #122-#125 (4 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/87) |
 
 **Convenção de Nomenclatura:** Sub-issues seguem padrão `[PREFIX-NUMletter]`
@@ -190,9 +190,11 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 
 - [ ] Performance optimization - [#64 (Phase 2)](https://github.com/tjsasakifln/sentinel-rfp/issues/64)
 - [ ] Error handling & logging - [#61](https://github.com/tjsasakifln/sentinel-rfp/issues/61)
+  - [x] [#116](https://github.com/tjsasakifln/sentinel-rfp/issues/116) - Global Exception Filters & RFC 7807 Error Response Format
   - [ ] [#117](https://github.com/tjsasakifln/sentinel-rfp/issues/117) - Structured Logging com Pino
   - [ ] [#118](https://github.com/tjsasakifln/sentinel-rfp/issues/118) - Request ID Tracking & Correlation
   - [ ] [#119](https://github.com/tjsasakifln/sentinel-rfp/issues/119) - Sentry Integration para Error Tracking
+  - [ ] [#120](https://github.com/tjsasakifln/sentinel-rfp/issues/120) - Error Alerting & Monitoring Rules
 - [ ] Observability - [#86](https://github.com/tjsasakifln/sentinel-rfp/issues/86)
 - [ ] User onboarding flow
 - [ ] Developer Experience - [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87)
