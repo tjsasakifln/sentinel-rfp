@@ -25,10 +25,7 @@ export class ProposalService {
    * @param organizationId - Organization ID from authenticated user
    * @returns Created proposal
    */
-  async create(
-    createProposalDto: CreateProposalDto,
-    organizationId: string,
-  ): Promise<any> {
+  async create(createProposalDto: CreateProposalDto, organizationId: string): Promise<any> {
     this.logger.log(`Creating proposal for organization ${organizationId}`);
 
     const proposal = await prisma.proposal.create({
@@ -54,9 +51,7 @@ export class ProposalService {
    */
   async findAll(_organizationId: string): Promise<any[]> {
     // Implementation in issue #146 (PROP-49c)
-    throw new NotImplementedException(
-      'Proposal listing not yet implemented. See issue #146',
-    );
+    throw new NotImplementedException('Proposal listing not yet implemented. See issue #146');
   }
 
   /**
@@ -70,9 +65,7 @@ export class ProposalService {
    */
   async findOne(_id: string, _organizationId: string): Promise<any> {
     // Implementation in issue #146 (PROP-49c)
-    throw new NotImplementedException(
-      'Proposal retrieval not yet implemented. See issue #146',
-    );
+    throw new NotImplementedException('Proposal retrieval not yet implemented. See issue #146');
   }
 
   /**
@@ -91,9 +84,7 @@ export class ProposalService {
     _organizationId: string,
   ): Promise<any> {
     // Implementation in issue #147 (PROP-49d)
-    throw new NotImplementedException(
-      'Proposal update not yet implemented. See issue #147',
-    );
+    throw new NotImplementedException('Proposal update not yet implemented. See issue #147');
   }
 
   /**
@@ -107,8 +98,6 @@ export class ProposalService {
    */
   async remove(_id: string, _organizationId: string): Promise<void> {
     // Implementation in issue #148 (PROP-49e)
-    throw new NotImplementedException(
-      'Proposal deletion not yet implemented. See issue #148',
-    );
+    throw new NotImplementedException('Proposal deletion not yet implemented. See issue #148');
   }
 }
