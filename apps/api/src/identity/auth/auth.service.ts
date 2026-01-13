@@ -22,6 +22,7 @@ const prisma = new PrismaClient();
 
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
 import { hashPassword, verifyPassword } from './utils/password.util';
@@ -30,7 +31,37 @@ import { hashPassword, verifyPassword } from './utils/password.util';
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  constructor(private readonly jwtService: JwtService) {}
+  /**
+   * In-memory blacklist for refresh tokens
+   * TODO: Replace with Redis in production (#120)
+   * Map<tokenId, expirationTimestamp>
+   */
+  private readonly tokenBlacklist = new Map<string, number>();
+
+  constructor(private readonly jwtService: JwtService) {
+    // Clean up expired tokens every hour
+    setInterval(() => this.cleanupBlacklist(), 60 * 60 * 1000);
+  }
+
+  /**
+   * Remove expired tokens from blacklist
+   * Called automatically every hour to prevent memory leaks
+   */
+  private cleanupBlacklist(): void {
+    const now = Date.now();
+    let removed = 0;
+
+    for (const [tokenId, expiration] of this.tokenBlacklist.entries()) {
+      if (expiration < now) {
+        this.tokenBlacklist.delete(tokenId);
+        removed++;
+      }
+    }
+
+    if (removed > 0) {
+      this.logger.log(`Cleaned up ${removed} expired tokens from blacklist`);
+    }
+  }
 
   /**
    * Register a new user
@@ -311,5 +342,136 @@ export class AuthService {
         organizationName: user.organization.name,
       },
     };
+  }
+
+  /**
+   * Refresh access token using refresh token
+   *
+   * Flow:
+   * 1. Verify refresh token signature and expiration
+   * 2. Check if token is blacklisted (already used)
+   * 3. Blacklist the old refresh token (rotation)
+   * 4. Fetch fresh user data from database
+   * 5. Generate new token pair
+   * 6. Return new tokens
+   *
+   * Security - Refresh Token Rotation:
+   * - Each refresh generates a NEW refresh token
+   * - Old refresh token is immediately blacklisted
+   * - If blacklisted token is reused → reject with 401
+   * - Prevents replay attacks and token theft
+   *
+   * TODO: Replace in-memory blacklist with Redis (#120)
+   *
+   * @param dto - Refresh token
+   * @returns AuthResponseDto with new tokens and user info
+   * @throws UnauthorizedException if token invalid, expired, or blacklisted
+   */
+  async refresh(dto: RefreshDto): Promise<AuthResponseDto> {
+    const { refreshToken } = dto;
+
+    try {
+      // Verify JWT signature and expiration
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(
+        refreshToken,
+      );
+
+      this.logger.log(
+        `Refresh token request for user: ${payload.email} (${payload.sub})`,
+      );
+
+      // Check if token is blacklisted (already used)
+      if (this.tokenBlacklist.has(refreshToken)) {
+        this.logger.warn(
+          `Attempted reuse of blacklisted refresh token by user ${payload.email}`,
+        );
+        throw new UnauthorizedException('Token already used');
+      }
+
+      // Blacklist the old refresh token (7 days = 604800000 ms)
+      const expirationTime = Date.now() + 7 * 24 * 60 * 60 * 1000;
+      this.tokenBlacklist.set(refreshToken, expirationTime);
+
+      this.logger.log(
+        `Blacklisted refresh token for user ${payload.email}. Blacklist size: ${this.tokenBlacklist.size}`,
+      );
+
+      // Fetch fresh user data from database
+      const user = await prisma.user.findUnique({
+        where: { id: payload.sub },
+        include: {
+          organization: {
+            select: { id: true, name: true, status: true },
+          },
+        },
+      });
+
+      // Validate user still exists
+      if (!user) {
+        this.logger.warn(
+          `Refresh failed: User ${payload.sub} no longer exists`,
+        );
+        throw new UnauthorizedException('User not found');
+      }
+
+      // Check user status
+      if (user.status !== 'ACTIVE') {
+        this.logger.warn(
+          `Refresh failed: User ${user.email} status is ${user.status}`,
+        );
+        throw new UnauthorizedException('Account is not active');
+      }
+
+      // Check organization status
+      if (user.organization.status !== 'ACTIVE') {
+        this.logger.warn(
+          `Refresh failed: Organization ${user.organization.name} status is ${user.organization.status}`,
+        );
+        throw new UnauthorizedException('Organization is not active');
+      }
+
+      // Generate NEW token pair (rotation)
+      const newPayload: JwtPayload = {
+        sub: user.id,
+        email: user.email,
+        organizationId: user.organizationId,
+        role: user.role,
+      };
+
+      const accessToken = this.jwtService.sign(newPayload);
+
+      // New refresh token with 7 days expiration
+      const newRefreshToken = this.jwtService.sign(newPayload, {
+        expiresIn: '7d',
+      });
+
+      this.logger.log(
+        `Refresh successful for user ${user.email}. New tokens generated.`,
+      );
+
+      // Return authentication response
+      return {
+        accessToken,
+        refreshToken: newRefreshToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          organizationId: user.organizationId,
+          organizationName: user.organization.name,
+        },
+      };
+    } catch (error) {
+      // Handle JWT verification errors
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.warn(`Refresh token verification failed: ${errorMessage}`);
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }
