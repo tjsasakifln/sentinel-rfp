@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Backend: JWT Authentication Module** (#109, PR #140)
+  - JWT-based authentication using RS256 asymmetric signing with RSA 4096-bit keys
+  - Argon2id password hashing with memory-hard algorithm (64MB, 3 iterations, 4 threads)
+  - Passport.js integration with JWT strategy for token validation
+  - Type-safe decorators: @CurrentUser for accessing authenticated user, @Public for public routes
+  - JwtAuthGuard for protecting API endpoints
+  - Comprehensive unit tests for password utilities with 100% coverage
+  - TSDoc documentation for all authentication modules
+  - Security utilities: hashPassword, verifyPassword, needsRehash functions
+  - Token configuration: 15-minute expiration, issuer/audience validation
+  - Script for generating RSA key pairs (scripts/generate-jwt-keys.sh)
+
 - **Frontend: Tailwind CSS Configuration** (#91)
   - Configured dark mode with class-based strategy for seamless theme switching
   - Added Sentinel brand color palette (sentinel-50 to sentinel-950) with HSL color system

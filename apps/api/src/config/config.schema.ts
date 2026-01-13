@@ -10,6 +10,7 @@ export const configValidationSchema = Joi.object({
     .default('info'),
   CORS_ORIGIN: Joi.string().default('*'),
   DATABASE_URL: Joi.string().optional(),
-  JWT_SECRET: Joi.string().optional(),
-  JWT_EXPIRES_IN: Joi.string().default('7d'),
+  // JWT RS256 Asymmetric Keys (base64-encoded PEM)
+  JWT_PRIVATE_KEY: Joi.string().required(),
+  JWT_PUBLIC_KEY: Joi.string().required(),
 });

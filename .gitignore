@@ -55,6 +55,7 @@ venv/
 *.key
 credentials.json
 secrets.json
+.keys/
 
 # Cache
 .cache/
