@@ -37,7 +37,8 @@ export async function hashPassword(password: string): Promise<string> {
       parallelism: 4,
     });
   } catch (error) {
-    throw new Error(`Failed to hash password: ${error.message}`);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to hash password: ${errorMessage}`);
   }
 }
 
@@ -67,10 +68,11 @@ export async function verifyPassword(
   } catch (error) {
     // If verification fails due to invalid hash format, return false
     // This prevents information leakage about hash validity
-    if (error.message?.includes('Invalid hash')) {
+    if (error instanceof Error && error.message?.includes('Invalid hash')) {
       return false;
     }
-    throw new Error(`Failed to verify password: ${error.message}`);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to verify password: ${errorMessage}`);
   }
 }
 

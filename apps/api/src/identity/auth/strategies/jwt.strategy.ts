@@ -48,7 +48,7 @@ export interface AuthenticatedUser {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private configService: ConfigService) {
+  constructor(configService: ConfigService) {
     const publicKey = configService.get<string>('JWT_PUBLIC_KEY');
 
     if (!publicKey) {
