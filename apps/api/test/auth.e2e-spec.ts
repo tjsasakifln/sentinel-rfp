@@ -466,4 +466,215 @@ describe('Authentication (e2e)', () => {
       expect(response.body).toHaveProperty('message');
     }, 10000); // Longer timeout for rate limiting test
   });
+
+  describe('/api/v1/auth/logout (POST)', () => {
+    let testUser: {
+      email: string;
+      password: string;
+      accessToken: string;
+      refreshToken: string;
+    };
+
+    beforeAll(async () => {
+      // Create test user for logout tests
+      const timestamp = Date.now();
+      const email = `test+logout${timestamp}@example.com`;
+      const password = 'LogoutPass123!';
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send({
+          email,
+          password,
+          firstName: 'Logout',
+          lastName: 'Test',
+          organizationName: `Logout Test Org ${timestamp}`,
+        });
+
+      testUser = {
+        email,
+        password,
+        accessToken: response.body.accessToken,
+        refreshToken: response.body.refreshToken,
+      };
+    });
+
+    it('should logout successfully with valid tokens', async () => {
+      const logoutDto = {
+        refreshToken: testUser.refreshToken,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${testUser.accessToken}`)
+        .send(logoutDto)
+        .expect(204);
+
+      // Should return no content
+      expect(response.body).toEqual({});
+    });
+
+    it('should reject access with blacklisted access token', async () => {
+      // Login to get new tokens
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      const accessToken = loginResponse.body.accessToken;
+      const refreshToken = loginResponse.body.refreshToken;
+
+      // Logout to blacklist tokens
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ refreshToken })
+        .expect(204);
+
+      // Try to use blacklisted access token (should fail)
+      // This would be tested on a protected endpoint
+      // For now, we test that logging out again fails
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ refreshToken })
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('invalidated');
+    });
+
+    it('should reject refresh with blacklisted refresh token', async () => {
+      // Login to get new tokens
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      const accessToken = loginResponse.body.accessToken;
+      const refreshToken = loginResponse.body.refreshToken;
+
+      // Logout to blacklist tokens
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ refreshToken })
+        .expect(204);
+
+      // Try to refresh with blacklisted refresh token (should fail)
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send({ refreshToken })
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('already used');
+    });
+
+    it('should reject logout without authorization header', async () => {
+      const logoutDto = {
+        refreshToken: testUser.refreshToken,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .send(logoutDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Authorization header');
+    });
+
+    it('should reject logout with invalid authorization header format', async () => {
+      const logoutDto = {
+        refreshToken: testUser.refreshToken,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', 'InvalidFormat')
+        .send(logoutDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Authorization header');
+    });
+
+    it('should reject logout with missing refresh token', async () => {
+      // Login to get fresh access token
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .send({}) // Missing refreshToken
+        .expect(400);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('refreshToken');
+    });
+
+    it('should reject logout with invalid refresh token format', async () => {
+      // Login to get fresh access token
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      const logoutDto = {
+        refreshToken: 'invalid-token-format',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .send(logoutDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Logout failed');
+    });
+
+    it('should handle rate limiting (10 req/min)', async () => {
+      // Login to get fresh tokens for rate limit test
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      const logoutDto = {
+        refreshToken: loginResponse.body.refreshToken,
+      };
+
+      // Make 10 requests (should succeed on first, then fail with 401 for blacklisted token)
+      for (let i = 0; i < 10; i++) {
+        await request(app.getHttpServer())
+          .post('/api/v1/auth/logout')
+          .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+          .send(logoutDto);
+      }
+
+      // 11th request should be rate limited
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .send(logoutDto)
+        .expect(429);
+
+      expect(response.body).toHaveProperty('message');
+    }, 10000); // Longer timeout for rate limiting test
+  });
 });

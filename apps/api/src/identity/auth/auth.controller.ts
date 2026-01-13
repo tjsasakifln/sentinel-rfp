@@ -10,9 +10,11 @@
 import {
   Body,
   Controller,
+  Headers,
   HttpCode,
   HttpStatus,
   Post,
+  UnauthorizedException,
   ValidationPipe,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
@@ -21,6 +23,7 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
 
@@ -117,5 +120,49 @@ export class AuthController {
     dto: RefreshDto,
   ): Promise<AuthResponseDto> {
     return this.authService.refresh(dto);
+  }
+
+  /**
+   * POST /v1/auth/logout - Logout user
+   *
+   * Protected endpoint (requires authentication).
+   * Invalidates both access and refresh tokens via blacklisting.
+   *
+   * Rate Limiting: 10 requests per minute per IP
+   *
+   * Security - Token Blacklisting:
+   * - Extracts access token from Authorization header
+   * - Extracts refresh token from request body
+   * - Both tokens are added to blacklist with appropriate TTL
+   * - Tokens remain blacklisted until their natural expiration
+   * - Prevents token reuse after logout
+   *
+   * Implementation Note:
+   * - Currently uses in-memory blacklist (single instance)
+   * - TODO: Migrate to Redis for distributed blacklist (#120)
+   *
+   * @param authorization - Authorization header with Bearer token
+   * @param dto - Logout data containing refresh token
+   * @returns 204 No Content
+   * @throws UnauthorizedException if tokens invalid (401)
+   * @throws BadRequestException if validation fails (400)
+   * @throws ThrottlerException if rate limit exceeded (429)
+   */
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 req/min
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(
+    @Headers('authorization') authorization: string,
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    dto: LogoutDto,
+  ): Promise<void> {
+    // Extract access token from Authorization header
+    if (!authorization || !authorization.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Authorization header missing or invalid');
+    }
+
+    const accessToken = authorization.substring(7); // Remove 'Bearer ' prefix
+
+    return this.authService.logout(accessToken, dto);
   }
 }

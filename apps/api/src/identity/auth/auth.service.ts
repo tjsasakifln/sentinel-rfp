@@ -22,46 +22,21 @@ const prisma = new PrismaClient();
 
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
+import { TokenBlacklistService } from './token-blacklist.service';
 import { hashPassword, verifyPassword } from './utils/password.util';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  /**
-   * In-memory blacklist for refresh tokens
-   * TODO: Replace with Redis in production (#120)
-   * Map<tokenId, expirationTimestamp>
-   */
-  private readonly tokenBlacklist = new Map<string, number>();
-
-  constructor(private readonly jwtService: JwtService) {
-    // Clean up expired tokens every hour
-    setInterval(() => this.cleanupBlacklist(), 60 * 60 * 1000);
-  }
-
-  /**
-   * Remove expired tokens from blacklist
-   * Called automatically every hour to prevent memory leaks
-   */
-  private cleanupBlacklist(): void {
-    const now = Date.now();
-    let removed = 0;
-
-    for (const [tokenId, expiration] of this.tokenBlacklist.entries()) {
-      if (expiration < now) {
-        this.tokenBlacklist.delete(tokenId);
-        removed++;
-      }
-    }
-
-    if (removed > 0) {
-      this.logger.log(`Cleaned up ${removed} expired tokens from blacklist`);
-    }
-  }
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly tokenBlacklist: TokenBlacklistService,
+  ) {}
 
   /**
    * Register a new user
@@ -381,7 +356,7 @@ export class AuthService {
       );
 
       // Check if token is blacklisted (already used)
-      if (this.tokenBlacklist.has(refreshToken)) {
+      if (this.tokenBlacklist.isBlacklisted(refreshToken)) {
         this.logger.warn(
           `Attempted reuse of blacklisted refresh token by user ${payload.email}`,
         );
@@ -390,10 +365,10 @@ export class AuthService {
 
       // Blacklist the old refresh token (7 days = 604800000 ms)
       const expirationTime = Date.now() + 7 * 24 * 60 * 60 * 1000;
-      this.tokenBlacklist.set(refreshToken, expirationTime);
+      this.tokenBlacklist.addToBlacklist(refreshToken, expirationTime);
 
       this.logger.log(
-        `Blacklisted refresh token for user ${payload.email}. Blacklist size: ${this.tokenBlacklist.size}`,
+        `Blacklisted refresh token for user ${payload.email}. Blacklist size: ${this.tokenBlacklist.getBlacklistSize()}`,
       );
 
       // Fetch fresh user data from database
@@ -472,6 +447,84 @@ export class AuthService {
         error instanceof Error ? error.message : 'Unknown error';
       this.logger.warn(`Refresh token verification failed: ${errorMessage}`);
       throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  /**
+   * Logout user by blacklisting both access and refresh tokens
+   *
+   * Flow:
+   * 1. Extract access token from Authorization header
+   * 2. Extract refresh token from request body
+   * 3. Decode both tokens to get expiration times
+   * 4. Blacklist both tokens with appropriate TTL
+   * 5. Return 204 No Content
+   *
+   * Security - Token Blacklisting:
+   * - Both access and refresh tokens are invalidated
+   * - Tokens are blacklisted until their natural expiration
+   * - TTL is calculated based on remaining time until expiration
+   * - Prevents token reuse after logout
+   * - JwtAuthGuard checks blacklist before allowing access
+   *
+   * Implementation Note:
+   * - Currently uses in-memory blacklist (single instance)
+   * - TODO: Migrate to Redis for distributed blacklist (#120)
+   *
+   * @param accessToken - Access token from Authorization header
+   * @param dto - Logout data containing refresh token
+   * @throws UnauthorizedException if tokens are invalid
+   */
+  async logout(accessToken: string, dto: LogoutDto): Promise<void> {
+    const { refreshToken } = dto;
+
+    try {
+      // Decode access token to get expiration
+      const accessPayload = this.jwtService.decode(accessToken) as JwtPayload & { exp: number };
+      if (!accessPayload || !accessPayload.exp) {
+        throw new UnauthorizedException('Invalid access token');
+      }
+
+      // Decode refresh token to get expiration
+      const refreshPayload = this.jwtService.decode(refreshToken) as JwtPayload & { exp: number };
+      if (!refreshPayload || !refreshPayload.exp) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+
+      this.logger.log(
+        `Logout request for user: ${accessPayload.email} (${accessPayload.sub})`,
+      );
+
+      const now = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+
+      // Blacklist access token (remaining TTL in milliseconds)
+      const accessTtl = accessPayload.exp - now;
+      if (accessTtl > 0) {
+        const accessExpirationTime = Date.now() + accessTtl * 1000;
+        this.tokenBlacklist.addToBlacklist(accessToken, accessExpirationTime);
+        this.logger.log(
+          `Blacklisted access token for user ${accessPayload.email}. TTL: ${accessTtl}s`,
+        );
+      }
+
+      // Blacklist refresh token (remaining TTL in milliseconds)
+      const refreshTtl = refreshPayload.exp - now;
+      if (refreshTtl > 0) {
+        const refreshExpirationTime = Date.now() + refreshTtl * 1000;
+        this.tokenBlacklist.addToBlacklist(refreshToken, refreshExpirationTime);
+        this.logger.log(
+          `Blacklisted refresh token for user ${accessPayload.email}. TTL: ${refreshTtl}s`,
+        );
+      }
+
+      this.logger.log(
+        `Logout successful for user ${accessPayload.email}. Blacklist size: ${this.tokenBlacklist.getBlacklistSize()}`,
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.warn(`Logout failed: ${errorMessage}`);
+      throw new UnauthorizedException('Logout failed');
     }
   }
 }
