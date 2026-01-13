@@ -21,9 +21,10 @@ import { UserRole , PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
-import { hashPassword } from './utils/password.util';
+import { hashPassword, verifyPassword } from './utils/password.util';
 
 @Injectable()
 export class AuthService {
@@ -210,6 +211,104 @@ export class AuthService {
         role: user.role,
         organizationId: user.organizationId,
         organizationName: orgName,
+      },
+    };
+  }
+
+  /**
+   * Login user with email and password
+   *
+   * Flow:
+   * 1. Find user by email (without organization filter)
+   * 2. Verify password with Argon2id
+   * 3. Check user and organization status
+   * 4. Generate JWT tokens
+   * 5. Return tokens and user data
+   *
+   * Security:
+   * - Generic error messages prevent user enumeration
+   * - Constant-time password verification prevents timing attacks
+   * - Rate limiting enforced at controller level
+   *
+   * @param dto - Login credentials
+   * @returns AuthResponseDto with tokens and user info
+   * @throws UnauthorizedException if credentials invalid or user/org inactive
+   */
+  async login(dto: LoginDto): Promise<AuthResponseDto> {
+    const { email, password } = dto;
+
+    this.logger.log(`Login attempt for email: ${email}`);
+
+    // Find user by email (includes organization data)
+    const user = await prisma.user.findFirst({
+      where: { email },
+      include: {
+        organization: {
+          select: { id: true, name: true, status: true },
+        },
+      },
+    });
+
+    // Generic error message to prevent user enumeration
+    if (!user || !user.passwordHash) {
+      this.logger.warn(`Login failed: User not found or no password for email ${email}`);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Verify password with constant-time comparison
+    const isPasswordValid = await verifyPassword(user.passwordHash, password);
+
+    if (!isPasswordValid) {
+      this.logger.warn(`Login failed: Invalid password for email ${email}`);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Check user status (ACTIVE, INVITED, SUSPENDED)
+    if (user.status !== 'ACTIVE') {
+      this.logger.warn(
+        `Login failed: User status is ${user.status} for email ${email}`,
+      );
+      throw new UnauthorizedException('Account is not active');
+    }
+
+    // Check organization status (ACTIVE, SUSPENDED, CHURNED)
+    if (user.organization.status !== 'ACTIVE') {
+      this.logger.warn(
+        `Login failed: Organization status is ${user.organization.status} for email ${email}`,
+      );
+      throw new UnauthorizedException('Organization is not active');
+    }
+
+    this.logger.log(
+      `User logged in successfully: ${user.email} (${user.id}) from organization ${user.organization.name}`,
+    );
+
+    // Generate JWT tokens
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      organizationId: user.organizationId,
+      role: user.role,
+    };
+
+    const accessToken = this.jwtService.sign(payload);
+
+    // Refresh token: 7 days expiration
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
+
+    // Return authentication response
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        organizationId: user.organizationId,
+        organizationName: user.organization.name,
       },
     };
   }

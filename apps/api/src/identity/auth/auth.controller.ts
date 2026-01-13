@@ -20,6 +20,7 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
 @Controller('v1/auth')
@@ -50,5 +51,35 @@ export class AuthController {
     dto: RegisterDto,
   ): Promise<AuthResponseDto> {
     return this.authService.register(dto);
+  }
+
+  /**
+   * POST /v1/auth/login - User login
+   *
+   * Public endpoint (no authentication required).
+   * Validates credentials and returns JWT tokens.
+   *
+   * Rate Limiting: 5 requests per minute per IP
+   *
+   * Security:
+   * - Generic error messages prevent user enumeration
+   * - Constant-time password verification prevents timing attacks
+   * - Rate limiting prevents brute force attacks
+   *
+   * @param dto - Login credentials
+   * @returns AuthResponseDto with tokens and user info
+   * @throws UnauthorizedException if credentials invalid (401)
+   * @throws BadRequestException if validation fails (400)
+   * @throws ThrottlerException if rate limit exceeded (429)
+   */
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 req/min (stricter than register)
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    dto: LoginDto,
+  ): Promise<AuthResponseDto> {
+    return this.authService.login(dto);
   }
 }

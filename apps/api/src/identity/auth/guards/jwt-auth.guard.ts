@@ -43,9 +43,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
    *
    * Skip authentication for routes marked with @Public()
    */
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     // Check if route is marked as public
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),

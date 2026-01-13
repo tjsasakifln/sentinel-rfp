@@ -252,4 +252,218 @@ describe('Authentication (e2e)', () => {
       expect(response.body.message).toContain('Organization name required');
     });
   });
+
+  describe('/api/v1/auth/login (POST)', () => {
+    let testUser: {
+      email: string;
+      password: string;
+      organizationId: string;
+    };
+
+    beforeAll(async () => {
+      // Create test user for login tests
+      const timestamp = Date.now();
+      const email = `test+login${timestamp}@example.com`;
+      const password = 'LoginPass123!';
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send({
+          email,
+          password,
+          firstName: 'Login',
+          lastName: 'Test',
+          organizationName: `Login Test Org ${timestamp}`,
+        });
+
+      testUser = {
+        email,
+        password,
+        organizationId: response.body.user.organizationId,
+      };
+    });
+
+    it('should login with valid credentials', async () => {
+      const loginDto = {
+        email: testUser.email,
+        password: testUser.password,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(200);
+
+      // Validate response structure
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('user');
+
+      // Validate user data
+      const { user } = response.body;
+      expect(user).toMatchObject({
+        email: testUser.email,
+        organizationId: testUser.organizationId,
+      });
+      expect(user).toHaveProperty('id');
+      expect(user).toHaveProperty('name');
+      expect(user).toHaveProperty('role');
+      expect(user).toHaveProperty('organizationName');
+
+      // Validate tokens are JWTs (basic format check)
+      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+    });
+
+    it('should reject login with invalid email', async () => {
+      const loginDto = {
+        email: 'nonexistent@example.com',
+        password: 'SomePassword123!',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toBe('Invalid credentials');
+    });
+
+    it('should reject login with invalid password', async () => {
+      const loginDto = {
+        email: testUser.email,
+        password: 'WrongPassword123!',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toBe('Invalid credentials');
+    });
+
+    it('should reject login with malformed email', async () => {
+      const loginDto = {
+        email: 'not-an-email',
+        password: 'Password123!',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(400);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('email');
+    });
+
+    it('should reject login with missing password', async () => {
+      const loginDto = {
+        email: testUser.email,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(400);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('password');
+    });
+
+    it('should reject login for inactive user', async () => {
+      // Create and immediately deactivate user
+      const timestamp = Date.now();
+      const email = `test+inactive${timestamp}@example.com`;
+      const password = 'InactivePass123!';
+
+      const registerResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send({
+          email,
+          password,
+          firstName: 'Inactive',
+          lastName: 'User',
+          organizationName: `Inactive Test Org ${timestamp}`,
+        });
+
+      const userId = registerResponse.body.user.id;
+
+      // Suspend user (deactivate)
+      await prisma.user.update({
+        where: { id: userId },
+        data: { status: 'SUSPENDED' },
+      });
+
+      // Try to login
+      const loginDto = { email, password };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toBe('Account is not active');
+    });
+
+    it('should reject login for user in inactive organization', async () => {
+      // Create user and immediately deactivate organization
+      const timestamp = Date.now();
+      const email = `test+inactiveorg${timestamp}@example.com`;
+      const password = 'InactiveOrgPass123!';
+
+      const registerResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send({
+          email,
+          password,
+          firstName: 'InactiveOrg',
+          lastName: 'User',
+          organizationName: `Inactive Org Test ${timestamp}`,
+        });
+
+      const orgId = registerResponse.body.user.organizationId;
+
+      // Suspend organization (deactivate)
+      await prisma.organization.update({
+        where: { id: orgId },
+        data: { status: 'SUSPENDED' },
+      });
+
+      // Try to login
+      const loginDto = { email, password };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toBe('Organization is not active');
+    });
+
+    it('should handle rate limiting (5 req/min)', async () => {
+      const loginDto = {
+        email: 'ratelimit@example.com',
+        password: 'Password123!',
+      };
+
+      // Make 5 requests (should succeed or fail with 401, but not 429)
+      for (let i = 0; i < 5; i++) {
+        await request(app.getHttpServer()).post('/api/v1/auth/login').send(loginDto);
+      }
+
+      // 6th request should be rate limited
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send(loginDto)
+        .expect(429);
+
+      expect(response.body).toHaveProperty('message');
+    }, 10000); // Longer timeout for rate limiting test
+  });
 });
