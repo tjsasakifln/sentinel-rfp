@@ -85,7 +85,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#109](https://github.com/tjsasakifln/sentinel-rfp/issues/109) - Setup JWT module e Argon2id password hashing
   - [x] [#110](https://github.com/tjsasakifln/sentinel-rfp/issues/110) - Implementar endpoint de registro (POST /v1/auth/register)
   - [x] [#111](https://github.com/tjsasakifln/sentinel-rfp/issues/111) - Implementar endpoint de login (POST /v1/auth/login)
-  - [ ] [#112](https://github.com/tjsasakifln/sentinel-rfp/issues/112) - Implementar refresh token flow com rotation
+  - [x] [#112](https://github.com/tjsasakifln/sentinel-rfp/issues/112) - Implementar refresh token flow com rotation
   - [ ] [#113](https://github.com/tjsasakifln/sentinel-rfp/issues/113) - Implementar logout com token blacklisting
   - [ ] [#114](https://github.com/tjsasakifln/sentinel-rfp/issues/114) - Adicionar rate limiting nos endpoints de autenticação
   - [ ] [#115](https://github.com/tjsasakifln/sentinel-rfp/issues/115) - Criar testes de integração E2E para autenticação
