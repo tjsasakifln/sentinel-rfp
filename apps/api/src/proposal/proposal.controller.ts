@@ -25,8 +25,9 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { JwtAuthGuard } from '../identity/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../identity/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../identity/auth/guards/jwt-auth.guard';
+
 import { CreateProposalDto, UpdateProposalDto } from './dto';
 import { ProposalService } from './proposal.service';
 
@@ -66,14 +67,8 @@ export class ProposalController {
     status: 401,
     description: 'Unauthorized - Invalid or missing JWT token',
   })
-  async create(
-    @Body() createProposalDto: CreateProposalDto,
-    @CurrentUser() user: JwtPayload,
-  ) {
-    return this.proposalService.create(
-      createProposalDto,
-      user.organizationId,
-    );
+  async create(@Body() createProposalDto: CreateProposalDto, @CurrentUser() user: JwtPayload) {
+    return this.proposalService.create(createProposalDto, user.organizationId);
   }
 
   /**
@@ -138,10 +133,7 @@ export class ProposalController {
     status: 401,
     description: 'Unauthorized - Invalid or missing JWT token',
   })
-  async findOne(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser() user: JwtPayload,
-  ) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: JwtPayload) {
     return this.proposalService.findOne(id, user.organizationId);
   }
 
@@ -173,11 +165,7 @@ export class ProposalController {
     @Body() updateProposalDto: UpdateProposalDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.proposalService.update(
-      id,
-      updateProposalDto,
-      user.organizationId,
-    );
+    return this.proposalService.update(id, updateProposalDto, user.organizationId);
   }
 
   /**
@@ -200,10 +188,7 @@ export class ProposalController {
     status: 401,
     description: 'Unauthorized - Invalid or missing JWT token',
   })
-  async remove(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser() user: JwtPayload,
-  ) {
+  async remove(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: JwtPayload) {
     return this.proposalService.remove(id, user.organizationId);
   }
 }

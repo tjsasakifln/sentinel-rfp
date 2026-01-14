@@ -59,8 +59,13 @@ export class ProposalService {
     organizationId: string,
     page: number = 1,
     limit: number = 20,
-  ): Promise<{ data: Proposal[]; meta: { total: number; page: number; limit: number; totalPages: number } }> {
-    this.logger.log(`Fetching proposals for organization ${organizationId}, page ${page}, limit ${limit}`);
+  ): Promise<{
+    data: Proposal[];
+    meta: { total: number; page: number; limit: number; totalPages: number };
+  }> {
+    this.logger.log(
+      `Fetching proposals for organization ${organizationId}, page ${page}, limit ${limit}`,
+    );
 
     // Calculate pagination
     const skip = (page - 1) * limit;
@@ -107,7 +112,10 @@ export class ProposalService {
    * @returns Proposal with sections
    * @throws NotFoundException - If proposal not found or not owned by organization
    */
-  async findOne(id: string, organizationId: string): Promise<Proposal & { sections: ProposalSection[] }> {
+  async findOne(
+    id: string,
+    organizationId: string,
+  ): Promise<Proposal & { sections: ProposalSection[] }> {
     this.logger.log(`Fetching proposal ${id} for organization ${organizationId}`);
 
     const proposal = await prisma.proposal.findUnique({
@@ -131,11 +139,15 @@ export class ProposalService {
 
     // Enforce tenant isolation
     if (proposal.organizationId !== organizationId) {
-      this.logger.warn(`Unauthorized access attempt: proposal ${id} does not belong to organization ${organizationId}`);
+      this.logger.warn(
+        `Unauthorized access attempt: proposal ${id} does not belong to organization ${organizationId}`,
+      );
       throw new NotFoundException(`Proposal with ID ${id} not found`);
     }
 
-    this.logger.log(`Proposal ${id} retrieved successfully with ${proposal.sections.length} sections`);
+    this.logger.log(
+      `Proposal ${id} retrieved successfully with ${proposal.sections.length} sections`,
+    );
 
     return proposal;
   }
@@ -167,7 +179,9 @@ export class ProposalService {
     }
 
     if (existingProposal.organizationId !== organizationId) {
-      this.logger.warn(`Unauthorized access attempt: proposal ${id} does not belong to organization ${organizationId}`);
+      this.logger.warn(
+        `Unauthorized access attempt: proposal ${id} does not belong to organization ${organizationId}`,
+      );
       throw new NotFoundException(`Proposal with ID ${id} not found`);
     }
 
@@ -211,7 +225,9 @@ export class ProposalService {
     }
 
     if (existingProposal.organizationId !== organizationId) {
-      this.logger.warn(`Unauthorized deletion attempt: proposal ${id} does not belong to organization ${organizationId}`);
+      this.logger.warn(
+        `Unauthorized deletion attempt: proposal ${id} does not belong to organization ${organizationId}`,
+      );
       throw new NotFoundException(`Proposal with ID ${id} not found`);
     }
 
@@ -236,7 +252,9 @@ export class ProposalService {
           },
         });
 
-        this.logger.log(`Soft deleted ${existingProposal.sections.length} sections for proposal ${id}`);
+        this.logger.log(
+          `Soft deleted ${existingProposal.sections.length} sections for proposal ${id}`,
+        );
       }
 
       // Soft delete proposal

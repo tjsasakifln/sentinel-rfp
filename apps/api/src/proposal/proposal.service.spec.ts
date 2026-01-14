@@ -43,9 +43,9 @@ describe('ProposalService', () => {
       };
       const organizationId = 'org-123';
 
-      await expect(
-        service.update(id, updateDto, organizationId),
-      ).rejects.toThrow(NotImplementedException);
+      await expect(service.update(id, updateDto, organizationId)).rejects.toThrow(
+        NotImplementedException,
+      );
     });
 
     it('should throw with correct error message', async () => {
@@ -55,9 +55,9 @@ describe('ProposalService', () => {
       };
       const organizationId = 'org-123';
 
-      await expect(
-        service.update(id, updateDto, organizationId),
-      ).rejects.toThrow('Proposal update not yet implemented. See issue #147');
+      await expect(service.update(id, updateDto, organizationId)).rejects.toThrow(
+        'Proposal update not yet implemented. See issue #147',
+      );
     });
   });
 
@@ -66,9 +66,7 @@ describe('ProposalService', () => {
       const id = 'proposal-123';
       const organizationId = 'org-123';
 
-      await expect(service.remove(id, organizationId)).rejects.toThrow(
-        NotImplementedException,
-      );
+      await expect(service.remove(id, organizationId)).rejects.toThrow(NotImplementedException);
     });
 
     it('should throw with correct error message', async () => {

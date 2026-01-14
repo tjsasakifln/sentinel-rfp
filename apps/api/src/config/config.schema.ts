@@ -5,9 +5,7 @@ export const configValidationSchema = Joi.object({
     .valid('development', 'production', 'test', 'staging')
     .default('development'),
   PORT: Joi.number().default(3001),
-  LOG_LEVEL: Joi.string()
-    .valid('fatal', 'error', 'warn', 'info', 'debug', 'trace')
-    .default('info'),
+  LOG_LEVEL: Joi.string().valid('fatal', 'error', 'warn', 'info', 'debug', 'trace').default('info'),
   CORS_ORIGIN: Joi.string().default('*'),
   DATABASE_URL: Joi.string().optional(),
   // JWT RS256 Asymmetric Keys (base64-encoded PEM)
@@ -22,9 +20,7 @@ export const configValidationSchema = Joi.object({
       otherwise: Joi.optional(),
     })
     .description('Anthropic API key for Claude models'),
-  OPENAI_API_KEY: Joi.string()
-    .optional()
-    .description('OpenAI API key for embeddings and fallback'),
+  OPENAI_API_KEY: Joi.string().optional().description('OpenAI API key for embeddings and fallback'),
 
   // LLM Router Configuration
   LLM_PRIMARY_PROVIDER: Joi.string()

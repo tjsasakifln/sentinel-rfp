@@ -15,8 +15,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole , PrismaClient } from '@prisma/client';
-
+import { UserRole, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -58,14 +57,7 @@ export class AuthService {
    * @throws NotFoundException if organizationId invalid
    */
   async register(dto: RegisterDto): Promise<AuthResponseDto> {
-    const {
-      email,
-      password,
-      firstName,
-      lastName,
-      organizationId,
-      organizationName,
-    } = dto;
+    const { email, password, firstName, lastName, organizationId, organizationName } = dto;
 
     this.logger.log(`Registration attempt for email: ${email}`);
 
@@ -87,12 +79,8 @@ export class AuthService {
       }
 
       if (existingOrg.status !== 'ACTIVE') {
-        this.logger.warn(
-          `Attempt to join inactive organization: ${organizationId}`,
-        );
-        throw new UnauthorizedException(
-          'Cannot join inactive organization',
-        );
+        this.logger.warn(`Attempt to join inactive organization: ${organizationId}`);
+        throw new UnauthorizedException('Cannot join inactive organization');
       }
 
       // Check if email already exists in this organization
@@ -106,21 +94,15 @@ export class AuthService {
       });
 
       if (existingUser) {
-        this.logger.warn(
-          `Email ${email} already exists in organization ${organizationId}`,
-        );
-        throw new ConflictException(
-          'Email already exists in this organization',
-        );
+        this.logger.warn(`Email ${email} already exists in organization ${organizationId}`);
+        throw new ConflictException('Email already exists in this organization');
       }
 
       targetOrganizationId = existingOrg.id;
       userRole = UserRole.MEMBER; // Default role when joining existing org
       orgName = existingOrg.name;
 
-      this.logger.log(
-        `User ${email} joining existing organization: ${orgName}`,
-      );
+      this.logger.log(`User ${email} joining existing organization: ${orgName}`);
     } else {
       // Create new organization
       if (!organizationName || organizationName.trim().length === 0) {
@@ -139,9 +121,7 @@ export class AuthService {
       // Ensure slug is unique
       let uniqueSlug = slug;
       let counter = 1;
-      while (
-        await prisma.organization.findUnique({ where: { slug: uniqueSlug } })
-      ) {
+      while (await prisma.organization.findUnique({ where: { slug: uniqueSlug } })) {
         uniqueSlug = `${slug}-${counter}`;
         counter++;
       }
@@ -160,9 +140,7 @@ export class AuthService {
       userRole = UserRole.OWNER; // First user becomes OWNER
       orgName = newOrg.name;
 
-      this.logger.log(
-        `Created new organization: ${orgName} (${targetOrganizationId})`,
-      );
+      this.logger.log(`Created new organization: ${orgName} (${targetOrganizationId})`);
     }
 
     // Hash password with Argon2id
@@ -189,9 +167,7 @@ export class AuthService {
       },
     });
 
-    this.logger.log(
-      `User created successfully: ${user.email} (${user.id}) as ${user.role}`,
-    );
+    this.logger.log(`User created successfully: ${user.email} (${user.id}) as ${user.role}`);
 
     // Generate JWT tokens
     const payload: JwtPayload = {
@@ -275,9 +251,7 @@ export class AuthService {
 
     // Check user status (ACTIVE, INVITED, SUSPENDED)
     if (user.status !== 'ACTIVE') {
-      this.logger.warn(
-        `Login failed: User status is ${user.status} for email ${email}`,
-      );
+      this.logger.warn(`Login failed: User status is ${user.status} for email ${email}`);
       throw new UnauthorizedException('Account is not active');
     }
 
@@ -354,19 +328,13 @@ export class AuthService {
 
     try {
       // Verify JWT signature and expiration
-      const payload = await this.jwtService.verifyAsync<JwtPayload>(
-        refreshToken,
-      );
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(refreshToken);
 
-      this.logger.log(
-        `Refresh token request for user: ${payload.email} (${payload.sub})`,
-      );
+      this.logger.log(`Refresh token request for user: ${payload.email} (${payload.sub})`);
 
       // Check if token is blacklisted (already used)
       if (this.tokenBlacklist.isBlacklisted(refreshToken)) {
-        this.logger.warn(
-          `Attempted reuse of blacklisted refresh token by user ${payload.email}`,
-        );
+        this.logger.warn(`Attempted reuse of blacklisted refresh token by user ${payload.email}`);
         throw new UnauthorizedException('Token already used');
       }
 
@@ -390,17 +358,13 @@ export class AuthService {
 
       // Validate user still exists
       if (!user) {
-        this.logger.warn(
-          `Refresh failed: User ${payload.sub} no longer exists`,
-        );
+        this.logger.warn(`Refresh failed: User ${payload.sub} no longer exists`);
         throw new UnauthorizedException('User not found');
       }
 
       // Check user status
       if (user.status !== 'ACTIVE') {
-        this.logger.warn(
-          `Refresh failed: User ${user.email} status is ${user.status}`,
-        );
+        this.logger.warn(`Refresh failed: User ${user.email} status is ${user.status}`);
         throw new UnauthorizedException('Account is not active');
       }
 
@@ -427,9 +391,7 @@ export class AuthService {
         expiresIn: '7d',
       });
 
-      this.logger.log(
-        `Refresh successful for user ${user.email}. New tokens generated.`,
-      );
+      this.logger.log(`Refresh successful for user ${user.email}. New tokens generated.`);
 
       // Return authentication response
       return {
@@ -450,8 +412,7 @@ export class AuthService {
         throw error;
       }
 
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       this.logger.warn(`Refresh token verification failed: ${errorMessage}`);
       throw new UnauthorizedException('Invalid refresh token');
     }
@@ -498,9 +459,7 @@ export class AuthService {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      this.logger.log(
-        `Logout request for user: ${accessPayload.email} (${accessPayload.sub})`,
-      );
+      this.logger.log(`Logout request for user: ${accessPayload.email} (${accessPayload.sub})`);
 
       const now = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
 
@@ -528,8 +487,7 @@ export class AuthService {
         `Logout successful for user ${accessPayload.email}. Blacklist size: ${this.tokenBlacklist.getBlacklistSize()}`,
       );
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       this.logger.warn(`Logout failed: ${errorMessage}`);
       throw new UnauthorizedException('Logout failed');
     }
