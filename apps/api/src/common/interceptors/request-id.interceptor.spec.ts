@@ -1,18 +1,25 @@
-import { RequestIdInterceptor } from './request-id.interceptor';
 import { ExecutionContext, CallHandler } from '@nestjs/common';
-import { of } from 'rxjs';
 import { Request, Response } from 'express';
+import { of } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+
+import { RequestIdInterceptor } from './request-id.interceptor';
 
 // Mock uuid module to avoid ESM compatibility issues with Jest
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'mocked-uuid-v4-string'),
 }));
 
+// Extend Request to override id property added by interceptor
+interface RequestWithId extends Omit<Request, 'id'> {
+  id: string;
+}
+
 describe('RequestIdInterceptor', () => {
   let interceptor: RequestIdInterceptor;
   let mockExecutionContext: ExecutionContext;
   let mockCallHandler: CallHandler;
-  let mockRequest: Partial<Request>;
+  let mockRequest: Partial<RequestWithId>;
   let mockResponse: Partial<Response>;
 
   beforeEach(() => {
@@ -31,7 +38,7 @@ describe('RequestIdInterceptor', () => {
         getRequest: () => mockRequest,
         getResponse: () => mockResponse,
       }),
-    } as any;
+    } as unknown as ExecutionContext;
 
     mockCallHandler = {
       handle: jest.fn().mockReturnValue(of({})),
@@ -42,8 +49,8 @@ describe('RequestIdInterceptor', () => {
     it('should generate UUID v4 when X-Request-ID header is not provided', () => {
       interceptor.intercept(mockExecutionContext, mockCallHandler);
 
-      expect((mockRequest as any).id).toBeDefined();
-      expect((mockRequest as any).id).toBe('mocked-uuid-v4-string');
+      expect(mockRequest.id).toBeDefined();
+      expect(mockRequest.id).toBe('mocked-uuid-v4-string');
     });
 
     it('should use client-provided X-Request-ID if present', () => {
@@ -52,7 +59,7 @@ describe('RequestIdInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler);
 
-      expect((mockRequest as any).id).toBe(clientRequestId);
+      expect(mockRequest.id).toBe(clientRequestId);
     });
 
     it('should set X-Request-ID response header', () => {
@@ -67,7 +74,7 @@ describe('RequestIdInterceptor', () => {
     it('should set response header to match request.id', () => {
       interceptor.intercept(mockExecutionContext, mockCallHandler);
 
-      const requestId = (mockRequest as any).id;
+      const requestId = mockRequest.id;
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         'X-Request-ID',
         requestId,
@@ -94,7 +101,7 @@ describe('RequestIdInterceptor', () => {
       mockRequest.headers = { 'x-request-id': clientRequestId };
 
       interceptor.intercept(mockExecutionContext, mockCallHandler);
-      const firstRequestId = (mockRequest as any).id;
+      const firstRequestId = mockRequest.id;
 
       // Reset mocks
       mockRequest = { headers: { 'x-request-id': clientRequestId } };
@@ -103,18 +110,16 @@ describe('RequestIdInterceptor', () => {
           getRequest: () => mockRequest,
           getResponse: () => mockResponse,
         }),
-      } as any;
+      } as unknown as ExecutionContext;
 
       interceptor.intercept(mockExecutionContext, mockCallHandler);
-      const secondRequestId = (mockRequest as any).id;
+      const secondRequestId = mockRequest.id;
 
       expect(firstRequestId).toBe(secondRequestId);
       expect(firstRequestId).toBe(clientRequestId);
     });
 
     it('should call uuid generator for requests without X-Request-ID', () => {
-      const { v4: uuidv4 } = require('uuid');
-
       interceptor.intercept(mockExecutionContext, mockCallHandler);
 
       expect(uuidv4).toHaveBeenCalled();

@@ -4,9 +4,17 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import { Request, Response } from 'express';
+
+/**
+ * Extend Express Request to override id property
+ * Express Request already has an id property, but we override it with string
+ */
+interface RequestWithId extends Omit<Request, 'id'> {
+  id: string;
+}
 
 /**
  * Request ID Interceptor
@@ -31,9 +39,9 @@ import { Request, Response } from 'express';
  */
 @Injectable()
 export class RequestIdInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const ctx = context.switchToHttp();
-    const request = ctx.getRequest<Request>();
+    const request = ctx.getRequest<RequestWithId>();
     const response = ctx.getResponse<Response>();
 
     // Use client-provided request ID if available (idempotency)
@@ -42,7 +50,7 @@ export class RequestIdInterceptor implements NestInterceptor {
       (request.headers['x-request-id'] as string) || uuidv4();
 
     // Attach request ID to request object for downstream access
-    (request as any).id = requestId;
+    request.id = requestId;
 
     // Set response header for client-side correlation
     response.setHeader('X-Request-ID', requestId);
