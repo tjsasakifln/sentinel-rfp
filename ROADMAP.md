@@ -88,7 +88,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#112](https://github.com/tjsasakifln/sentinel-rfp/issues/112) - Implementar refresh token flow com rotation
   - [x] [#113](https://github.com/tjsasakifln/sentinel-rfp/issues/113) - Implementar logout com token blacklisting
   - [x] [#114](https://github.com/tjsasakifln/sentinel-rfp/issues/114) - Adicionar rate limiting nos endpoints de autenticação
-  - [ ] [#115](https://github.com/tjsasakifln/sentinel-rfp/issues/115) - Criar testes de integração E2E para autenticação
+  - [x] [#115](https://github.com/tjsasakifln/sentinel-rfp/issues/115) - Criar testes de integração E2E para autenticação
 - [ ] Organization multi-tenancy - [#22](https://github.com/tjsasakifln/sentinel-rfp/issues/22)
 - [ ] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
 - [ ] Password reset flow - [#24](https://github.com/tjsasakifln/sentinel-rfp/issues/24)
