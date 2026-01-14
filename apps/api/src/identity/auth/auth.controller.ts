@@ -15,6 +15,7 @@ import {
   HttpStatus,
   Post,
   UnauthorizedException,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
@@ -26,6 +27,7 @@ import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
+import { LoginAttemptsGuard } from './guards/login-attempts.guard';
 
 @Controller('v1/auth')
 export class AuthController {
@@ -63,20 +65,25 @@ export class AuthController {
    * Public endpoint (no authentication required).
    * Validates credentials and returns JWT tokens.
    *
-   * Rate Limiting: 5 requests per minute per IP
+   * Rate Limiting:
+   * - 5 requests per minute per IP (Throttler)
+   * - Max 5 failed attempts per email in 15 min (LoginAttemptsGuard)
+   * - 15-minute lockout after exceeding email-based limit
    *
    * Security:
    * - Generic error messages prevent user enumeration
    * - Constant-time password verification prevents timing attacks
-   * - Rate limiting prevents brute force attacks
+   * - Dual-layer rate limiting prevents brute force attacks
    *
    * @param dto - Login credentials
    * @returns AuthResponseDto with tokens and user info
    * @throws UnauthorizedException if credentials invalid (401)
    * @throws BadRequestException if validation fails (400)
-   * @throws ThrottlerException if rate limit exceeded (429)
+   * @throws ThrottlerException if IP rate limit exceeded (429)
+   * @throws TooManyRequestsException if email-based limit exceeded (429)
    */
   @Public()
+  @UseGuards(LoginAttemptsGuard)
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 req/min (stricter than register)
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -93,7 +100,7 @@ export class AuthController {
    * Public endpoint (no authentication required).
    * Exchanges refresh token for new access + refresh tokens.
    *
-   * Rate Limiting: 10 requests per minute per IP
+   * Rate Limiting: 20 requests per minute per IP
    *
    * Security - Refresh Token Rotation:
    * - Each refresh generates a NEW refresh token
@@ -112,7 +119,7 @@ export class AuthController {
    * @throws ThrottlerException if rate limit exceeded (429)
    */
   @Public()
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 req/min
+  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 req/min
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(

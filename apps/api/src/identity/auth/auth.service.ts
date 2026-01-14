@@ -25,6 +25,7 @@ import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
+import { LoginAttemptsGuard } from './guards/login-attempts.guard';
 import { JwtPayload } from './strategies/jwt.strategy';
 import { TokenBlacklistService } from './token-blacklist.service';
 import { hashPassword, verifyPassword } from './utils/password.util';
@@ -36,6 +37,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly tokenBlacklist: TokenBlacklistService,
+    private readonly loginAttemptsGuard: LoginAttemptsGuard,
   ) {}
 
   /**
@@ -266,6 +268,8 @@ export class AuthService {
 
     if (!isPasswordValid) {
       this.logger.warn(`Login failed: Invalid password for email ${email}`);
+      // Record failed attempt for email-based rate limiting
+      this.loginAttemptsGuard.recordFailedAttempt(email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -288,6 +292,9 @@ export class AuthService {
     this.logger.log(
       `User logged in successfully: ${user.email} (${user.id}) from organization ${user.organization.name}`,
     );
+
+    // Reset failed login attempts after successful login
+    this.loginAttemptsGuard.resetAttempts(email);
 
     // Generate JWT tokens
     const payload: JwtPayload = {
