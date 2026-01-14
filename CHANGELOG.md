@@ -21,6 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Token configuration: 15-minute expiration, issuer/audience validation
   - Script for generating RSA key pairs (scripts/generate-jwt-keys.sh)
 
+- **Backend: E2E Tests for Refresh Token Authentication Flow** (#115, PR #154)
+  - Comprehensive E2E test suite for POST /api/v1/auth/refresh endpoint
+  - 8 test cases covering all refresh token scenarios: valid refresh, token rotation, expiration, malformed tokens, cross-user validation
+  - Security testing: token reuse detection, blacklisting after logout, rate limiting (10 req/min)
+  - Database cleanup strategy with dynamic timestamps for test isolation
+  - Complete authentication flow testing: register → login → refresh → logout
+  - Total of 37 E2E test cases across all authentication endpoints
+
 - **Frontend: Tailwind CSS Configuration** (#91)
   - Configured dark mode with class-based strategy for seamless theme switching
   - Added Sentinel brand color palette (sentinel-50 to sentinel-950) with HSL color system
