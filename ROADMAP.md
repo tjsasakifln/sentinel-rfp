@@ -175,7 +175,10 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 #### Milestone 4.1: Proposal Management ([EPIC #9](https://github.com/tjsasakifln/sentinel-rfp/issues/9))
 
 - [ ] Proposal CRUD - [#49](https://github.com/tjsasakifln/sentinel-rfp/issues/49)
+  - [x] [#145](https://github.com/tjsasakifln/sentinel-rfp/issues/145) - Implementar POST /v1/proposals (Create)
   - [x] [#146](https://github.com/tjsasakifln/sentinel-rfp/issues/146) - Implementar GET /v1/proposals (List) e GET /v1/proposals/:id (FindOne)
+  - [x] [#147](https://github.com/tjsasakifln/sentinel-rfp/issues/147) - Implementar PUT /v1/proposals/:id (Update)
+  - [ ] [#148](https://github.com/tjsasakifln/sentinel-rfp/issues/148) - Implementar DELETE /v1/proposals/:id (Remove)
 - [ ] Question status workflow - [#54](https://github.com/tjsasakifln/sentinel-rfp/issues/54)
 - [ ] Progress tracking - [#55](https://github.com/tjsasakifln/sentinel-rfp/issues/55)
 - [ ] Basic dashboard - [#52](https://github.com/tjsasakifln/sentinel-rfp/issues/52)
@@ -550,6 +553,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                           |
 | ------- | ---------- | --------------------------------------------------------------------------------- |
+| 1.7     | 2026-01-14 | Marked #147 complete after PR #155 merge (PUT /v1/proposals/:id update endpoint); Added CRUD sub-issues tracking (#145, #146, #147, #148) |
 | 1.6     | 2026-01-14 | Marked #48 70% complete - Setup inicial LLM abstraction layer (SDK, types, providers, docs) |
 | 1.5     | 2026-01-14 | Marked #146 complete after PR #153 merge (GET endpoints for proposals); Fixed wrong issue number in Milestone 4.1 (#53 → #49) |
 | 1.4     | 2026-01-14 | Marked #114 complete after PR #152 merge (rate limiting for auth endpoints) |
