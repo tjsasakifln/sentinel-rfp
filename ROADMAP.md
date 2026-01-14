@@ -165,7 +165,8 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 
 #### Milestone 4.1: Proposal Management ([EPIC #9](https://github.com/tjsasakifln/sentinel-rfp/issues/9))
 
-- [ ] Proposal CRUD - [#53](https://github.com/tjsasakifln/sentinel-rfp/issues/53)
+- [ ] Proposal CRUD - [#49](https://github.com/tjsasakifln/sentinel-rfp/issues/49)
+  - [x] [#146](https://github.com/tjsasakifln/sentinel-rfp/issues/146) - Implementar GET /v1/proposals (List) e GET /v1/proposals/:id (FindOne)
 - [ ] Question status workflow - [#54](https://github.com/tjsasakifln/sentinel-rfp/issues/54)
 - [ ] Progress tracking - [#55](https://github.com/tjsasakifln/sentinel-rfp/issues/55)
 - [ ] Basic dashboard - [#52](https://github.com/tjsasakifln/sentinel-rfp/issues/52)
@@ -540,6 +541,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                           |
 | ------- | ---------- | --------------------------------------------------------------------------------- |
+| 1.5     | 2026-01-14 | Marked #146 complete after PR #153 merge (GET endpoints for proposals); Fixed wrong issue number in Milestone 4.1 (#53 → #49) |
 | 1.4     | 2026-01-14 | Marked #114 complete after PR #152 merge (rate limiting for auth endpoints) |
 | 1.3     | 2026-01-12 | Comprehensive audit sync: Added 30 sub-issues, fixed issue number mappings, updated progress (123 total issues, 9 closed) |
 | 1.2     | 2026-01-12 | Decomposed 3 issues into 16 atomic sub-issues (#61→#116-120, #87→#121-126, #52→#127-131) |
