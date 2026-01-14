@@ -827,4 +827,184 @@ describe('Proposals (e2e)', () => {
       });
     });
   });
+
+  describe('/api/v1/proposals (GET) - Filters', () => {
+    beforeEach(async () => {
+      // Create test proposals with different statuses
+      await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Draft Proposal for Testing',
+          rfpNumber: 'DRAFT-001',
+          status: 'draft',
+        })
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'In Progress Proposal',
+          rfpNumber: 'PROGRESS-001',
+          status: 'in_progress',
+        })
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Completed Proposal',
+          rfpNumber: 'DONE-001',
+          status: 'completed',
+        })
+        .expect(201);
+    });
+
+    it('should filter proposals by status', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals')
+        .query({ status: 'draft' })
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body.data.every((p: any) => p.status === 'draft')).toBe(true);
+    });
+
+    it('should search proposals by title', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals')
+        .query({ search: 'Progress' })
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body.data.length).toBeGreaterThan(0);
+      expect(response.body.data.some((p: any) => p.title.includes('Progress'))).toBe(true);
+    });
+
+    it('should sort proposals by updatedAt desc', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals')
+        .query({ sortBy: 'updatedAt', sortOrder: 'desc' })
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body.data).toBeInstanceOf(Array);
+      const dates = response.body.data.map((p: any) => new Date(p.updatedAt).getTime());
+      const sortedDates = [...dates].sort((a, b) => b - a);
+      expect(dates).toEqual(sortedDates);
+    });
+
+    it('should paginate results', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals')
+        .query({ page: 1, limit: 2 })
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body).toHaveProperty('meta');
+      expect(response.body.meta.page).toBe(1);
+      expect(response.body.meta.limit).toBe(2);
+      expect(response.body.data.length).toBeLessThanOrEqual(2);
+    });
+  });
+
+  describe('/api/v1/dashboard/metrics (GET)', () => {
+    beforeEach(async () => {
+      // Create proposals with different statuses for metrics
+      await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Metrics Draft 1',
+          status: 'draft',
+        })
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Metrics In Progress 1',
+          status: 'in_progress',
+        })
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Metrics Completed 1',
+          status: 'completed',
+        })
+        .expect(201);
+    });
+
+    it('should return dashboard metrics', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/dashboard/metrics')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body).toHaveProperty('totalProposals');
+      expect(response.body).toHaveProperty('inProgress');
+      expect(response.body).toHaveProperty('completed');
+      expect(response.body).toHaveProperty('dueSoon');
+
+      expect(typeof response.body.totalProposals).toBe('number');
+      expect(typeof response.body.inProgress).toBe('number');
+      expect(typeof response.body.completed).toBe('number');
+      expect(typeof response.body.dueSoon).toBe('number');
+
+      // Verify metrics are calculated correctly
+      expect(response.body.totalProposals).toBeGreaterThanOrEqual(3);
+      expect(response.body.inProgress).toBeGreaterThanOrEqual(1);
+      expect(response.body.completed).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should fail with 401 when no auth token provided', async () => {
+      await request(app.getHttpServer()).get('/api/v1/dashboard/metrics').expect(401);
+    });
+
+    it('should enforce tenant isolation for metrics', async () => {
+      // Create second user in different org
+      const timestamp2 = Date.now();
+      const register2Dto = {
+        email: `test+metrics${timestamp2}@example.com`,
+        password: 'SecurePass123!',
+        firstName: 'Metrics',
+        lastName: 'Tester',
+        organizationName: `Test Metrics Org ${timestamp2}`,
+      };
+
+      const auth2Response = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send(register2Dto)
+        .expect(201);
+
+      const accessToken2 = auth2Response.body.accessToken;
+
+      // Get metrics for second org (should be 0 proposals)
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/dashboard/metrics')
+        .set('Authorization', `Bearer ${accessToken2}`)
+        .expect(200);
+
+      expect(response.body.totalProposals).toBe(0);
+      expect(response.body.inProgress).toBe(0);
+      expect(response.body.completed).toBe(0);
+
+      // Cleanup second org
+      await prisma.user.deleteMany({
+        where: { id: auth2Response.body.user.id },
+      });
+      await prisma.organization.deleteMany({
+        where: { id: auth2Response.body.user.organizationId },
+      });
+    });
+  });
 });

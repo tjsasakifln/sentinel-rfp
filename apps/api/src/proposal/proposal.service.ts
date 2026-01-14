@@ -15,7 +15,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaClient, Proposal, ProposalSection } from '@prisma/client';
 
-import { CreateProposalDto, UpdateProposalDto } from './dto';
+import { CreateProposalDto, QueryProposalDto, UpdateProposalDto } from './dto';
 
 const prisma = new PrismaClient();
 
@@ -48,24 +48,46 @@ export class ProposalService {
   }
 
   /**
-   * Find all proposals for an organization with pagination
+   * Find all proposals for an organization with pagination and filters
    *
    * @param organizationId - Organization ID from authenticated user
-   * @param page - Page number (default: 1)
-   * @param limit - Items per page (default: 20)
+   * @param query - Query parameters (filters, pagination, sorting)
    * @returns Paginated proposals with metadata
    */
   async findAll(
     organizationId: string,
-    page: number = 1,
-    limit: number = 20,
+    query: QueryProposalDto = {},
   ): Promise<{
     data: Proposal[];
     meta: { total: number; page: number; limit: number; totalPages: number };
   }> {
+    const page = query.page || 1;
+    const limit = query.limit || 20;
+    const sortBy = query.sortBy || 'updatedAt';
+    const sortOrder = query.sortOrder || 'desc';
+
     this.logger.log(
-      `Fetching proposals for organization ${organizationId}, page ${page}, limit ${limit}`,
+      `Fetching proposals for organization ${organizationId}, page ${page}, limit ${limit}, filters: ${JSON.stringify(query)}`,
     );
+
+    // Build where clause with filters
+    const where: any = {
+      organizationId,
+      deletedAt: null, // Only show active proposals
+    };
+
+    // Filter by status
+    if (query.status) {
+      where.status = query.status;
+    }
+
+    // Search by title (case-insensitive partial match)
+    if (query.search) {
+      where.title = {
+        contains: query.search,
+        mode: 'insensitive',
+      };
+    }
 
     // Calculate pagination
     const skip = (page - 1) * limit;
@@ -73,19 +95,15 @@ export class ProposalService {
     // Execute queries in parallel
     const [data, total] = await Promise.all([
       prisma.proposal.findMany({
-        where: {
-          organizationId,
-        },
+        where,
         orderBy: {
-          updatedAt: 'desc',
+          [sortBy]: sortOrder,
         },
         skip,
         take: limit,
       }),
       prisma.proposal.count({
-        where: {
-          organizationId,
-        },
+        where,
       }),
     ]);
 
