@@ -10,14 +10,17 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -76,20 +79,44 @@ export class ProposalController {
   /**
    * Get all proposals for the authenticated user's organization
    *
-   * GET /api/v1/proposals
+   * GET /api/v1/proposals?page=1&limit=20
    */
   @Get()
-  @ApiOperation({ summary: 'List all proposals' })
+  @ApiOperation({ summary: 'List all proposals with pagination' })
   @ApiResponse({
     status: 200,
     description: 'Proposals retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+          },
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            total: { type: 'number' },
+            page: { type: 'number' },
+            limit: { type: 'number' },
+            totalPages: { type: 'number' },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 401,
     description: 'Unauthorized - Invalid or missing JWT token',
   })
-  async findAll(@CurrentUser() user: JwtPayload) {
-    return this.proposalService.findAll(user.organizationId);
+  async findAll(
+    @CurrentUser() user: JwtPayload,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+  ) {
+    return this.proposalService.findAll(user.organizationId, page, limit);
   }
 
   /**

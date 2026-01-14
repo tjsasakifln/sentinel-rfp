@@ -2,7 +2,11 @@
  * Proposal Service Unit Tests
  *
  * Tests the ProposalService methods with mocked dependencies.
- * All methods currently throw NotImplementedException (stubs).
+ * Methods create, findAll, and findOne are implemented (issues #145, #146).
+ * Methods update and remove still throw NotImplementedException (issues #147, #148).
+ *
+ * NOTE: Comprehensive tests for findAll and findOne are in proposals.e2e-spec.ts
+ * Unit tests here would require mocking PrismaClient, which is out of scope for this issue.
  *
  * @module ProposalServiceSpec
  */
@@ -10,7 +14,7 @@
 import { NotImplementedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CreateProposalDto, UpdateProposalDto } from './dto';
+import { UpdateProposalDto } from './dto';
 import { ProposalService } from './proposal.service';
 
 describe('ProposalService', () => {
@@ -28,69 +32,8 @@ describe('ProposalService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should throw NotImplementedException', async () => {
-      const createDto: CreateProposalDto = {
-        title: 'Test Proposal',
-        rfpNumber: 'RFP-001',
-        status: 'draft',
-      };
-      const organizationId = 'org-123';
-
-      await expect(service.create(createDto, organizationId)).rejects.toThrow(
-        NotImplementedException,
-      );
-    });
-
-    it('should throw with correct error message', async () => {
-      const createDto: CreateProposalDto = {
-        title: 'Test Proposal',
-      };
-      const organizationId = 'org-123';
-
-      await expect(service.create(createDto, organizationId)).rejects.toThrow(
-        'Proposal creation not yet implemented. See issue #145',
-      );
-    });
-  });
-
-  describe('findAll', () => {
-    it('should throw NotImplementedException', async () => {
-      const organizationId = 'org-123';
-
-      await expect(service.findAll(organizationId)).rejects.toThrow(
-        NotImplementedException,
-      );
-    });
-
-    it('should throw with correct error message', async () => {
-      const organizationId = 'org-123';
-
-      await expect(service.findAll(organizationId)).rejects.toThrow(
-        'Proposal listing not yet implemented. See issue #146',
-      );
-    });
-  });
-
-  describe('findOne', () => {
-    it('should throw NotImplementedException', async () => {
-      const id = 'proposal-123';
-      const organizationId = 'org-123';
-
-      await expect(service.findOne(id, organizationId)).rejects.toThrow(
-        NotImplementedException,
-      );
-    });
-
-    it('should throw with correct error message', async () => {
-      const id = 'proposal-123';
-      const organizationId = 'org-123';
-
-      await expect(service.findOne(id, organizationId)).rejects.toThrow(
-        'Proposal retrieval not yet implemented. See issue #146',
-      );
-    });
-  });
+  // NOTE: Tests for create, findAll, and findOne require database connection or mocking
+  // Comprehensive E2E tests are in proposals.e2e-spec.ts
 
   describe('update', () => {
     it('should throw NotImplementedException', async () => {
