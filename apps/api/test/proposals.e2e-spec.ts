@@ -3,6 +3,9 @@
  *
  * Tests the Proposal CRUD endpoints:
  * - POST /api/v1/proposals (Create)
+ * - GET /api/v1/proposals (List with pagination)
+ * - GET /api/v1/proposals/:id (FindOne)
+ * - PUT /api/v1/proposals/:id (Update) - Issue #147
  * - Tenant isolation
  * - JWT authentication
  * - Input validation
@@ -419,6 +422,211 @@ describe('Proposals (e2e)', () => {
       await prisma.organization.deleteMany({
         where: { id: auth2Response.body.user.organizationId },
       });
+    });
+  });
+
+  describe('/api/v1/proposals/:id (PUT)', () => {
+    let proposalToUpdate: string;
+
+    beforeAll(async () => {
+      // Create a proposal to update
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Original Title',
+          rfpNumber: 'ORIGINAL-001',
+          status: 'draft',
+        })
+        .expect(201);
+
+      proposalToUpdate = response.body.id;
+    });
+
+    it('should update a proposal with valid data', async () => {
+      const updateDto = {
+        title: 'Updated Title',
+        rfpNumber: 'UPDATED-001',
+        status: 'in_progress',
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateDto)
+        .expect(200);
+
+      // Validate response structure
+      expect(response.body).toHaveProperty('id', proposalToUpdate);
+      expect(response.body).toHaveProperty('title', updateDto.title);
+      expect(response.body).toHaveProperty('rfpNumber', updateDto.rfpNumber);
+      expect(response.body).toHaveProperty('status', updateDto.status);
+      expect(response.body).toHaveProperty('organizationId', organizationId);
+      expect(response.body).toHaveProperty('updatedAt');
+
+      // Verify updatedAt was modified
+      expect(new Date(response.body.updatedAt).getTime()).toBeGreaterThan(
+        new Date(response.body.createdAt).getTime(),
+      );
+    });
+
+    it('should update only title (partial update)', async () => {
+      const updateDto = {
+        title: 'Only Title Updated',
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateDto)
+        .expect(200);
+
+      expect(response.body).toHaveProperty('title', updateDto.title);
+      expect(response.body).toHaveProperty('rfpNumber'); // Should remain unchanged
+    });
+
+    it('should update only status (partial update)', async () => {
+      const updateDto = {
+        status: 'completed',
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateDto)
+        .expect(200);
+
+      expect(response.body).toHaveProperty('status', 'completed');
+      expect(response.body).toHaveProperty('title'); // Should remain unchanged
+    });
+
+    it('should fail with 404 when proposal does not exist', async () => {
+      const fakeUuid = '00000000-0000-0000-0000-000000000000';
+      const updateDto = {
+        title: 'Should Fail',
+      };
+
+      await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${fakeUuid}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateDto)
+        .expect(404);
+    });
+
+    it('should fail with 400 when ID is not a valid UUID', async () => {
+      const updateDto = {
+        title: 'Should Fail',
+      };
+
+      await request(app.getHttpServer())
+        .put('/api/v1/proposals/invalid-uuid')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateDto)
+        .expect(400);
+    });
+
+    it('should fail with 401 when no auth token provided', async () => {
+      const updateDto = {
+        title: 'Should Fail',
+      };
+
+      await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .send(updateDto)
+        .expect(401);
+    });
+
+    it('should fail with 400 when title exceeds max length', async () => {
+      const updateDto = {
+        title: 'A'.repeat(501), // Max is 500
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateDto)
+        .expect(400);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('500 characters');
+    });
+
+    it('should fail with 400 when rfpNumber exceeds max length', async () => {
+      const updateDto = {
+        rfpNumber: 'A'.repeat(101), // Max is 100
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateDto)
+        .expect(400);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('100 characters');
+    });
+
+    it('should enforce tenant isolation (404 for other org proposals)', async () => {
+      // Create second user in different org
+      const timestamp2 = Date.now();
+      const register2Dto = {
+        email: `test+update${timestamp2}@example.com`,
+        password: 'SecurePass123!',
+        firstName: 'Update',
+        lastName: 'Tester',
+        organizationName: `Test Update Org ${timestamp2}`,
+      };
+
+      const auth2Response = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send(register2Dto)
+        .expect(201);
+
+      const accessToken2 = auth2Response.body.accessToken;
+
+      // Try to update first user's proposal with second user's token
+      const updateDto = {
+        title: 'Should Fail - Wrong Org',
+      };
+
+      await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken2}`)
+        .send(updateDto)
+        .expect(404); // Should return 404 (not 403) for security
+
+      // Verify proposal was NOT updated
+      const checkResponse = await request(app.getHttpServer())
+        .get(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(checkResponse.body.title).not.toBe('Should Fail - Wrong Org');
+
+      // Cleanup second org
+      await prisma.user.deleteMany({
+        where: { id: auth2Response.body.user.id },
+      });
+      await prisma.organization.deleteMany({
+        where: { id: auth2Response.body.user.organizationId },
+      });
+    });
+
+    it('should not allow updating organizationId (security)', async () => {
+      const maliciousUpdateDto = {
+        organizationId: '00000000-0000-0000-0000-000000000000',
+        title: 'Malicious Update',
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/v1/proposals/${proposalToUpdate}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(maliciousUpdateDto)
+        .expect(200);
+
+      // Verify organizationId was NOT changed
+      expect(response.body.organizationId).toBe(organizationId);
+      expect(response.body.organizationId).not.toBe('00000000-0000-0000-0000-000000000000');
     });
   });
 });

@@ -2,12 +2,17 @@
  * Proposal Service - Business logic for proposal management
  *
  * Handles CRUD operations for proposals with multi-tenancy enforcement.
- * All methods currently return NotImplementedException - to be implemented in sub-issues.
+ * CRUD methods implemented:
+ * - create() - Issue #145 ✅
+ * - findAll() - Issue #146 ✅
+ * - findOne() - Issue #146 ✅
+ * - update() - Issue #147 ✅ (current)
+ * - remove() - Issue #148 (pending implementation)
  *
  * @module ProposalService
  */
 
-import { Injectable, NotImplementedException, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { PrismaClient, Proposal, ProposalSection } from '@prisma/client';
 
 import { CreateProposalDto, UpdateProposalDto } from './dto';
@@ -142,16 +147,39 @@ export class ProposalService {
    * @param updateProposalDto - Fields to update
    * @param organizationId - Organization ID from authenticated user
    * @returns Updated proposal
-   * @throws NotImplementedException - To be implemented in #147
    * @throws NotFoundException - If proposal not found or not owned by organization
    */
   async update(
-    _id: string,
-    _updateProposalDto: UpdateProposalDto,
-    _organizationId: string,
+    id: string,
+    updateProposalDto: UpdateProposalDto,
+    organizationId: string,
   ): Promise<Proposal> {
-    // Implementation in issue #147 (PROP-49d)
-    throw new NotImplementedException('Proposal update not yet implemented. See issue #147');
+    this.logger.log(`Updating proposal ${id} for organization ${organizationId}`);
+
+    // 1. Buscar proposal (verifica existência e tenant isolation)
+    const existingProposal = await prisma.proposal.findUnique({
+      where: { id },
+    });
+
+    if (!existingProposal) {
+      this.logger.warn(`Proposal ${id} not found`);
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    if (existingProposal.organizationId !== organizationId) {
+      this.logger.warn(`Unauthorized access attempt: proposal ${id} does not belong to organization ${organizationId}`);
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    // 2. Update proposal (Prisma atualiza updatedAt automaticamente)
+    const updatedProposal = await prisma.proposal.update({
+      where: { id },
+      data: updateProposalDto,
+    });
+
+    this.logger.log(`Proposal ${id} updated successfully`);
+
+    return updatedProposal;
   }
 
   /**
