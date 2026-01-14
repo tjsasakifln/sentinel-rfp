@@ -8,7 +8,7 @@
  */
 
 import { Injectable, NotImplementedException, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Proposal, ProposalSection } from '@prisma/client';
 
 import { CreateProposalDto, UpdateProposalDto } from './dto';
 
@@ -25,7 +25,7 @@ export class ProposalService {
    * @param organizationId - Organization ID from authenticated user
    * @returns Created proposal
    */
-  async create(createProposalDto: CreateProposalDto, organizationId: string): Promise<any> {
+  async create(createProposalDto: CreateProposalDto, organizationId: string): Promise<Proposal> {
     this.logger.log(`Creating proposal for organization ${organizationId}`);
 
     const proposal = await prisma.proposal.create({
@@ -54,7 +54,7 @@ export class ProposalService {
     organizationId: string,
     page: number = 1,
     limit: number = 20,
-  ): Promise<{ data: any[]; meta: { total: number; page: number; limit: number; totalPages: number } }> {
+  ): Promise<{ data: Proposal[]; meta: { total: number; page: number; limit: number; totalPages: number } }> {
     this.logger.log(`Fetching proposals for organization ${organizationId}, page ${page}, limit ${limit}`);
 
     // Calculate pagination
@@ -102,7 +102,7 @@ export class ProposalService {
    * @returns Proposal with sections
    * @throws NotFoundException - If proposal not found or not owned by organization
    */
-  async findOne(id: string, organizationId: string): Promise<any> {
+  async findOne(id: string, organizationId: string): Promise<Proposal & { sections: ProposalSection[] }> {
     this.logger.log(`Fetching proposal ${id} for organization ${organizationId}`);
 
     const proposal = await prisma.proposal.findUnique({
@@ -149,7 +149,7 @@ export class ProposalService {
     _id: string,
     _updateProposalDto: UpdateProposalDto,
     _organizationId: string,
-  ): Promise<any> {
+  ): Promise<Proposal> {
     // Implementation in issue #147 (PROP-49d)
     throw new NotImplementedException('Proposal update not yet implemented. See issue #147');
   }

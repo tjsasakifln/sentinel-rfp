@@ -344,7 +344,7 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // All proposals should belong to the authenticated user's org
-      response.body.data.forEach((proposal: any) => {
+      response.body.data.forEach((proposal: { organizationId: string }) => {
         expect(proposal.organizationId).toBe(organizationId);
       });
     });
