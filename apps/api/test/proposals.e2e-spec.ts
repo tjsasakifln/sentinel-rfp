@@ -5,7 +5,8 @@
  * - POST /api/v1/proposals (Create)
  * - GET /api/v1/proposals (List with pagination)
  * - GET /api/v1/proposals/:id (FindOne)
- * - PUT /api/v1/proposals/:id (Update) - Issue #147
+ * - PUT /api/v1/proposals/:id (Update)
+ * - DELETE /api/v1/proposals/:id (Delete) - Issue #148
  * - Tenant isolation
  * - JWT authentication
  * - Input validation
@@ -627,6 +628,203 @@ describe('Proposals (e2e)', () => {
       // Verify organizationId was NOT changed
       expect(response.body.organizationId).toBe(organizationId);
       expect(response.body.organizationId).not.toBe('00000000-0000-0000-0000-000000000000');
+    });
+  });
+
+  describe('/api/v1/proposals/:id (DELETE)', () => {
+    let proposalToDelete: string;
+    let proposalWithSections: string;
+
+    beforeAll(async () => {
+      // Create a proposal to delete
+      const response1 = await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Proposal to Delete',
+          rfpNumber: 'DELETE-001',
+          status: 'draft',
+        })
+        .expect(201);
+
+      proposalToDelete = response1.body.id;
+
+      // Create a proposal with sections for cascade delete test
+      const response2 = await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Proposal with Sections',
+          rfpNumber: 'DELETE-002',
+          status: 'draft',
+        })
+        .expect(201);
+
+      proposalWithSections = response2.body.id;
+
+      // Add sections to the proposal
+      await prisma.proposalSection.createMany({
+        data: [
+          {
+            title: 'Section 1',
+            order: 1,
+            proposalId: proposalWithSections,
+          },
+          {
+            title: 'Section 2',
+            order: 2,
+            proposalId: proposalWithSections,
+          },
+        ],
+      });
+    });
+
+    it('should soft delete a proposal (204 No Content)', async () => {
+      await request(app.getHttpServer())
+        .delete(`/api/v1/proposals/${proposalToDelete}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(204);
+
+      // Verify proposal is marked as deleted in database
+      const deletedProposal = await prisma.proposal.findUnique({
+        where: { id: proposalToDelete },
+      });
+
+      expect(deletedProposal).not.toBeNull();
+      expect(deletedProposal?.deletedAt).not.toBeNull();
+      expect(deletedProposal?.deletedAt).toBeInstanceOf(Date);
+    });
+
+    it('should cascade soft delete sections when deleting proposal', async () => {
+      // Get sections before delete
+      const sectionsBefore = await prisma.proposalSection.findMany({
+        where: { proposalId: proposalWithSections },
+      });
+
+      expect(sectionsBefore.length).toBe(2);
+
+      // Delete proposal
+      await request(app.getHttpServer())
+        .delete(`/api/v1/proposals/${proposalWithSections}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(204);
+
+      // Verify proposal is soft deleted
+      const deletedProposal = await prisma.proposal.findUnique({
+        where: { id: proposalWithSections },
+      });
+
+      expect(deletedProposal?.deletedAt).not.toBeNull();
+
+      // Verify sections are also soft deleted (cascade)
+      const sectionsAfter = await prisma.proposalSection.findMany({
+        where: { proposalId: proposalWithSections },
+      });
+
+      expect(sectionsAfter.length).toBe(2);
+      sectionsAfter.forEach((section) => {
+        expect(section.deletedAt).not.toBeNull();
+        expect(section.deletedAt).toBeInstanceOf(Date);
+      });
+    });
+
+    it('should fail with 404 when proposal does not exist', async () => {
+      const fakeUuid = '00000000-0000-0000-0000-000000000000';
+
+      await request(app.getHttpServer())
+        .delete(`/api/v1/proposals/${fakeUuid}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
+    });
+
+    it('should fail with 404 when trying to delete already deleted proposal', async () => {
+      // Create and delete a proposal
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Already Deleted',
+          rfpNumber: 'DELETE-TWICE',
+        })
+        .expect(201);
+
+      const proposalId = response.body.id;
+
+      // First delete - should succeed
+      await request(app.getHttpServer())
+        .delete(`/api/v1/proposals/${proposalId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(204);
+
+      // Second delete - should fail with 404
+      await request(app.getHttpServer())
+        .delete(`/api/v1/proposals/${proposalId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
+    });
+
+    it('should fail with 400 when ID is not a valid UUID', async () => {
+      await request(app.getHttpServer())
+        .delete('/api/v1/proposals/invalid-uuid')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(400);
+    });
+
+    it('should fail with 401 when no auth token provided', async () => {
+      await request(app.getHttpServer())
+        .delete(`/api/v1/proposals/${proposalToDelete}`)
+        .expect(401);
+    });
+
+    it('should enforce tenant isolation (404 for other org proposals)', async () => {
+      // Create second user in different org
+      const timestamp2 = Date.now();
+      const register2Dto = {
+        email: `test+delete${timestamp2}@example.com`,
+        password: 'SecurePass123!',
+        firstName: 'Delete',
+        lastName: 'Tester',
+        organizationName: `Test Delete Org ${timestamp2}`,
+      };
+
+      const auth2Response = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send(register2Dto)
+        .expect(201);
+
+      const accessToken2 = auth2Response.body.accessToken;
+
+      // Create proposal for first org
+      const proposal1 = await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'Org 1 Proposal for Delete Test',
+          rfpNumber: 'ORG1-DELETE',
+        })
+        .expect(201);
+
+      // Try to delete first user's proposal with second user's token
+      await request(app.getHttpServer())
+        .delete(`/api/v1/proposals/${proposal1.body.id}`)
+        .set('Authorization', `Bearer ${accessToken2}`)
+        .expect(404); // Should return 404 (not 403) for security
+
+      // Verify proposal was NOT deleted
+      const checkProposal = await prisma.proposal.findUnique({
+        where: { id: proposal1.body.id },
+      });
+
+      expect(checkProposal).not.toBeNull();
+      expect(checkProposal?.deletedAt).toBeNull();
+
+      // Cleanup second org
+      await prisma.user.deleteMany({
+        where: { id: auth2Response.body.user.id },
+      });
+      await prisma.organization.deleteMany({
+        where: { id: auth2Response.body.user.organizationId },
+      });
     });
   });
 });

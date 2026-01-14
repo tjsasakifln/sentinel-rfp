@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+
 import { ProblemDetails } from './problem-details.interface';
 
 /**
@@ -28,7 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     // Extract message and additional details
     let detail: string;
-    let additionalFields: Record<string, unknown> = {};
+    const additionalFields: Record<string, unknown> = {};
 
     if (typeof exceptionResponse === 'string') {
       detail = exceptionResponse;

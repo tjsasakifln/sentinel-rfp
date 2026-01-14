@@ -48,12 +48,8 @@ import { TokenBlacklistService } from './token-blacklist.service';
         }
 
         // Decode base64-encoded keys
-        const decodedPrivateKey = Buffer.from(privateKey, 'base64').toString(
-          'utf8',
-        );
-        const decodedPublicKey = Buffer.from(publicKey, 'base64').toString(
-          'utf8',
-        );
+        const decodedPrivateKey = Buffer.from(privateKey, 'base64').toString('utf8');
+        const decodedPublicKey = Buffer.from(publicKey, 'base64').toString('utf8');
 
         return {
           privateKey: decodedPrivateKey,

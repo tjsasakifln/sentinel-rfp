@@ -109,9 +109,7 @@ describe('LoginAttemptsGuard', () => {
       expect(guard.getAttemptCount(email)).toBe(1);
 
       // Mock time advance by 16 minutes (1000ms over the 15min window)
-      jest
-        .spyOn(Date, 'now')
-        .mockReturnValue(Date.now() + 16 * 60 * 1000);
+      jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 16 * 60 * 1000);
 
       guard.recordFailedAttempt(email);
       // Should reset to 1 (new window)
@@ -190,9 +188,7 @@ describe('LoginAttemptsGuard', () => {
       expect(guard.isLocked(email)).toBe(true);
 
       // Mock time advance by 16 minutes (1000ms over the 15min lockout)
-      jest
-        .spyOn(Date, 'now')
-        .mockReturnValue(Date.now() + 16 * 60 * 1000);
+      jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 16 * 60 * 1000);
 
       expect(guard.isLocked(email)).toBe(false);
 

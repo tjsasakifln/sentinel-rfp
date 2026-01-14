@@ -134,11 +134,13 @@ model Proposal {
   sections ProposalSection[]
 
   // Metadata
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete timestamp
 
   @@index([organizationId])
   @@index([status])
+  @@index([deletedAt]) // Index for filtering active proposals
   @@map("proposals")
 }
 
@@ -157,10 +159,12 @@ model ProposalSection {
   questions Question[]
 
   // Metadata
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete timestamp (cascade from proposal)
 
   @@index([proposalId])
+  @@index([deletedAt])
   @@map("proposal_sections")
 }
 

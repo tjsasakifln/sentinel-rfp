@@ -32,9 +32,7 @@ export class AiService {
       this.anthropicProvider = new AnthropicProvider(anthropicKey);
       this.logger.log('Anthropic provider initialized');
     } else {
-      this.logger.warn(
-        'ANTHROPIC_API_KEY not configured - AI features will be disabled',
-      );
+      this.logger.warn('ANTHROPIC_API_KEY not configured - AI features will be disabled');
     }
   }
 
@@ -64,10 +62,7 @@ export class AiService {
    * @param questionId - ID of the question to answer
    * @param context - Relevant context from knowledge library
    */
-  async generateResponse(
-    _questionId: string,
-    _context: string[],
-  ): Promise<string> {
+  async generateResponse(_questionId: string, _context: string[]): Promise<string> {
     throw new Error('Not implemented yet');
   }
 
@@ -92,10 +87,7 @@ export class AiService {
    * @param response - Response text
    * @param citations - Citations used
    */
-  async calculateTrustScore(
-    _response: string,
-    _citations: string[],
-  ): Promise<number> {
+  async calculateTrustScore(_response: string, _citations: string[]): Promise<number> {
     throw new Error('Not implemented yet');
   }
 
