@@ -66,13 +66,10 @@ import { randomUUID } from 'crypto';
               }
             : undefined,
 
-        // Generate unique request ID for each request
-        genReqId: (req, res) => {
-          const existingId = req.id ?? req.headers['x-request-id'];
-          if (existingId) return existingId;
-          const id = randomUUID();
-          res.setHeader('x-request-id', id);
-          return id;
+        // Use request ID from RequestIdInterceptor
+        // The interceptor sets req.id before this is called
+        genReqId: (req) => {
+          return req.id ?? req.headers['x-request-id'] ?? randomUUID();
         },
 
         // Add custom properties to all logs
