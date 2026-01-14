@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { LoggerModule } from 'nestjs-pino';
 
 import { CommonModule } from './common/common.module';
+import { LoggerModule } from './common/logger/logger.module';
 import { configValidationSchema } from './config/config.schema';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HealthModule } from './health/health.module';
@@ -22,39 +22,8 @@ import { ProposalModule } from './proposal/proposal.module';
       },
     }),
 
-    // Logger (Pino)
-    LoggerModule.forRoot({
-      pinoHttp: {
-        level: process.env.LOG_LEVEL || 'info',
-        transport:
-          process.env.NODE_ENV !== 'production'
-            ? {
-                target: 'pino-pretty',
-                options: {
-                  colorize: true,
-                  translateTime: 'SYS:standard',
-                  ignore: 'pid,hostname',
-                },
-              }
-            : undefined,
-        customProps: () => ({
-          context: 'HTTP',
-        }),
-        serializers: {
-          req: (req) => ({
-            method: req.method,
-            url: req.url,
-            headers: {
-              host: req.headers.host,
-              'user-agent': req.headers['user-agent'],
-            },
-          }),
-          res: (res) => ({
-            statusCode: res.statusCode,
-          }),
-        },
-      },
-    }),
+    // Structured Logging (Pino)
+    LoggerModule,
 
     // Rate limiting
     ThrottlerModule.forRoot([
