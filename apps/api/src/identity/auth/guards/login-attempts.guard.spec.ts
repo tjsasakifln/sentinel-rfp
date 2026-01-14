@@ -4,7 +4,7 @@
  * Tests the login attempt tracking and lockout functionality
  */
 
-import { ExecutionContext, HttpStatus } from '@nestjs/common';
+import { ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
 
 import { LoginAttemptsGuard } from './login-attempts.guard';
 
@@ -63,9 +63,11 @@ describe('LoginAttemptsGuard', () => {
       try {
         guard.canActivate(context);
         fail('Should have thrown HttpException');
-      } catch (error: any) {
-        expect(error.getStatus()).toBe(HttpStatus.TOO_MANY_REQUESTS);
-        expect(error.getResponse()).toMatchObject({
+      } catch (error) {
+        expect(error).toBeInstanceOf(HttpException);
+        const httpError = error as HttpException;
+        expect(httpError.getStatus()).toBe(HttpStatus.TOO_MANY_REQUESTS);
+        expect(httpError.getResponse()).toMatchObject({
           statusCode: HttpStatus.TOO_MANY_REQUESTS,
           message: 'Too many failed login attempts. Please try again later.',
         });
