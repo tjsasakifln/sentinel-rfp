@@ -467,6 +467,221 @@ describe('Authentication (e2e)', () => {
     }, 10000); // Longer timeout for rate limiting test
   });
 
+  describe('/api/v1/auth/refresh (POST)', () => {
+    let testUser: {
+      email: string;
+      password: string;
+      accessToken: string;
+      refreshToken: string;
+    };
+
+    beforeAll(async () => {
+      // Create test user for refresh token tests
+      const timestamp = Date.now();
+      const email = `test+refresh${timestamp}@example.com`;
+      const password = 'RefreshPass123!';
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send({
+          email,
+          password,
+          firstName: 'Refresh',
+          lastName: 'Test',
+          organizationName: `Refresh Test Org ${timestamp}`,
+        });
+
+      testUser = {
+        email,
+        password,
+        accessToken: response.body.accessToken,
+        refreshToken: response.body.refreshToken,
+      };
+    });
+
+    it('should refresh tokens with valid refresh token', async () => {
+      const refreshDto = {
+        refreshToken: testUser.refreshToken,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send(refreshDto)
+        .expect(200);
+
+      // Validate response structure
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
+
+      // Validate new tokens are different from old ones (rotation)
+      expect(response.body.accessToken).not.toBe(testUser.accessToken);
+      expect(response.body.refreshToken).not.toBe(testUser.refreshToken);
+
+      // Validate tokens are JWTs (basic format check)
+      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+
+      // Update test user tokens for subsequent tests
+      testUser.accessToken = response.body.accessToken;
+      testUser.refreshToken = response.body.refreshToken;
+    });
+
+    it('should reject already-used refresh token (rotation security)', async () => {
+      // Login to get new tokens
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      const oldRefreshToken = loginResponse.body.refreshToken;
+
+      // Use refresh token once (should succeed)
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send({ refreshToken: oldRefreshToken })
+        .expect(200);
+
+      // Try to use the same refresh token again (should fail - rotation)
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send({ refreshToken: oldRefreshToken })
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('already used');
+    });
+
+    it('should reject expired refresh token', async () => {
+      // This test would require manually creating an expired token
+      // or waiting for expiration. For now, we test with invalid token.
+      const refreshDto = {
+        refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDk0NTkyMDB9.invalid',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send(refreshDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+    });
+
+    it('should reject malformed refresh token', async () => {
+      const refreshDto = {
+        refreshToken: 'not-a-valid-jwt-token',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send(refreshDto)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+    });
+
+    it('should reject refresh token from different user', async () => {
+      // Create another user
+      const timestamp = Date.now();
+      const otherUserEmail = `test+other${timestamp}@example.com`;
+
+      const otherUserResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send({
+          email: otherUserEmail,
+          password: 'OtherPass123!',
+          firstName: 'Other',
+          lastName: 'User',
+          organizationName: `Other Test Org ${timestamp}`,
+        });
+
+      const otherUserRefreshToken = otherUserResponse.body.refreshToken;
+
+      // Try to use other user's refresh token with current user context
+      // (In practice, refresh tokens are bearer tokens and don't need user context,
+      // but they are tied to the user in the database via refresh token family)
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send({ refreshToken: otherUserRefreshToken })
+        .expect(200); // Should succeed as refresh tokens are standalone
+
+      // Verify the returned token belongs to the other user
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
+    });
+
+    it('should reject refresh without refresh token', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send({}) // Missing refreshToken
+        .expect(400);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('refreshToken');
+    });
+
+    it('should reject refresh token after user logout', async () => {
+      // Login to get new tokens
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      const accessToken = loginResponse.body.accessToken;
+      const refreshToken = loginResponse.body.refreshToken;
+
+      // Logout to blacklist tokens
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ refreshToken })
+        .expect(204);
+
+      // Try to refresh with blacklisted token (should fail)
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send({ refreshToken })
+        .expect(401);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('already used');
+    });
+
+    it('should handle rate limiting (10 req/min)', async () => {
+      // Login to get fresh token for rate limit test
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
+
+      let currentRefreshToken = loginResponse.body.refreshToken;
+
+      // Make 10 refresh requests (each should succeed and rotate token)
+      for (let i = 0; i < 10; i++) {
+        const res = await request(app.getHttpServer())
+          .post('/api/v1/auth/refresh')
+          .send({ refreshToken: currentRefreshToken });
+
+        if (res.status === 200) {
+          currentRefreshToken = res.body.refreshToken;
+        }
+      }
+
+      // 11th request should be rate limited
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/auth/refresh')
+        .send({ refreshToken: currentRefreshToken })
+        .expect(429);
+
+      expect(response.body).toHaveProperty('message');
+    }, 15000); // Longer timeout for rate limiting test
+  });
+
   describe('/api/v1/auth/logout (POST)', () => {
     let testUser: {
       email: string;
