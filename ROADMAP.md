@@ -87,7 +87,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#111](https://github.com/tjsasakifln/sentinel-rfp/issues/111) - Implementar endpoint de login (POST /v1/auth/login)
   - [x] [#112](https://github.com/tjsasakifln/sentinel-rfp/issues/112) - Implementar refresh token flow com rotation
   - [x] [#113](https://github.com/tjsasakifln/sentinel-rfp/issues/113) - Implementar logout com token blacklisting
-  - [ ] [#114](https://github.com/tjsasakifln/sentinel-rfp/issues/114) - Adicionar rate limiting nos endpoints de autenticação
+  - [x] [#114](https://github.com/tjsasakifln/sentinel-rfp/issues/114) - Adicionar rate limiting nos endpoints de autenticação
   - [ ] [#115](https://github.com/tjsasakifln/sentinel-rfp/issues/115) - Criar testes de integração E2E para autenticação
 - [ ] Organization multi-tenancy - [#22](https://github.com/tjsasakifln/sentinel-rfp/issues/22)
 - [ ] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
@@ -540,6 +540,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                           |
 | ------- | ---------- | --------------------------------------------------------------------------------- |
+| 1.4     | 2026-01-14 | Marked #114 complete after PR #152 merge (rate limiting for auth endpoints) |
 | 1.3     | 2026-01-12 | Comprehensive audit sync: Added 30 sub-issues, fixed issue number mappings, updated progress (123 total issues, 9 closed) |
 | 1.2     | 2026-01-12 | Decomposed 3 issues into 16 atomic sub-issues (#61→#116-120, #87→#121-126, #52→#127-131) |
 | 1.1     | 2026-01-09 | Added GitHub issue links for all milestones                                       |
@@ -563,13 +564,13 @@ These epics run in parallel throughout the development cycle:
 
 **Total Issues Created:** 123
 
-- **Open:** 114 (93%)
-- **Closed:** 9 (7%)
+- **Open:** 113 (92%)
+- **Closed:** 10 (8%)
 - **Epics:** 36
 - **Features:** 87
 - **Milestones:** 13
 - **Labels:** 38
-- **Overall Progress:** 9/123 issues closed (7%)
+- **Overall Progress:** 10/123 issues closed (8%)
 
 **Browse all issues:** [GitHub Issues](https://github.com/tjsasakifln/sentinel-rfp/issues)
 
