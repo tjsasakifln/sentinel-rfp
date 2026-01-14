@@ -6,13 +6,13 @@
  * - create() - Issue #145 ✅
  * - findAll() - Issue #146 ✅
  * - findOne() - Issue #146 ✅
- * - update() - Issue #147 ✅ (current)
- * - remove() - Issue #148 (pending implementation)
+ * - update() - Issue #147 ✅
+ * - remove() - Issue #148 ✅ (current)
  *
  * @module ProposalService
  */
 
-import { Injectable, Logger, NotFoundException, NotImplementedException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaClient, Proposal, ProposalSection } from '@prisma/client';
 
 import { CreateProposalDto, UpdateProposalDto } from './dto';
@@ -185,14 +185,69 @@ export class ProposalService {
   /**
    * Soft delete a proposal
    *
+   * Marks the proposal as deleted by setting deletedAt timestamp.
+   * Also cascade soft deletes all related sections.
+   * Does NOT physically remove data from database.
+   *
    * @param id - Proposal ID
    * @param organizationId - Organization ID from authenticated user
    * @returns void
-   * @throws NotImplementedException - To be implemented in #148
    * @throws NotFoundException - If proposal not found or not owned by organization
    */
-  async remove(_id: string, _organizationId: string): Promise<void> {
-    // Implementation in issue #148 (PROP-49e)
-    throw new NotImplementedException('Proposal deletion not yet implemented. See issue #148');
+  async remove(id: string, organizationId: string): Promise<void> {
+    this.logger.log(`Soft deleting proposal ${id} for organization ${organizationId}`);
+
+    // 1. Verify proposal exists and check tenant isolation
+    const existingProposal = await prisma.proposal.findUnique({
+      where: { id },
+      include: {
+        sections: true,
+      },
+    });
+
+    if (!existingProposal) {
+      this.logger.warn(`Proposal ${id} not found`);
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    if (existingProposal.organizationId !== organizationId) {
+      this.logger.warn(`Unauthorized deletion attempt: proposal ${id} does not belong to organization ${organizationId}`);
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    // 2. Check if already deleted
+    if (existingProposal.deletedAt !== null) {
+      this.logger.warn(`Proposal ${id} is already deleted`);
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    // 3. Soft delete proposal and cascade to sections in a transaction
+    const now = new Date();
+
+    await prisma.$transaction(async (tx) => {
+      // Soft delete all sections first (cascade)
+      if (existingProposal.sections.length > 0) {
+        await tx.proposalSection.updateMany({
+          where: {
+            proposalId: id,
+          },
+          data: {
+            deletedAt: now,
+          },
+        });
+
+        this.logger.log(`Soft deleted ${existingProposal.sections.length} sections for proposal ${id}`);
+      }
+
+      // Soft delete proposal
+      await tx.proposal.update({
+        where: { id },
+        data: {
+          deletedAt: now,
+        },
+      });
+
+      this.logger.log(`Proposal ${id} soft deleted successfully`);
+    });
   }
 }
