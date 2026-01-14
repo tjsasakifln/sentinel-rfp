@@ -5,6 +5,7 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { CommonModule } from './common/common.module';
 import { configValidationSchema } from './config/config.schema';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './identity/auth/auth.module';
 import { ProposalModule } from './proposal/proposal.module';
@@ -68,6 +69,7 @@ import { ProposalModule } from './proposal/proposal.module';
     HealthModule,
     AuthModule,
     ProposalModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}
