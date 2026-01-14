@@ -7,8 +7,8 @@
  * @module ProposalService
  */
 
-import { Injectable, NotImplementedException, Logger } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, NotImplementedException, Logger, NotFoundException } from '@nestjs/common';
+import { PrismaClient, Proposal, ProposalSection } from '@prisma/client';
 
 import { CreateProposalDto, UpdateProposalDto } from './dto';
 
@@ -25,7 +25,7 @@ export class ProposalService {
    * @param organizationId - Organization ID from authenticated user
    * @returns Created proposal
    */
-  async create(createProposalDto: CreateProposalDto, organizationId: string): Promise<any> {
+  async create(createProposalDto: CreateProposalDto, organizationId: string): Promise<Proposal> {
     this.logger.log(`Creating proposal for organization ${organizationId}`);
 
     const proposal = await prisma.proposal.create({
@@ -43,29 +43,96 @@ export class ProposalService {
   }
 
   /**
-   * Find all proposals for an organization
+   * Find all proposals for an organization with pagination
    *
    * @param organizationId - Organization ID from authenticated user
-   * @returns Array of proposals
-   * @throws NotImplementedException - To be implemented in #146
+   * @param page - Page number (default: 1)
+   * @param limit - Items per page (default: 20)
+   * @returns Paginated proposals with metadata
    */
-  async findAll(_organizationId: string): Promise<any[]> {
-    // Implementation in issue #146 (PROP-49c)
-    throw new NotImplementedException('Proposal listing not yet implemented. See issue #146');
+  async findAll(
+    organizationId: string,
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<{ data: Proposal[]; meta: { total: number; page: number; limit: number; totalPages: number } }> {
+    this.logger.log(`Fetching proposals for organization ${organizationId}, page ${page}, limit ${limit}`);
+
+    // Calculate pagination
+    const skip = (page - 1) * limit;
+
+    // Execute queries in parallel
+    const [data, total] = await Promise.all([
+      prisma.proposal.findMany({
+        where: {
+          organizationId,
+        },
+        orderBy: {
+          updatedAt: 'desc',
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.proposal.count({
+        where: {
+          organizationId,
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    this.logger.log(`Found ${data.length} proposals (total: ${total})`);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages,
+      },
+    };
   }
 
   /**
-   * Find one proposal by ID
+   * Find one proposal by ID with nested sections
    *
    * @param id - Proposal ID
    * @param organizationId - Organization ID from authenticated user
    * @returns Proposal with sections
-   * @throws NotImplementedException - To be implemented in #146
    * @throws NotFoundException - If proposal not found or not owned by organization
    */
-  async findOne(_id: string, _organizationId: string): Promise<any> {
-    // Implementation in issue #146 (PROP-49c)
-    throw new NotImplementedException('Proposal retrieval not yet implemented. See issue #146');
+  async findOne(id: string, organizationId: string): Promise<Proposal & { sections: ProposalSection[] }> {
+    this.logger.log(`Fetching proposal ${id} for organization ${organizationId}`);
+
+    const proposal = await prisma.proposal.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        sections: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    });
+
+    // Check if proposal exists
+    if (!proposal) {
+      this.logger.warn(`Proposal ${id} not found`);
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    // Enforce tenant isolation
+    if (proposal.organizationId !== organizationId) {
+      this.logger.warn(`Unauthorized access attempt: proposal ${id} does not belong to organization ${organizationId}`);
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    this.logger.log(`Proposal ${id} retrieved successfully with ${proposal.sections.length} sections`);
+
+    return proposal;
   }
 
   /**
@@ -82,7 +149,7 @@ export class ProposalService {
     _id: string,
     _updateProposalDto: UpdateProposalDto,
     _organizationId: string,
-  ): Promise<any> {
+  ): Promise<Proposal> {
     // Implementation in issue #147 (PROP-49d)
     throw new NotImplementedException('Proposal update not yet implemented. See issue #147');
   }

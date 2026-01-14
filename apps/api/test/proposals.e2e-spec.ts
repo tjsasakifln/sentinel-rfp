@@ -23,6 +23,7 @@ describe('Proposals (e2e)', () => {
   let app: INestApplication;
   let accessToken: string;
   let organizationId: string;
+  let createdProposalId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -259,6 +260,164 @@ describe('Proposals (e2e)', () => {
       });
       await prisma.organization.deleteMany({
         where: { id: organizationId2 },
+      });
+    });
+  });
+
+  describe('/api/v1/proposals (GET)', () => {
+    beforeAll(async () => {
+      // Create test proposals for listing
+      const proposal1 = await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ title: 'List Test Proposal 1', rfpNumber: 'LIST-001' })
+        .expect(201);
+
+      createdProposalId = proposal1.body.id;
+
+      await request(app.getHttpServer())
+        .post('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ title: 'List Test Proposal 2', rfpNumber: 'LIST-002' })
+        .expect(201);
+    });
+
+    it('should return paginated list of proposals', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      // Validate response structure
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('meta');
+      expect(Array.isArray(response.body.data)).toBe(true);
+
+      // Validate meta pagination
+      expect(response.body.meta).toHaveProperty('total');
+      expect(response.body.meta).toHaveProperty('page', 1);
+      expect(response.body.meta).toHaveProperty('limit', 20);
+      expect(response.body.meta).toHaveProperty('totalPages');
+
+      // Verify we have at least 2 proposals
+      expect(response.body.data.length).toBeGreaterThanOrEqual(2);
+
+      // Validate proposal structure
+      const proposal = response.body.data[0];
+      expect(proposal).toHaveProperty('id');
+      expect(proposal).toHaveProperty('title');
+      expect(proposal).toHaveProperty('status');
+      expect(proposal).toHaveProperty('organizationId', organizationId);
+    });
+
+    it('should respect pagination parameters', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals?page=1&limit=1')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body.data.length).toBe(1);
+      expect(response.body.meta.page).toBe(1);
+      expect(response.body.meta.limit).toBe(1);
+    });
+
+    it('should return empty data for page beyond total', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals?page=999&limit=20')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body.data.length).toBe(0);
+      expect(response.body.meta.page).toBe(999);
+    });
+
+    it('should fail with 401 when no auth token provided', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/proposals')
+        .expect(401);
+    });
+
+    it('should only return proposals for authenticated user org (tenant isolation)', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/proposals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      // All proposals should belong to the authenticated user's org
+      response.body.data.forEach((proposal: { organizationId: string }) => {
+        expect(proposal.organizationId).toBe(organizationId);
+      });
+    });
+  });
+
+  describe('/api/v1/proposals/:id (GET)', () => {
+    it('should return a proposal by ID with nested sections', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/v1/proposals/${createdProposalId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      // Validate proposal structure
+      expect(response.body).toHaveProperty('id', createdProposalId);
+      expect(response.body).toHaveProperty('title');
+      expect(response.body).toHaveProperty('status');
+      expect(response.body).toHaveProperty('organizationId', organizationId);
+      expect(response.body).toHaveProperty('sections');
+      expect(Array.isArray(response.body.sections)).toBe(true);
+    });
+
+    it('should fail with 404 when proposal does not exist', async () => {
+      const fakeUuid = '00000000-0000-0000-0000-000000000000';
+
+      await request(app.getHttpServer())
+        .get(`/api/v1/proposals/${fakeUuid}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
+    });
+
+    it('should fail with 400 when ID is not a valid UUID', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/proposals/invalid-uuid')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(400);
+    });
+
+    it('should fail with 401 when no auth token provided', async () => {
+      await request(app.getHttpServer())
+        .get(`/api/v1/proposals/${createdProposalId}`)
+        .expect(401);
+    });
+
+    it('should enforce tenant isolation (404 for other org proposals)', async () => {
+      // Create second user in different org
+      const timestamp2 = Date.now();
+      const register2Dto = {
+        email: `test+get${timestamp2}@example.com`,
+        password: 'SecurePass123!',
+        firstName: 'Get',
+        lastName: 'Tester',
+        organizationName: `Test Get Org ${timestamp2}`,
+      };
+
+      const auth2Response = await request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send(register2Dto)
+        .expect(201);
+
+      const accessToken2 = auth2Response.body.accessToken;
+
+      // Try to access first user's proposal with second user's token
+      await request(app.getHttpServer())
+        .get(`/api/v1/proposals/${createdProposalId}`)
+        .set('Authorization', `Bearer ${accessToken2}`)
+        .expect(404); // Should return 404 (not 403) for security
+
+      // Cleanup second org
+      await prisma.user.deleteMany({
+        where: { id: auth2Response.body.user.id },
+      });
+      await prisma.organization.deleteMany({
+        where: { id: auth2Response.body.user.organizationId },
       });
     });
   });
