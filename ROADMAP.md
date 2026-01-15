@@ -183,7 +183,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 - [ ] Progress tracking - [#55](https://github.com/tjsasakifln/sentinel-rfp/issues/55)
 - [ ] Basic dashboard - [#52](https://github.com/tjsasakifln/sentinel-rfp/issues/52)
   - [x] [#127](https://github.com/tjsasakifln/sentinel-rfp/issues/127) - Dashboard Backend API - Proposals List & Metrics
-  - [ ] [#128](https://github.com/tjsasakifln/sentinel-rfp/issues/128) - Dashboard Layout & Metrics Cards
+  - [x] [#128](https://github.com/tjsasakifln/sentinel-rfp/issues/128) - Dashboard Layout & Metrics Cards
   - [ ] [#129](https://github.com/tjsasakifln/sentinel-rfp/issues/129) - Proposals List Component com Filters
   - [ ] [#130](https://github.com/tjsasakifln/sentinel-rfp/issues/130) - Quick Actions Menu & Create Proposal Button
 
