@@ -8,6 +8,7 @@ import { configValidationSchema } from './config/config.schema';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './identity/auth/auth.module';
+import { TenantModule } from './identity/tenant/tenant.module';
 import { ProposalModule } from './proposal/proposal.module';
 
 @Module({
@@ -37,6 +38,7 @@ import { ProposalModule } from './proposal/proposal.module';
     CommonModule,
     HealthModule,
     AuthModule,
+    TenantModule,
     ProposalModule,
     DashboardModule,
   ],
