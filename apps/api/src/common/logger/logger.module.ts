@@ -1,6 +1,7 @@
+import { randomUUID } from 'crypto';
+
 import { Module } from '@nestjs/common';
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
-import { randomUUID } from 'crypto';
 
 /**
  * Logger Module - Structured Logging with Pino
