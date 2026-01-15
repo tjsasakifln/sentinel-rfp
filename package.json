@@ -24,14 +24,19 @@
     "docker:logs": "docker-compose logs -f",
     "docker:ps": "docker-compose ps",
     "docker:clean": "docker-compose down -v",
-    "docker:init": "bash scripts/docker-up.sh"
+    "docker:init": "bash scripts/docker-up.sh",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.2.5",
     "turbo": "^1.12.4",
     "typescript": "^5.3.3"
@@ -47,5 +52,14 @@
       "glob": ">=10.5.0",
       "qs": ">=6.14.1"
     }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }
