@@ -1,0 +1,14 @@
+# Build outputs
+.next/
+storybook-static/
+node_modules/
+dist/
+coverage/
+
+# Storybook config (not stories)
+.storybook/main.ts
+.storybook/preview.ts
+.storybook/vitest.setup.ts
+
+# Vitest config
+vitest.config.ts
