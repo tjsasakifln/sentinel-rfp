@@ -19,17 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { listProposals, type ProposalStatus } from '@/lib/api/proposals';
 
 import { ProposalRow } from './proposal-row';
-
 
 interface ProposalListProps {
   token: string;
@@ -62,7 +55,7 @@ function EmptyState({ hasFilters }: { hasFilters: boolean }) {
       </h3>
       <p className="text-sm text-muted-foreground mb-4 max-w-sm">
         {hasFilters
-          ? 'Try adjusting your filters or search query to find what you\'re looking for.'
+          ? "Try adjusting your filters or search query to find what you're looking for."
           : 'Create your first proposal to get started with Sentinel RFP.'}
       </p>
       {!hasFilters && (
@@ -81,9 +74,7 @@ function EmptyState({ hasFilters }: { hasFilters: boolean }) {
 function ErrorState({ error }: { error: Error }) {
   return (
     <div className="rounded-lg border border-destructive bg-destructive/10 p-6">
-      <h3 className="mb-2 text-lg font-semibold text-destructive">
-        Failed to load proposals
-      </h3>
+      <h3 className="mb-2 text-lg font-semibold text-destructive">Failed to load proposals</h3>
       <p className="text-sm text-muted-foreground">{error.message}</p>
     </div>
   );
@@ -135,11 +126,7 @@ export function ProposalList({ token }: ProposalListProps) {
   const [page, setPage] = useState(1);
   const limit = 20;
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['proposals', { status, search, page, limit }],
     queryFn: () =>
       listProposals(token, {

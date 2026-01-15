@@ -5,6 +5,7 @@ Guia dos notebooks mais úteis do repositório [claude-cookbooks](https://github
 ## Visão Geral
 
 Os Cookbooks são notebooks Jupyter que demonstram padrões práticos de uso do Claude. Cada notebook inclui:
+
 - Código executável
 - Explicações detalhadas
 - Casos de uso reais
@@ -21,12 +22,14 @@ Os Cookbooks são notebooks Jupyter que demonstram padrões práticos de uso do 
 RFPs vêm em PDFs com tabelas complexas, diagramas e layouts variados. Vision API do Claude pode processar esses documentos diretamente.
 
 **Casos de uso no Sentinel RFP:**
+
 - Extrair perguntas de documentos RFP em PDF
 - Processar tabelas de requisitos técnicos
 - Identificar diagramas e figuras relevantes
 - Manter estrutura e hierarquia do documento
 
 **Exemplo adaptado:**
+
 ```python
 import anthropic
 
@@ -69,6 +72,7 @@ response = client.messages.create(
 ```
 
 **Implementação no projeto:**
+
 - [ ] Integrar no `question-extractor` skill
 - [ ] Usar no document ingestion pipeline (Issue #29)
 - [ ] Implementar table extraction (Issue #30)
@@ -84,12 +88,14 @@ response = client.messages.create(
 Core do nosso sistema é buscar conhecimento relevante e gerar respostas baseadas nele com alta fidelidade.
 
 **Casos de uso no Sentinel RFP:**
+
 - Knowledge retrieval do library
 - Context ranking para respostas
 - Citation extraction
 - Source attribution
 
 **Padrão principal - Hybrid Search:**
+
 ```python
 # Combine vector search (semantic) + keyword search (exact match)
 def hybrid_search(query: str, top_k: int = 5):
@@ -119,6 +125,7 @@ def hybrid_search(query: str, top_k: int = 5):
 ```
 
 **Prompt pattern para RAG:**
+
 ```python
 def generate_rfp_response(question: str, context: list[str]):
     prompt = f"""You are an expert RFP response writer for our company.
@@ -148,6 +155,7 @@ Response:"""
 ```
 
 **Implementação no projeto:**
+
 - [ ] Implementar no AI service (Issue #48)
 - [ ] Integrar com pgvector search (Issue #45)
 - [ ] Adicionar Meilisearch para keyword search (Issue #45)
@@ -163,12 +171,14 @@ Response:"""
 Para implementar multi-agent architecture (Orchestrator, Knowledge Agent, Planner, Reviewer).
 
 **Casos de uso no Sentinel RFP:**
+
 - Orchestrator Agent routing requests
 - Knowledge Agent searching database
 - Reviewer Agent fact-checking
 - Planner Agent decomposing complex questions
 
 **Exemplo - Tool Definition:**
+
 ```python
 tools = [
     {
@@ -208,6 +218,7 @@ tools = [
 ```
 
 **Implementação no projeto:**
+
 - [ ] Implementar no multi-agent system (Issue #67)
 - [ ] Criar tools para Knowledge Agent
 - [ ] Criar tools para Reviewer Agent
@@ -223,11 +234,13 @@ tools = [
 Para garantir consistência de formato e qualidade nas respostas geradas.
 
 **Casos de uso no Sentinel RFP:**
+
 - Ensinar tom e estilo de respostas
 - Mostrar como citar sources
 - Demonstrar estrutura de resposta ideal
 
 **Exemplo - Few-Shot Prompt:**
+
 ```python
 few_shot_examples = """
 Example 1:
@@ -252,6 +265,7 @@ Now answer this question following the same style...
 ```
 
 **Implementação no projeto:**
+
 - [ ] Criar few-shot examples para cada tipo de resposta
 - [ ] Armazenar examples no banco
 - [ ] Usar em response generation prompts
@@ -267,6 +281,7 @@ Now answer this question following the same style...
 Trust scoring depende de rastreabilidade. Precisamos garantir que cada afirmação pode ser verificada.
 
 **Prompt pattern:**
+
 ```python
 def generate_with_citations(question: str, sources: list[dict]):
     sources_text = "\n\n".join([
@@ -298,6 +313,7 @@ Answer:"""
 ```
 
 **Trust Score Logic:**
+
 ```python
 def calculate_trust_score(response: str, sources: list[str]) -> float:
     """
@@ -335,6 +351,7 @@ def calculate_trust_score(response: str, sources: list[str]) -> float:
 ```
 
 **Implementação no projeto:**
+
 - [ ] Implementar citation extraction
 - [ ] Implementar trust score calculation (Issue #51)
 - [ ] Criar Reviewer Agent para validar citations
@@ -344,18 +361,22 @@ def calculate_trust_score(response: str, sources: list[str]) -> float:
 ## Outros Notebooks Úteis
 
 ### Streaming Responses
+
 **URL:** `streaming/sse-streaming.ipynb`
 **Uso:** Real-time response generation UI
 
 ### Tone Adaptation
+
 **URL:** `prompt-engineering/tone-control.ipynb`
 **Uso:** Ajustar tom (formal, técnico, persuasivo) por question type
 
 ### Long Context Handling
+
 **URL:** `context/long-document-summarization.ipynb`
 **Uso:** Processar RFPs de 200+ páginas
 
 ### Structured Output
+
 **URL:** `output-formats/json-mode.ipynb`
 **Uso:** Garantir respostas em formato estruturado para parsing
 
@@ -364,17 +385,20 @@ def calculate_trust_score(response: str, sources: list[str]) -> float:
 ## Como Usar os Cookbooks
 
 1. **Clone o repositório:**
+
    ```bash
    git clone https://github.com/anthropics/claude-cookbooks.git
    cd claude-cookbooks
    ```
 
 2. **Instale dependências:**
+
    ```bash
    pip install jupyter anthropic openai
    ```
 
 3. **Configure API key:**
+
    ```bash
    export ANTHROPIC_API_KEY=sk-ant-...
    ```

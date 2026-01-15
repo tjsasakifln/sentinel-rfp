@@ -71,16 +71,14 @@ console.log(provider.supportedModels); // ['claude-3-5-sonnet-20241022', ...]
 ```typescript
 const response = await provider.complete({
   model: 'claude-3-5-sonnet-20241022',
-  messages: [
-    { role: 'user', content: 'Explain RFP response best practices' }
-  ],
+  messages: [{ role: 'user', content: 'Explain RFP response best practices' }],
   temperature: 0.3,
   maxTokens: 2048,
   metadata: {
     tenantId: 'org_123',
     requestId: 'req_456',
-    feature: 'response.generation'
-  }
+    feature: 'response.generation',
+  },
 });
 
 console.log(response.content);
@@ -103,19 +101,19 @@ for await (const chunk of provider.stream(request)) {
 
 ### Anthropic Claude
 
-| Model ID | Use Case | Input | Output | Best For |
-|----------|----------|-------|--------|----------|
-| `claude-3-5-sonnet-20241022` | Primary | $3/1M | $15/1M | Fast, good reasoning |
-| `claude-3-opus-20240229` | Fallback | $15/1M | $75/1M | Best quality, complex tasks |
-| `claude-3-haiku-20240307` | Cost-optimized | $0.25/1M | $1.25/1M | Simple, high-volume tasks |
+| Model ID                     | Use Case       | Input    | Output   | Best For                    |
+| ---------------------------- | -------------- | -------- | -------- | --------------------------- |
+| `claude-3-5-sonnet-20241022` | Primary        | $3/1M    | $15/1M   | Fast, good reasoning        |
+| `claude-3-opus-20240229`     | Fallback       | $15/1M   | $75/1M   | Best quality, complex tasks |
+| `claude-3-haiku-20240307`    | Cost-optimized | $0.25/1M | $1.25/1M | Simple, high-volume tasks   |
 
 ### OpenAI (Planejado)
 
-| Model ID | Use Case | Input | Output | Best For |
-|----------|----------|-------|--------|----------|
-| `gpt-4o` | Fallback LLM | $5/1M | $15/1M | Vision, multimodal |
-| `gpt-4o-mini` | Classification | $0.15/1M | $0.6/1M | Simple, fast tasks |
-| `text-embedding-3-large` | Embeddings | $0.13/1M | - | Semantic search |
+| Model ID                 | Use Case       | Input    | Output  | Best For           |
+| ------------------------ | -------------- | -------- | ------- | ------------------ |
+| `gpt-4o`                 | Fallback LLM   | $5/1M    | $15/1M  | Vision, multimodal |
+| `gpt-4o-mini`            | Classification | $0.15/1M | $0.6/1M | Simple, fast tasks |
+| `text-embedding-3-large` | Embeddings     | $0.13/1M | -       | Semantic search    |
 
 ## Arquitetura
 
@@ -163,6 +161,7 @@ Baseado em ADR-006:
 ### Implementação Completa do Provider (Issue #48)
 
 1. **Implementar AnthropicProvider.complete()**
+
    ```typescript
    // Mapear messages para formato Anthropic
    // Chamar client.messages.create()
@@ -171,6 +170,7 @@ Baseado em ADR-006:
    ```
 
 2. **Implementar AnthropicProvider.stream()**
+
    ```typescript
    // Usar client.messages.stream()
    // Yield delta chunks
@@ -187,6 +187,7 @@ Baseado em ADR-006:
 ### Router e Fallback (Issue #48)
 
 1. **Implementar LLMRouter**
+
    ```typescript
    // Provider selection
    // Fallback chain
@@ -203,6 +204,7 @@ Baseado em ADR-006:
 ### Cost Tracking (Issue #48)
 
 1. **Database integration**
+
    ```typescript
    // Store usage events
    // Aggregate per tenant

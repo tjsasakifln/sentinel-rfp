@@ -16,23 +16,23 @@ This module provides structured JSON logging for production and pretty-printed l
 
 From highest to lowest priority:
 
-| Level   | Use Case                                  | Example                          |
-| ------- | ----------------------------------------- | -------------------------------- |
-| `fatal` | Application crashes (process.exit)        | Database connection lost         |
-| `error` | Errors that need immediate attention      | API call failed, exception thrown|
-| `warn`  | Warnings that might need attention        | Deprecated API usage             |
-| `info`  | General informational messages (default)  | Request completed, job started   |
-| `debug` | Detailed debugging information            | Variable values, flow control    |
-| `trace` | Very detailed debugging information       | Function entry/exit              |
+| Level   | Use Case                                 | Example                           |
+| ------- | ---------------------------------------- | --------------------------------- |
+| `fatal` | Application crashes (process.exit)       | Database connection lost          |
+| `error` | Errors that need immediate attention     | API call failed, exception thrown |
+| `warn`  | Warnings that might need attention       | Deprecated API usage              |
+| `info`  | General informational messages (default) | Request completed, job started    |
+| `debug` | Detailed debugging information           | Variable values, flow control     |
+| `trace` | Very detailed debugging information      | Function entry/exit               |
 
 **Default:** `info`
 
 ## Environment Variables
 
-| Variable    | Description                                | Default | Example           |
-| ----------- | ------------------------------------------ | ------- | ----------------- |
-| `LOG_LEVEL` | Minimum log level to output                | `info`  | `debug`, `warn`   |
-| `NODE_ENV`  | Controls log format (JSON vs pretty print) | -       | `production`      |
+| Variable    | Description                                | Default | Example         |
+| ----------- | ------------------------------------------ | ------- | --------------- |
+| `LOG_LEVEL` | Minimum log level to output                | `info`  | `debug`, `warn` |
+| `NODE_ENV`  | Controls log format (JSON vs pretty print) | -       | `production`    |
 
 ## Usage in Services and Controllers
 

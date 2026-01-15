@@ -5,11 +5,13 @@ Este documento descreve como configurar monitoramento e alertas para o Sentinel 
 ## Health Check Endpoint
 
 ### Endpoint
+
 ```
 GET /health
 ```
 
 ### Response (Healthy)
+
 ```json
 {
   "status": "healthy",
@@ -26,6 +28,7 @@ GET /health
 ```
 
 ### Response (Unhealthy)
+
 ```json
 HTTP 503 Service Unavailable
 {
@@ -66,6 +69,7 @@ HTTP 503 Service Unavailable
    - Railway pode reiniciar automaticamente o serviço se configurado
 
 ### Railway CLI Configuration
+
 ```bash
 # railway.json (na raiz do projeto)
 {
@@ -84,6 +88,7 @@ HTTP 503 Service Unavailable
 ## Sentry Alert Rules Configuration
 
 ### Prerequisites
+
 - Sentry DSN configurado em `.env`:
   ```
   SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
@@ -93,10 +98,12 @@ HTTP 503 Service Unavailable
 ### Alert Rules
 
 #### 1. Critical Errors Alert (High Frequency)
+
 **Quando:** > 10 errors/minute
 **Ação:** Slack + Email
 
 **Setup:**
+
 1. Acesse Sentry Dashboard → Alerts → Create Alert Rule
 2. Configure:
    ```
@@ -111,10 +118,12 @@ HTTP 503 Service Unavailable
    - Send an email to team@sentinel-rfp.com
 
 #### 2. 5xx Errors Alert
+
 **Quando:** Qualquer erro 500+
 **Ação:** Slack
 
 **Setup:**
+
 1. Sentry Dashboard → Alerts → Create Alert Rule
 2. Configure:
    ```
@@ -126,10 +135,12 @@ HTTP 503 Service Unavailable
    - Send a Slack notification to #alerts-errors
 
 #### 3. Database Connection Failures
+
 **Quando:** Database health check falha
 **Ação:** Slack + Email (Alta prioridade)
 
 **Setup:**
+
 1. Sentry Dashboard → Alerts → Create Alert Rule
 2. Configure:
    ```
@@ -207,6 +218,7 @@ export class DeadLetterProcessor {
 ## Testing Alerts
 
 ### 1. Test Health Check
+
 ```bash
 # Healthy
 curl https://api.sentinel-rfp.com/health
@@ -219,6 +231,7 @@ docker start sentinel-postgres
 ```
 
 ### 2. Test Sentry Alerts
+
 ```typescript
 // Add temporary route
 @Get('test-error')
@@ -237,6 +250,7 @@ curl https://api.sentinel-rfp.com/test-error
 ```
 
 ### 3. Test High Frequency Alert
+
 ```bash
 # Generate 15 errors in 30 seconds
 for i in {1..15}; do

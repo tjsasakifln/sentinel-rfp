@@ -8,17 +8,18 @@ A Anthropic fornece diversos repositórios open-source para facilitar integraç�
 
 ## Status de Integração
 
-| Recurso | Status | Localização | Documentação | Prioridade |
-|---------|--------|-------------|--------------|------------|
-| SDK TypeScript | ✅ Instalado | `packages/ai/` | [packages/ai/README.md](packages/ai/README.md) | P0 |
-| Cookbooks | 📚 Documentado | `docs/anthropic-resources/` | [cookbooks.md](docs/anthropic-resources/cookbooks.md) | P0 |
-| Quickstarts | 📚 Documentado | `docs/anthropic-resources/` | [quickstarts.md](docs/anthropic-resources/quickstarts.md) | P1 |
-| Prompt Patterns | 📚 Documentado | `docs/anthropic-resources/` | [prompt-patterns.md](docs/anthropic-resources/prompt-patterns.md) | P0 |
-| Skills | 🚧 Estrutura | `apps/api/src/skills/` | [skills/README.md](apps/api/src/skills/README.md) | P1 |
-| Agent SDK | ⏳ Planejado | - | ADR-002 | P2 |
-| MCP Server | ⏳ Planejado | - | - | P3 |
+| Recurso         | Status         | Localização                 | Documentação                                                      | Prioridade |
+| --------------- | -------------- | --------------------------- | ----------------------------------------------------------------- | ---------- |
+| SDK TypeScript  | ✅ Instalado   | `packages/ai/`              | [packages/ai/README.md](packages/ai/README.md)                    | P0         |
+| Cookbooks       | 📚 Documentado | `docs/anthropic-resources/` | [cookbooks.md](docs/anthropic-resources/cookbooks.md)             | P0         |
+| Quickstarts     | 📚 Documentado | `docs/anthropic-resources/` | [quickstarts.md](docs/anthropic-resources/quickstarts.md)         | P1         |
+| Prompt Patterns | 📚 Documentado | `docs/anthropic-resources/` | [prompt-patterns.md](docs/anthropic-resources/prompt-patterns.md) | P0         |
+| Skills          | 🚧 Estrutura   | `apps/api/src/skills/`      | [skills/README.md](apps/api/src/skills/README.md)                 | P1         |
+| Agent SDK       | ⏳ Planejado   | -                           | ADR-002                                                           | P2         |
+| MCP Server      | ⏳ Planejado   | -                           | -                                                                 | P3         |
 
 **Legenda:**
+
 - ✅ Instalado e configurado
 - 📚 Documentado como referência
 - 🚧 Estrutura preparada, implementação pendente
@@ -53,10 +54,7 @@ export class ProposalService {
 
   async generateResponse(questionId: string) {
     // TODO: Quando provider estiver implementado
-    const response = await this.aiService.generateResponse(
-      questionId,
-      contextFromKnowledgeLibrary
-    );
+    const response = await this.aiService.generateResponse(questionId, contextFromKnowledgeLibrary);
   }
 }
 ```
@@ -178,14 +176,14 @@ const prompt = responseGenerationPrompt(
   question,
   contextFromKnowledgeLibrary,
   companyInfo,
-  winThemes
+  winThemes,
 );
 
 const response = await aiService.complete({
   model: 'claude-3-5-sonnet-20241022',
   messages: [{ role: 'user', content: prompt }],
   temperature: 0.3,
-  maxTokens: 2048
+  maxTokens: 2048,
 });
 ```
 
@@ -251,6 +249,7 @@ claude /rfp-response-generator --question-id=123 --context-ids=456,789
 ### O que será feito
 
 Framework para construir multi-agent architecture conforme ADR-002:
+
 - Orchestrator Agent (routing)
 - Knowledge Agent (search)
 - Planner Agent (query decomposition)
@@ -282,6 +281,7 @@ Framework para construir multi-agent architecture conforme ADR-002:
 ### O que será feito
 
 Model Context Protocol para melhor integração com GitHub:
+
 - Contexto automático de issues
 - PR context para code review
 - Repository structure awareness
@@ -325,6 +325,7 @@ Veja [.env.example](.env.example) para detalhes.
 ## Roadmap de Implementação
 
 ### ✅ Fase 1: Setup Inicial (Completo)
+
 - [x] Instalar SDK Anthropic
 - [x] Criar abstração LLM
 - [x] Configurar environment variables
@@ -332,6 +333,7 @@ Veja [.env.example](.env.example) para detalhes.
 - [x] Preparar estrutura para skills
 
 ### ⏳ Fase 2: Implementação Core (Issue #48)
+
 - [ ] Implementar AnthropicProvider completo
 - [ ] Implementar LLMRouter com fallback
 - [ ] Adicionar cost tracking
@@ -339,6 +341,7 @@ Veja [.env.example](.env.example) para detalhes.
 - [ ] Adicionar OpenAI provider
 
 ### ⏳ Fase 3: Multi-Agent (Issue #67)
+
 - [ ] Instalar Agent SDK
 - [ ] Implementar Orchestrator
 - [ ] Implementar agentes especializados
@@ -346,6 +349,7 @@ Veja [.env.example](.env.example) para detalhes.
 - [ ] Testes end-to-end
 
 ### ⏳ Fase 4: Skills & Automação
+
 - [ ] Implementar skills customizadas
 - [ ] Integrar com Claude Code CLI
 - [ ] Documentar workflows
@@ -356,6 +360,7 @@ Veja [.env.example](.env.example) para detalhes.
 ## Recursos Adicionais
 
 ### Documentação Interna
+
 - [docs/anthropic-resources/](docs/anthropic-resources/) - Guias completos
 - [packages/ai/README.md](packages/ai/README.md) - LLM abstraction layer
 - [apps/api/src/ai/README.md](apps/api/src/ai/README.md) - AI module NestJS
@@ -363,6 +368,7 @@ Veja [.env.example](.env.example) para detalhes.
 - [docs/adr/002-multi-agent-rag.md](docs/adr/002-multi-agent-rag.md) - Multi-agent
 
 ### Documentação Externa
+
 - [Anthropic Documentation](https://docs.anthropic.com/)
 - [API Reference](https://docs.anthropic.com/claude/reference)
 - [Prompt Engineering Guide](https://docs.anthropic.com/claude/docs/prompt-engineering)

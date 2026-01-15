@@ -5,21 +5,25 @@ Padrões de prompts otimizados para casos de uso específicos do projeto, com fo
 ## Princípios de Prompt Engineering
 
 ### 1. Clareza e Especificidade
+
 - Seja explícito sobre o formato de saída
 - Defina o tom e estilo desejado
 - Especifique restrições e regras
 
 ### 2. Contexto Adequado
+
 - Forneça contexto relevante sem overflow
 - Use hierarchical context (mais relevante primeiro)
 - Limite context window para evitar custos
 
 ### 3. Few-Shot Learning
+
 - Mostre 2-3 exemplos de respostas ideais
 - Inclua exemplos de edge cases
 - Demonstre como lidar com informação insuficiente
 
 ### 4. Chain of Thought
+
 - Peça raciocínio explícito quando necessário
 - Use step-by-step instructions
 - Valide lógica antes de responder
@@ -39,7 +43,7 @@ const responseGenerationPrompt = (
   question: string,
   context: string[],
   company_info: object,
-  win_themes: string[]
+  win_themes: string[],
 ) => `You are an expert RFP response writer for ${company_info.name}, a company
 specializing in ${company_info.specialization}.
 
@@ -100,7 +104,7 @@ const technicalVariation = {
     - Include specific technical details and metrics
     - Reference standards and frameworks by name
     - Provide architectural diagrams descriptions if relevant
-  `
+  `,
 };
 
 // Para perguntas de experiência passada (storytelling)
@@ -110,7 +114,7 @@ const experienceVariation = {
     - Use STAR format (Situation, Task, Action, Result)
     - Include specific, quantifiable outcomes
     - Explain lessons learned and improvements made
-  `
+  `,
 };
 
 // Para perguntas de compliance (preciso, factual)
@@ -121,7 +125,7 @@ const complianceVariation = {
     - Reference specific clauses and requirements
     - Provide evidence/certification references
     - If non-compliant, explain mitigation plans
-  `
+  `,
 };
 ```
 
@@ -139,7 +143,7 @@ const complianceVariation = {
 const trustScoringPrompt = (
   response: string,
   sources: string[],
-  question: string
+  question: string,
 ) => `You are a critical reviewer evaluating the trustworthiness of an RFP
 response. Your job is to identify any claims that lack proper support.
 
@@ -280,7 +284,7 @@ Output as JSON array:
 const complianceCheckPrompt = (
   response: string,
   requirements: string[],
-  standards: string[]
+  standards: string[],
 ) => `You are a compliance expert reviewing an RFP response against specified
 requirements and standards.
 
@@ -353,7 +357,7 @@ Output as JSON:
 const winThemeIntegrationPrompt = (
   original_response: string,
   win_themes: string[],
-  customer_hot_buttons: string[]
+  customer_hot_buttons: string[],
 ) => `You are an expert at weaving win themes into RFP responses naturally.
 
 <original_response>
@@ -462,9 +466,8 @@ Output as JSON:
 `<question>${q}</question>
 <context>${c}</context>
 <instructions>...</instructions>`
-
 // Less clear: Plain text
-`Question: ${q}\nContext: ${c}\nInstructions:...`
+`Question: ${q}\nContext: ${c}\nInstructions:...`;
 ```
 
 ### 3. Output Format Specification
@@ -472,9 +475,8 @@ Output as JSON:
 ```typescript
 // Good: Specify exact format
 `Output as JSON with this schema: {...}`
-
 // Risky: Vague format
-`Provide a structured response`
+`Provide a structured response`;
 ```
 
 ### 4. Examples (Few-Shot)
@@ -484,9 +486,8 @@ Output as JSON:
 `Example 1: Q: ... A: ...
 Example 2: Q: ... A: ...
 Now answer: ...`
-
 // Overkill: Too many examples (wastes tokens)
-`Example 1-10: ...` // 10 examples is too many
+`Example 1-10: ...`; // 10 examples is too many
 ```
 
 ---
@@ -517,6 +518,7 @@ const results = await comparePrompts(promptV1, promptV2, testCases);
 ### Prompt Versioning
 
 Manter histórico de prompts:
+
 ```
 prompts/
 ├── response-generation/

@@ -30,6 +30,7 @@ JWT_PUBLIC_KEY=LS0tLS1CRUdJTi... (base64-encoded)
 ```
 
 **Security Notes:**
+
 - Never commit `.keys/` directory to version control
 - Add `.keys/` to `.gitignore`
 - Rotate keys periodically in production
@@ -128,12 +129,14 @@ async generateToken(user: User) {
 ## JWT Token Structure
 
 ### Access Token
+
 - **Algorithm**: RS256 (RSA + SHA-256)
 - **Expiration**: 15 minutes
 - **Issuer**: sentinel-rfp
 - **Audience**: sentinel-rfp-api
 
 ### Payload
+
 ```json
 {
   "sub": "user-uuid",
@@ -148,6 +151,7 @@ async generateToken(user: User) {
 ## Security Configuration
 
 ### Argon2id Parameters
+
 - **Type**: Argon2id (hybrid mode)
 - **Memory Cost**: 64 MB (65536 KiB)
 - **Time Cost**: 3 iterations
@@ -156,7 +160,9 @@ async generateToken(user: User) {
 These parameters provide a good balance between security and performance.
 
 ### Password Requirements
+
 Enforce these requirements in your DTOs:
+
 - Minimum 8 characters
 - At least one uppercase letter
 - At least one lowercase letter
@@ -166,11 +172,13 @@ Enforce these requirements in your DTOs:
 ## Testing
 
 Run unit tests:
+
 ```bash
 npm test -- password.util.spec.ts
 ```
 
 Expected coverage:
+
 - ✅ Hashing different passwords
 - ✅ Verifying correct/incorrect passwords
 - ✅ Invalid hash handling
@@ -185,6 +193,7 @@ The module throws standard NestJS exceptions:
 - **Error**: Password hashing failures
 
 Example:
+
 ```typescript
 try {
   const hash = await hashPassword(password);
@@ -204,6 +213,7 @@ Rate limiting for authentication endpoints will be configured in issue #114.
 ## Next Steps
 
 See parent issue #21 for the complete authentication roadmap:
+
 - [ ] #110: Register endpoint
 - [ ] #111: Login endpoint
 - [ ] #112: Refresh token flow

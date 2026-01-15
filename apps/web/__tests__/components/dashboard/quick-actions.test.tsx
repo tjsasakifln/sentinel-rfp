@@ -34,7 +34,7 @@ describe('QuickActions', () => {
     });
 
     it('renders Create Proposal button with Plus icon', () => {
-      const { container } = render(<QuickActions />);
+      render(<QuickActions />);
       const button = screen.getByText('Create Proposal').closest('button');
       const svg = button?.querySelector('svg');
       expect(svg).toBeInTheDocument();
@@ -117,7 +117,7 @@ describe('QuickActions', () => {
 
     it('renders dropdown menu items with icons', async () => {
       const user = userEvent.setup();
-      const { container } = render(<QuickActions />);
+      render(<QuickActions />);
       const dropdownButton = screen.getByText('Quick Actions');
       await user.click(dropdownButton);
 

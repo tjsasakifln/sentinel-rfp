@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -46,8 +41,7 @@ export class RequestIdInterceptor implements NestInterceptor {
 
     // Use client-provided request ID if available (idempotency)
     // Otherwise generate new UUID v4
-    const requestId =
-      (request.headers['x-request-id'] as string) || uuidv4();
+    const requestId = (request.headers['x-request-id'] as string) || uuidv4();
 
     // Attach request ID to request object for downstream access
     request.id = requestId;

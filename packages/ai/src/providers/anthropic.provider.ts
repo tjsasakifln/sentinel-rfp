@@ -58,6 +58,12 @@ export class AnthropicProvider implements LLMProvider {
     // 1. Call this.client.messages.stream()
     // 2. Yield delta chunks as they arrive
     // 3. Yield final usage stats when done
+
+    // Temporary stub to satisfy interface - yields error chunk
+    yield {
+      type: 'delta' as const,
+      content: 'Not implemented yet - see ADR-006 for implementation guide',
+    };
     throw new Error('Not implemented yet - see ADR-006 for implementation guide');
   }
 

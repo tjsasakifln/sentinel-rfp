@@ -1,9 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { withScope, captureException } from '@sentry/nestjs';
 import { Request } from 'express';
 
@@ -81,12 +76,7 @@ export class SentryFilter implements ExceptionFilter {
     const sanitized = { ...headers };
 
     // Remove sensitive headers
-    const sensitiveKeys = [
-      'authorization',
-      'cookie',
-      'x-api-key',
-      'x-auth-token',
-    ];
+    const sensitiveKeys = ['authorization', 'cookie', 'x-api-key', 'x-auth-token'];
 
     sensitiveKeys.forEach((key) => {
       if (sanitized[key]) {

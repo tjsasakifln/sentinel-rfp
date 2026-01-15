@@ -9,14 +9,17 @@ Skills são comandos customizados que podem ser invocados via Claude Code CLI pa
 ## Skills Planejadas
 
 ### 1. `rfp-response-generator`
+
 Gera respostas para perguntas de RFP com base no knowledge library.
 
 **Uso:**
+
 ```bash
 claude /rfp-response-generator --question-id=123 --context-ids=456,789
 ```
 
 **Funcionalidade:**
+
 - Busca contexto relevante do knowledge library
 - Gera resposta usando Claude com prompt otimizado
 - Calcula trust score automático
@@ -24,14 +27,17 @@ claude /rfp-response-generator --question-id=123 --context-ids=456,789
 - Salva no banco de dados
 
 ### 2. `trust-score-calculator`
+
 Calcula trust score de uma resposta com base em citations e quality metrics.
 
 **Uso:**
+
 ```bash
 claude /trust-score-calculator --response-id=123
 ```
 
 **Funcionalidade:**
+
 - Analisa qualidade da resposta
 - Verifica citations contra sources
 - Detecta possíveis alucinações
@@ -39,14 +45,17 @@ claude /trust-score-calculator --response-id=123
 - Sugere melhorias
 
 ### 3. `question-extractor`
+
 Extrai perguntas de documentos RFP (PDF, DOCX).
 
 **Uso:**
+
 ```bash
 claude /question-extractor --document-path="./rfps/example.pdf"
 ```
 
 **Funcionalidade:**
+
 - Processa documento usando Vision API
 - Identifica seções e hierarquia
 - Extrai perguntas e requirements
@@ -54,14 +63,17 @@ claude /question-extractor --document-path="./rfps/example.pdf"
 - Importa para banco de dados
 
 ### 4. `compliance-checker`
+
 Verifica compliance de respostas com requisitos FAR/DFARS.
 
 **Uso:**
+
 ```bash
 claude /compliance-checker --proposal-id=123 --standards=FAR,DFARS
 ```
 
 **Funcionalidade:**
+
 - Analisa respostas contra compliance requirements
 - Identifica gaps e riscos
 - Gera compliance matrix
@@ -80,7 +92,7 @@ export default {
 
   async execute(args: { questionId: string; contextIds: string[] }) {
     // Implementation
-  }
+  },
 };
 ```
 
@@ -132,6 +144,7 @@ Status: **Estrutura Preparada** - Aguardando implementação das skills
 ## Contribuindo
 
 Ao criar uma nova skill:
+
 1. Siga a estrutura de diretórios padrão
 2. Adicione testes
 3. Documente com exemplos

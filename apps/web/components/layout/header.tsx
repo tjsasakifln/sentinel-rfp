@@ -56,12 +56,7 @@ export function Header() {
         {/* Right section: User menu placeholder */}
         <div className="flex items-center gap-2">
           <nav aria-label="User menu">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-full"
-              aria-label="User account"
-            >
+            <Button variant="ghost" size="sm" className="rounded-full" aria-label="User account">
               <span className="sr-only">User menu</span>
               <div className="h-8 w-8 rounded-full bg-sentinel-600 flex items-center justify-center text-white text-sm font-medium">
                 U

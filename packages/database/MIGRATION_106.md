@@ -10,6 +10,7 @@ This migration configures PostgreSQL's pgvector extension and creates optimized 
 ## What's Included
 
 ### 1. pgvector Extension
+
 - Enables `vector` data type for storing embeddings
 - Provides cosine similarity operators (`<=>`, `<->`, `<#>`)
 - Required for semantic search functionality
@@ -33,6 +34,7 @@ CREATE INDEX library_entries_embedding_idx
 ```
 
 **Parameters:**
+
 - `m = 16`: Maximum connections per node (balance: recall vs build time)
 - `ef_construction = 64`: Dynamic candidate list size during build (higher = better quality, slower build)
 - `vector_cosine_ops`: Uses cosine similarity (1 - cosine_similarity)
@@ -71,6 +73,7 @@ LIMIT 10;
 ```
 
 **Execution plan:**
+
 1. Filter rows using B-tree indexes (organization_id + category)
 2. Apply HNSW approximate nearest neighbor search on filtered subset
 3. Return top-K results
@@ -78,14 +81,15 @@ LIMIT 10;
 ## Performance Targets
 
 | Dataset Size | Expected P95 Latency |
-|--------------|---------------------|
-| 1K vectors   | <200ms             |
-| 10K vectors  | <500ms             |
-| 100K vectors | <1s                |
+| ------------ | -------------------- |
+| 1K vectors   | <200ms               |
+| 10K vectors  | <500ms               |
+| 100K vectors | <1s                  |
 
 ## Testing the Migration
 
 ### Prerequisites
+
 - Docker installed and running
 - Node.js and npm installed
 

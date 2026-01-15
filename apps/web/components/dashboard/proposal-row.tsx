@@ -105,13 +105,13 @@ export function ProposalRow({ proposal }: ProposalRowProps) {
   };
 
   return (
-    <TableRow
-      className="cursor-pointer hover:bg-muted/50 transition-colors"
-      onClick={handleClick}
-    >
+    <TableRow className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={handleClick}>
       <TableCell className="font-medium">{proposal.title}</TableCell>
       <TableCell>
-        <Badge variant={getStatusVariant(proposal.status)} className={getStatusColorClass(proposal.status)}>
+        <Badge
+          variant={getStatusVariant(proposal.status)}
+          className={getStatusColorClass(proposal.status)}
+        >
           {formatStatus(proposal.status)}
         </Badge>
       </TableCell>

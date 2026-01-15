@@ -336,9 +336,7 @@ describe('Proposals (e2e)', () => {
     });
 
     it('should fail with 401 when no auth token provided', async () => {
-      await request(app.getHttpServer())
-        .get('/api/v1/proposals')
-        .expect(401);
+      await request(app.getHttpServer()).get('/api/v1/proposals').expect(401);
     });
 
     it('should only return proposals for authenticated user org (tenant isolation)', async () => {
@@ -387,9 +385,7 @@ describe('Proposals (e2e)', () => {
     });
 
     it('should fail with 401 when no auth token provided', async () => {
-      await request(app.getHttpServer())
-        .get(`/api/v1/proposals/${createdProposalId}`)
-        .expect(401);
+      await request(app.getHttpServer()).get(`/api/v1/proposals/${createdProposalId}`).expect(401);
     });
 
     it('should enforce tenant isolation (404 for other org proposals)', async () => {
