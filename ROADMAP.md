@@ -208,7 +208,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#117](https://github.com/tjsasakifln/sentinel-rfp/issues/117) - Structured Logging com Pino
   - [x] [#118](https://github.com/tjsasakifln/sentinel-rfp/issues/118) - Request ID Tracking & Correlation
   - [x] [#119](https://github.com/tjsasakifln/sentinel-rfp/issues/119) - Sentry Integration para Error Tracking
-  - [ ] [#120](https://github.com/tjsasakifln/sentinel-rfp/issues/120) - Error Alerting & Monitoring Rules
+  - [x] [#120](https://github.com/tjsasakifln/sentinel-rfp/issues/120) - Error Alerting & Monitoring Rules
 - [ ] Observability - [#86](https://github.com/tjsasakifln/sentinel-rfp/issues/86)
 - [ ] User onboarding flow
 - [ ] Developer Experience - [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87)
@@ -554,6 +554,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                           |
 | ------- | ---------- | --------------------------------------------------------------------------------- |
+| 1.9     | 2026-01-15 | Marked #120 complete after PR #162 merge (Error alerting & monitoring rules with enhanced health check endpoint) - All Error Handling & Logging sub-issues complete! |
 | 1.8     | 2026-01-14 | Marked #148 complete after PR #156 merge (DELETE /v1/proposals/:id soft delete endpoint) - All Proposal CRUD operations complete! |
 | 1.7     | 2026-01-14 | Marked #147 complete after PR #155 merge (PUT /v1/proposals/:id update endpoint); Added CRUD sub-issues tracking (#145, #146, #147, #148) |
 | 1.6     | 2026-01-14 | Marked #48 70% complete - Setup inicial LLM abstraction layer (SDK, types, providers, docs) |
