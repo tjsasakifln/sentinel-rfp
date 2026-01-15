@@ -11,6 +11,7 @@ import { FileText, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 
 import { MetricCard } from '@/components/dashboard/metric-card';
 import { ProposalList } from '@/components/dashboard/proposal-list';
+import { QuickActions } from '@/components/dashboard/quick-actions';
 import { getDashboardMetrics } from '@/lib/api/dashboard';
 
 /**
@@ -67,11 +68,14 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto space-y-6 p-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Here&apos;s an overview of your proposals.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Welcome back! Here&apos;s an overview of your proposals.
+          </p>
+        </div>
+        <QuickActions />
       </div>
 
       {isLoading ? (
@@ -115,9 +119,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Proposals</h2>
-            <p className="text-sm text-muted-foreground">
-              View and manage all your proposals
-            </p>
+            <p className="text-sm text-muted-foreground">View and manage all your proposals</p>
           </div>
         </div>
         <ProposalList token={mockToken} />
