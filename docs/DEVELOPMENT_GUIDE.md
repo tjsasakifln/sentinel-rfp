@@ -200,11 +200,21 @@ docs(api): update webhook documentation
 refactor(agents): simplify orchestrator logic
 ```
 
+### Git Hooks
+
+The project uses automated Git hooks to enforce code quality:
+
+- **pre-commit**: Runs ESLint + Prettier on staged files
+- **commit-msg**: Validates commit message format (Conventional Commits)
+- **pre-push**: Runs TypeScript type checking
+
+**See [Git Hooks Documentation](./development/git-hooks.md) for details.**
+
 ### Code Review Process
 
 1. Create feature branch from `develop`
 2. Implement changes with tests
-3. Run lint and type checks
+3. Run lint and type checks (automated via Git hooks)
 4. Create Pull Request
 5. Address review feedback
 6. Squash and merge
