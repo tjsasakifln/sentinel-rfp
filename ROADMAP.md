@@ -26,9 +26,11 @@ Issues grandes (size:L) e Epics amplos foram decompostos em sub-issues atômicas
 | #15          | Next.js Frontend Scaffolding | #90-#95 (6 sub-issues)   | ✅ Completo                                                             |
 | #19          | Prisma Schema Design         | #102-#108 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/19) |
 | #21          | User Authentication (JWT)    | #109-#115 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/21) |
-| #52          | Basic Dashboard              | #128-#130 (3 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/52) |
+| #22          | Organization Multi-tenancy   | #168-#172 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/22) |
+| #49          | Proposal CRUD                | #144-#148 (5 sub-issues) | ✅ Completo                                                             |
+| #52          | Basic Dashboard              | #127-#131 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/52) |
 | #61          | Error Handling & Logging     | #116-#120 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/61) |
-| #87          | Developer Experience         | #122-#125 (4 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/87) |
+| #87          | Developer Experience         | #121-#126 (6 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/87) |
 
 **Convenção de Nomenclatura:** Sub-issues seguem padrão `[PREFIX-NUMletter]`
 
@@ -92,6 +94,11 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#114](https://github.com/tjsasakifln/sentinel-rfp/issues/114) - Adicionar rate limiting nos endpoints de autenticação
   - [x] [#115](https://github.com/tjsasakifln/sentinel-rfp/issues/115) - Criar testes de integração E2E para autenticação
 - [ ] Organization multi-tenancy - [#22](https://github.com/tjsasakifln/sentinel-rfp/issues/22)
+  - [ ] [#168](https://github.com/tjsasakifln/sentinel-rfp/issues/168) - Setup TenantContext Service
+  - [ ] [#169](https://github.com/tjsasakifln/sentinel-rfp/issues/169) - Implementar Prisma Tenant Middleware
+  - [ ] [#170](https://github.com/tjsasakifln/sentinel-rfp/issues/170) - Criar Organization CRUD Endpoints
+  - [ ] [#171](https://github.com/tjsasakifln/sentinel-rfp/issues/171) - Implementar User-Organization Relationships
+  - [ ] [#172](https://github.com/tjsasakifln/sentinel-rfp/issues/172) - Criar Testes de Isolamento Cross-Tenant
 - [ ] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
 - [ ] Password reset flow - [#24](https://github.com/tjsasakifln/sentinel-rfp/issues/24)
 
@@ -177,6 +184,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 #### Milestone 4.1: Proposal Management ([EPIC #9](https://github.com/tjsasakifln/sentinel-rfp/issues/9))
 
 - [ ] Proposal CRUD - [#49](https://github.com/tjsasakifln/sentinel-rfp/issues/49)
+  - [x] [#144](https://github.com/tjsasakifln/sentinel-rfp/issues/144) - Criar módulo Proposal base (NestJS module/controller/service)
   - [x] [#145](https://github.com/tjsasakifln/sentinel-rfp/issues/145) - Implementar POST /v1/proposals (Create)
   - [x] [#146](https://github.com/tjsasakifln/sentinel-rfp/issues/146) - Implementar GET /v1/proposals (List) e GET /v1/proposals/:id (FindOne)
   - [x] [#147](https://github.com/tjsasakifln/sentinel-rfp/issues/147) - Implementar PUT /v1/proposals/:id (Update)
@@ -188,6 +196,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#128](https://github.com/tjsasakifln/sentinel-rfp/issues/128) - Dashboard Layout & Metrics Cards
   - [x] [#129](https://github.com/tjsasakifln/sentinel-rfp/issues/129) - Proposals List Component com Filters
   - [x] [#130](https://github.com/tjsasakifln/sentinel-rfp/issues/130) - Quick Actions Menu & Create Proposal Button
+  - [ ] [#131](https://github.com/tjsasakifln/sentinel-rfp/issues/131) - Empty States & Loading Skeletons
 
 #### Milestone 4.2: Response Editing ([EPIC #10](https://github.com/tjsasakifln/sentinel-rfp/issues/10))
 
@@ -195,6 +204,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 - [ ] Version history - [#58](https://github.com/tjsasakifln/sentinel-rfp/issues/58)
 - [ ] Inline regeneration - [#59](https://github.com/tjsasakifln/sentinel-rfp/issues/59)
 - [ ] Trust score explanation - [#60](https://github.com/tjsasakifln/sentinel-rfp/issues/60)
+- [ ] Trust Score Explanation UI - [#56](https://github.com/tjsasakifln/sentinel-rfp/issues/56)
 
 #### Milestone 4.3: Export ([EPIC #11](https://github.com/tjsasakifln/sentinel-rfp/issues/11))
 
@@ -554,18 +564,19 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 ## Changelog
 
-| Version | Date       | Changes                                                                                                                                                              |
-| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.9     | 2026-01-15 | Marked #120 complete after PR #162 merge (Error alerting & monitoring rules with enhanced health check endpoint) - All Error Handling & Logging sub-issues complete! |
-| 1.8     | 2026-01-14 | Marked #148 complete after PR #156 merge (DELETE /v1/proposals/:id soft delete endpoint) - All Proposal CRUD operations complete!                                    |
-| 1.7     | 2026-01-14 | Marked #147 complete after PR #155 merge (PUT /v1/proposals/:id update endpoint); Added CRUD sub-issues tracking (#145, #146, #147, #148)                            |
-| 1.6     | 2026-01-14 | Marked #48 70% complete - Setup inicial LLM abstraction layer (SDK, types, providers, docs)                                                                          |
-| 1.5     | 2026-01-14 | Marked #146 complete after PR #153 merge (GET endpoints for proposals); Fixed wrong issue number in Milestone 4.1 (#53 → #49)                                        |
-| 1.4     | 2026-01-14 | Marked #114 complete after PR #152 merge (rate limiting for auth endpoints)                                                                                          |
-| 1.3     | 2026-01-12 | Comprehensive audit sync: Added 30 sub-issues, fixed issue number mappings, updated progress (123 total issues, 9 closed)                                            |
-| 1.2     | 2026-01-12 | Decomposed 3 issues into 16 atomic sub-issues (#61→#116-120, #87→#121-126, #52→#127-131)                                                                             |
-| 1.1     | 2026-01-09 | Added GitHub issue links for all milestones                                                                                                                          |
-| 1.0     | 2026-01-09 | Initial roadmap creation                                                                                                                                             |
+| Version | Date       | Changes                                                                                                                                                                                         |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.0     | 2026-01-15 | Comprehensive ROADMAP audit: Fixed GitHub Project Status (133 issues, 41 closed = 31%), added missing decompositions (#22→#168-172, #49→#144-148), corrected milestone tracking (#52, #87, #56) |
+| 1.9     | 2026-01-15 | Marked #120 complete after PR #162 merge (Error alerting & monitoring rules with enhanced health check endpoint) - All Error Handling & Logging sub-issues complete!                            |
+| 1.8     | 2026-01-14 | Marked #148 complete after PR #156 merge (DELETE /v1/proposals/:id soft delete endpoint) - All Proposal CRUD operations complete!                                                               |
+| 1.7     | 2026-01-14 | Marked #147 complete after PR #155 merge (PUT /v1/proposals/:id update endpoint); Added CRUD sub-issues tracking (#145, #146, #147, #148)                                                       |
+| 1.6     | 2026-01-14 | Marked #48 70% complete - Setup inicial LLM abstraction layer (SDK, types, providers, docs)                                                                                                     |
+| 1.5     | 2026-01-14 | Marked #146 complete after PR #153 merge (GET endpoints for proposals); Fixed wrong issue number in Milestone 4.1 (#53 → #49)                                                                   |
+| 1.4     | 2026-01-14 | Marked #114 complete after PR #152 merge (rate limiting for auth endpoints)                                                                                                                     |
+| 1.3     | 2026-01-12 | Comprehensive audit sync: Added 30 sub-issues, fixed issue number mappings, updated progress (123 total issues, 9 closed)                                                                       |
+| 1.2     | 2026-01-12 | Decomposed 3 issues into 16 atomic sub-issues (#61→#116-120, #87→#121-126, #52→#127-131)                                                                                                        |
+| 1.1     | 2026-01-09 | Added GitHub issue links for all milestones                                                                                                                                                     |
+| 1.0     | 2026-01-09 | Initial roadmap creation                                                                                                                                                                        |
 
 ---
 
@@ -583,15 +594,23 @@ These epics run in parallel throughout the development cycle:
 
 ## GitHub Project Status
 
-**Total Issues Created:** 123
+**Total Issues Created:** 133
 
-- **Open:** 113 (92%)
-- **Closed:** 10 (8%)
-- **Epics:** 36
-- **Features:** 87
+- **Open:** 92 (69%)
+- **Closed:** 41 (31%)
+- **Epics:** 12
+- **Features:** 121
 - **Milestones:** 13
-- **Labels:** 38
-- **Overall Progress:** 10/123 issues closed (8%)
+- **Labels:** 38 (estimated)
+- **Overall Progress:** 41/133 issues closed (31%)
+
+**Milestone Breakdown:**
+
+- **Phase 1 - Month 1 (Infrastructure & Auth):** 32/53 closed (60%)
+- **Phase 1 - Month 4 (MVP Polish & Launch):** 9/29 closed (31%)
+- **Phase 1 - Month 2 (Document Processing):** 0/13 closed (0%)
+- **Phase 1 - Month 3 (AI Response):** 0/17 closed (0%)
+- **Phase 2+:** 0/21 closed (0%)
 
 **Browse all issues:** [GitHub Issues](https://github.com/tjsasakifln/sentinel-rfp/issues)
 
