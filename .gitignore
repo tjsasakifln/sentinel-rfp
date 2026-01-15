@@ -75,3 +75,7 @@ secrets.json
 .pnp
 .pnp.js
 pnpm-debug.log*
+
+# Docker (optional local overrides)
+# Uncomment if you want to ignore personal docker-compose overrides:
+# docker-compose.override.yml

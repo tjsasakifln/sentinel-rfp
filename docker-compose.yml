@@ -1,0 +1,83 @@
+version: '3.9'
+
+services:
+  # PostgreSQL 16 with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: sentinel-postgres
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: sentinel_user
+      POSTGRES_PASSWORD: sentinel_password
+      POSTGRES_DB: sentinel_rfp
+      POSTGRES_INITDB_ARGS: '-U sentinel_user'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sentinel_user -d sentinel_rfp']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - sentinel-network
+
+  # Redis 7.x for caching and BullMQ job queues
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - sentinel-network
+
+  # Meilisearch 1.x for full-text search
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    container_name: sentinel-meilisearch
+    restart: unless-stopped
+    ports:
+      - '7700:7700'
+    environment:
+      MEILI_ENV: development
+      MEILI_MASTER_KEY: sentinel_meili_master_key_dev_only
+      MEILI_HTTP_ADDR: 0.0.0.0:7700
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--spider', 'http://localhost:7700/health']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - sentinel-network
+
+# Named volumes for data persistence
+volumes:
+  postgres_data:
+    name: sentinel_postgres_data
+    driver: local
+  redis_data:
+    name: sentinel_redis_data
+    driver: local
+  meilisearch_data:
+    name: sentinel_meilisearch_data
+    driver: local
+
+# Isolated network for services
+networks:
+  sentinel-network:
+    name: sentinel_network
+    driver: bridge
