@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FileText, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 
 import { MetricCard } from '@/components/dashboard/metric-card';
+import { ProposalList } from '@/components/dashboard/proposal-list';
 import { getDashboardMetrics } from '@/lib/api/dashboard';
 
 /**
@@ -109,7 +110,18 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Future: Add proposals list, charts, recent activity */}
+      {/* Proposals List */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">Proposals</h2>
+            <p className="text-sm text-muted-foreground">
+              View and manage all your proposals
+            </p>
+          </div>
+        </div>
+        <ProposalList token={mockToken} />
+      </div>
     </div>
   );
 }
