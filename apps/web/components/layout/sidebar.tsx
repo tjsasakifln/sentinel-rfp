@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Home,
-  FileText,
-  Library,
-  Settings,
-  ChevronLeft,
-  X,
-} from 'lucide-react';
+import { Home, FileText, Library, Settings, ChevronLeft, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
@@ -15,7 +8,6 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/ui-store';
-
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },
@@ -26,13 +18,8 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const {
-    sidebarOpen,
-    sidebarCollapsed,
-    toggleSidebar,
-    setSidebarCollapsed,
-    isMobile,
-  } = useUIStore();
+  const { sidebarOpen, sidebarCollapsed, toggleSidebar, setSidebarCollapsed, isMobile } =
+    useUIStore();
 
   // Auto-collapse on mobile when route changes
   useEffect(() => {
@@ -59,11 +46,7 @@ export function Sidebar() {
       <aside
         className={cn(
           'fixed left-0 top-0 z-50 h-full border-r border-border bg-background transition-all duration-300 md:sticky md:top-16 md:h-[calc(100vh-4rem)]',
-          isMobile
-            ? 'w-64'
-            : sidebarCollapsed
-              ? 'w-16'
-              : 'w-64',
+          isMobile ? 'w-64' : sidebarCollapsed ? 'w-16' : 'w-64',
           isMobile && !sidebarOpen && 'hidden',
         )}
         role="complementary"
@@ -72,9 +55,7 @@ export function Sidebar() {
         <div className="flex h-full flex-col">
           {/* Sidebar header */}
           <div className="flex h-16 items-center justify-between border-b border-border px-4 md:h-auto md:py-4">
-            {!sidebarCollapsed && (
-              <h2 className="text-lg font-semibold text-foreground">Menu</h2>
-            )}
+            {!sidebarCollapsed && <h2 className="text-lg font-semibold text-foreground">Menu</h2>}
 
             {/* Mobile close button */}
             {isMobile && (
@@ -99,10 +80,7 @@ export function Sidebar() {
                 className="hidden md:flex"
               >
                 <ChevronLeft
-                  className={cn(
-                    'h-5 w-5 transition-transform',
-                    sidebarCollapsed && 'rotate-180',
-                  )}
+                  className={cn('h-5 w-5 transition-transform', sidebarCollapsed && 'rotate-180')}
                   aria-hidden="true"
                 />
               </Button>

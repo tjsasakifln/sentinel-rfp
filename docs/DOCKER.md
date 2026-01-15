@@ -48,31 +48,32 @@ cp .env.example .env
 ```
 
 The default credentials match the Docker configuration:
+
 - PostgreSQL: `sentinel_user / sentinel_password`
 - Redis: No auth (localhost only)
 - Meilisearch: `sentinel_meili_master_key_dev_only`
 
 ## Available npm Scripts
 
-| Script | Command | Description |
-|--------|---------|-------------|
-| `pnpm docker:up` | `docker-compose up -d` | Start all services in background |
-| `pnpm docker:down` | `docker-compose down` | Stop all services |
-| `pnpm docker:restart` | `docker-compose restart` | Restart all services |
-| `pnpm docker:logs` | `docker-compose logs -f` | Follow logs from all services |
-| `pnpm docker:ps` | `docker-compose ps` | Show service status |
-| `pnpm docker:clean` | `docker-compose down -v` | Stop services and remove volumes |
-| `pnpm docker:init` | `bash scripts/docker-up.sh` | Initialize with health checks |
+| Script                | Command                     | Description                      |
+| --------------------- | --------------------------- | -------------------------------- |
+| `pnpm docker:up`      | `docker-compose up -d`      | Start all services in background |
+| `pnpm docker:down`    | `docker-compose down`       | Stop all services                |
+| `pnpm docker:restart` | `docker-compose restart`    | Restart all services             |
+| `pnpm docker:logs`    | `docker-compose logs -f`    | Follow logs from all services    |
+| `pnpm docker:ps`      | `docker-compose ps`         | Show service status              |
+| `pnpm docker:clean`   | `docker-compose down -v`    | Stop services and remove volumes |
+| `pnpm docker:init`    | `bash scripts/docker-up.sh` | Initialize with health checks    |
 
 ## Service URLs
 
 Once services are running:
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| PostgreSQL | `localhost:5432` | user: `sentinel_user`<br/>password: `sentinel_password`<br/>database: `sentinel_rfp` |
-| Redis | `localhost:6379` | No authentication (localhost only) |
-| Meilisearch | `http://localhost:7700` | master key: `sentinel_meili_master_key_dev_only` |
+| Service     | URL                     | Credentials                                                                          |
+| ----------- | ----------------------- | ------------------------------------------------------------------------------------ |
+| PostgreSQL  | `localhost:5432`        | user: `sentinel_user`<br/>password: `sentinel_password`<br/>database: `sentinel_rfp` |
+| Redis       | `localhost:6379`        | No authentication (localhost only)                                                   |
+| Meilisearch | `http://localhost:7700` | master key: `sentinel_meili_master_key_dev_only`                                     |
 
 ## PostgreSQL with pgvector
 
@@ -173,7 +174,7 @@ If ports are already in use, edit `docker-compose.override.yml`:
 services:
   postgres:
     ports:
-      - '5433:5432'  # Use 5433 instead of 5432
+      - '5433:5432' # Use 5433 instead of 5432
 ```
 
 Then update `DATABASE_URL` in `.env`:

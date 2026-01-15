@@ -5,6 +5,7 @@ Guia dos templates mais relevantes do repositório [claude-quickstarts](https://
 ## Visão Geral
 
 Quickstarts são aplicações completas que demonstram:
+
 - Arquitetura end-to-end
 - Integração com frameworks modernos
 - Best practices de UX
@@ -19,12 +20,14 @@ Quickstarts são aplicações completas que demonstram:
 
 **Por quê adaptar:**
 O template de customer support tem padrões úteis para colaboração assíncrona com SMEs:
+
 - Thread-based conversations
 - @ mentions e notificações
 - Status tracking (pending, in progress, answered)
 - Integration com Slack/Teams
 
 **Componentes reutilizáveis:**
+
 ```
 customer-support-agent/
 ├── components/
@@ -42,6 +45,7 @@ customer-support-agent/
 ```
 
 **Features para adaptar:**
+
 - ✅ Thread-based conversation UI
 - ✅ Real-time notifications
 - ✅ @ mention system para SMEs
@@ -50,6 +54,7 @@ customer-support-agent/
 - ✅ Activity timeline
 
 **Implementação:**
+
 - [ ] Adaptar components para RFP context (Issue #69)
 - [ ] Integrar com Slack/Teams (Issue #64, #65)
 - [ ] Implementar assignment workflow (Issue #70)
@@ -63,12 +68,14 @@ customer-support-agent/
 
 **Por quê adaptar:**
 Documentos legais e RFPs compartilham características:
+
 - Alta densidade de informação
 - Estrutura hierárquica complexa
 - Necessidade de preservar contexto
 - Extração de itens acionáveis
 
 **Componentes reutilizáveis:**
+
 ```
 legal-summarization/
 ├── processing/
@@ -85,6 +92,7 @@ legal-summarization/
 ```
 
 **Prompt adaptado:**
+
 ```typescript
 // legal-summarization prompt
 const legalSummaryPrompt = `Summarize this legal document,
@@ -103,6 +111,7 @@ Preserve the hierarchical structure and relationships.`;
 ```
 
 **Implementação:**
+
 - [ ] Adaptar document parser (Issue #29)
 - [ ] Implementar question extraction (Issue #35)
 - [ ] Criar hierarchy mapper (Issue #36)
@@ -116,12 +125,14 @@ Preserve the hierarchical structure and relationships.`;
 
 **Por quê adaptar:**
 Este template demonstra RAG completo com:
+
 - Vector database integration
 - Hybrid search (semantic + keyword)
 - Citation tracking
 - Source attribution
 
 **Arquitetura do template:**
+
 ```
 document-qa/
 ├── embedding/
@@ -142,6 +153,7 @@ document-qa/
 ```
 
 **RAG Pattern:**
+
 ```typescript
 // From document-qa template
 async function answerQuestion(question: string) {
@@ -165,6 +177,7 @@ async function answerQuestion(question: string) {
 ```
 
 **Adaptação para RFP:**
+
 ```typescript
 async function generateRFPResponse(questionId: string) {
   // 1. Get question details
@@ -172,7 +185,7 @@ async function generateRFPResponse(questionId: string) {
 
   // 2. Search knowledge library (same as doc-qa)
   const knowledge = await hybridSearch(question.text, {
-    filters: { category: question.category }
+    filters: { category: question.category },
   });
 
   // 3. Generate response (adapted prompt)
@@ -187,6 +200,7 @@ async function generateRFPResponse(questionId: string) {
 ```
 
 **Implementação:**
+
 - [ ] Adaptar hybrid search (Issue #45)
 - [ ] Implementar RAG pipeline (Issue #44-47)
 - [ ] Criar trust scoring (Issue #51)
@@ -200,33 +214,36 @@ async function generateRFPResponse(questionId: string) {
 
 **Por quê adaptar:**
 Extração estruturada de dados é necessária para:
+
 - Compliance matrices (Section L/M mapping)
 - Requirement traceability
 - Win theme tracking
 
 **Template pattern:**
+
 ```typescript
 // Define structured output schema
 const extractionSchema = {
-  type: "object",
+  type: 'object',
   properties: {
     requirements: {
-      type: "array",
+      type: 'array',
       items: {
-        type: "object",
+        type: 'object',
         properties: {
-          id: { type: "string" },
-          text: { type: "string" },
-          category: { type: "string", enum: ["technical", "compliance", "cost"] },
-          priority: { type: "string", enum: ["must", "should", "may"] }
-        }
-      }
-    }
-  }
+          id: { type: 'string' },
+          text: { type: 'string' },
+          category: { type: 'string', enum: ['technical', 'compliance', 'cost'] },
+          priority: { type: 'string', enum: ['must', 'should', 'may'] },
+        },
+      },
+    },
+  },
 };
 ```
 
 **Implementação:**
+
 - [ ] Adaptar para compliance checking (Issue #38)
 - [ ] Criar compliance matrix generator (Issue #78)
 
@@ -235,17 +252,20 @@ const extractionSchema = {
 ## Como Usar os Quickstarts
 
 1. **Clone repositório:**
+
    ```bash
    git clone https://github.com/anthropics/claude-quickstarts.git
    cd claude-quickstarts
    ```
 
 2. **Navegue para template:**
+
    ```bash
    cd customer-support-agent
    ```
 
 3. **Instale e rode:**
+
    ```bash
    npm install
    npm run dev

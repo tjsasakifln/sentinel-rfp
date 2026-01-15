@@ -72,6 +72,7 @@ This document validates the initial Prisma migration (20260113000000_init) creat
 ### ✅ Exports Validation
 
 File: `src/index.ts`
+
 ```typescript
 export { PrismaClient, Prisma } from '@prisma/client';
 export type { SystemConfig } from '@prisma/client';
@@ -79,6 +80,7 @@ export * from './types';
 ```
 
 All models are accessible via PrismaClient:
+
 - `prisma.organization`
 - `prisma.user`
 - `prisma.proposal`
@@ -102,6 +104,7 @@ The migration SQL was created and validated, but **NOT applied** to a running da
 ### Migration File Verified
 
 The migration SQL file has been manually created with:
+
 - All table definitions from schema.prisma
 - All foreign key constraints
 - All indexes
@@ -138,7 +141,7 @@ The seed script is ready to populate test data once the database is available.
 ```typescript
 // Test 1: Create organization and user
 const org = await prisma.organization.create({
-  data: { name: 'Test Org', slug: 'test-org' }
+  data: { name: 'Test Org', slug: 'test-org' },
 });
 
 const user = await prisma.user.create({
@@ -146,14 +149,14 @@ const user = await prisma.user.create({
     email: 'test@example.com',
     passwordHash: 'hash',
     name: 'Test User',
-    organizationId: org.id
-  }
+    organizationId: org.id,
+  },
 });
 
 // Test 2: Query with relations
 const orgWithUsers = await prisma.organization.findUnique({
   where: { id: org.id },
-  include: { users: true }
+  include: { users: true },
 });
 
 // Test 3: Vector similarity query (manual SQL)

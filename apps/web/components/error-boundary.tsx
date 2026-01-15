@@ -68,9 +68,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <AlertCircle className="h-8 w-8 text-red-600" />
           </div>
 
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-            Something went wrong
-          </h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Something went wrong</h2>
 
           <p className="text-gray-600 mb-1 max-w-md">
             We&apos;ve been notified and are looking into the issue.
@@ -93,9 +91,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <Button onClick={this.handleReset} variant="outline">
               Try again
             </Button>
-            <Button onClick={() => window.location.reload()}>
-              Reload page
-            </Button>
+            <Button onClick={() => window.location.reload()}>Reload page</Button>
           </div>
         </div>
       );

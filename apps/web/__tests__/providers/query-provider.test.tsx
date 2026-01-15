@@ -18,7 +18,7 @@ describe('QueryProvider', () => {
     render(
       <QueryProvider>
         <div>Test Child</div>
-      </QueryProvider>
+      </QueryProvider>,
     );
 
     expect(screen.getByText('Test Child')).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe('QueryProvider', () => {
     render(
       <QueryProvider>
         <TestComponent />
-      </QueryProvider>
+      </QueryProvider>,
     );
 
     // Should show loading initially
@@ -43,14 +43,14 @@ describe('QueryProvider', () => {
     const { rerender } = render(
       <QueryProvider>
         <TestComponent />
-      </QueryProvider>
+      </QueryProvider>,
     );
 
     // Rerender should not cause issues with QueryClient
     rerender(
       <QueryProvider>
         <TestComponent />
-      </QueryProvider>
+      </QueryProvider>,
     );
 
     // Should still work after rerender

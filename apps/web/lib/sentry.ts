@@ -18,9 +18,7 @@ export function initSentry() {
     enabled: process.env.NODE_ENV !== 'test',
 
     // Performance Monitoring
-    tracesSampleRate: parseFloat(
-      process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE || '0.1',
-    ),
+    tracesSampleRate: parseFloat(process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE || '0.1'),
 
     // Filtering
     ignoreErrors: [
@@ -57,11 +55,7 @@ export function initSentry() {
  *   organizationId: user.organizationId,
  * });
  */
-export function setUser(user: {
-  id: string;
-  email?: string;
-  organizationId?: string;
-}) {
+export function setUser(user: { id: string; email?: string; organizationId?: string }) {
   Sentry.setUser({
     id: user.id,
     email: user.email,

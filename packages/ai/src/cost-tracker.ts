@@ -84,6 +84,7 @@ export class CostTracker {
     // TODO: Check budget alerts
     // await this.checkBudgetAlerts(tenantId, cost);
 
+    // eslint-disable-next-line no-console
     console.log('[CostTracker] Usage tracked:', event);
   }
 

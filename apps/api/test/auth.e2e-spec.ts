@@ -528,12 +528,10 @@ describe('Authentication (e2e)', () => {
 
     it('should reject already-used refresh token (rotation security)', async () => {
       // Login to get new tokens
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       const oldRefreshToken = loginResponse.body.refreshToken;
 
@@ -623,12 +621,10 @@ describe('Authentication (e2e)', () => {
 
     it('should reject refresh token after user logout', async () => {
       // Login to get new tokens
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       const accessToken = loginResponse.body.accessToken;
       const refreshToken = loginResponse.body.refreshToken;
@@ -652,12 +648,10 @@ describe('Authentication (e2e)', () => {
 
     it('should handle rate limiting (10 req/min)', async () => {
       // Login to get fresh token for rate limit test
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       let currentRefreshToken = loginResponse.body.refreshToken;
 
@@ -731,12 +725,10 @@ describe('Authentication (e2e)', () => {
 
     it('should reject access with blacklisted access token', async () => {
       // Login to get new tokens
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       const accessToken = loginResponse.body.accessToken;
       const refreshToken = loginResponse.body.refreshToken;
@@ -763,12 +755,10 @@ describe('Authentication (e2e)', () => {
 
     it('should reject refresh with blacklisted refresh token', async () => {
       // Login to get new tokens
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       const accessToken = loginResponse.body.accessToken;
       const refreshToken = loginResponse.body.refreshToken;
@@ -821,12 +811,10 @@ describe('Authentication (e2e)', () => {
 
     it('should reject logout with missing refresh token', async () => {
       // Login to get fresh access token
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/logout')
@@ -840,12 +828,10 @@ describe('Authentication (e2e)', () => {
 
     it('should reject logout with invalid refresh token format', async () => {
       // Login to get fresh access token
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       const logoutDto = {
         refreshToken: 'invalid-token-format',
@@ -863,12 +849,10 @@ describe('Authentication (e2e)', () => {
 
     it('should handle rate limiting (10 req/min)', async () => {
       // Login to get fresh tokens for rate limit test
-      const loginResponse = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+      const loginResponse = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+        email: testUser.email,
+        password: testUser.password,
+      });
 
       const logoutDto = {
         refreshToken: loginResponse.body.refreshToken,

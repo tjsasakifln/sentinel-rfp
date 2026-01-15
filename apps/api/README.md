@@ -149,6 +149,7 @@ GET /api/health
 ```
 
 Response:
+
 ```json
 {
   "data": {

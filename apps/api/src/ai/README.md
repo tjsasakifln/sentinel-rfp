@@ -23,12 +23,14 @@ ai/
 Status: **Setup Complete** - Service skeleton implemented, awaiting feature implementation
 
 ### Implemented
+
 - [x] Module and service structure
 - [x] Provider initialization (Anthropic)
 - [x] Configuration integration
 - [x] Logging setup
 
 ### Pending Implementation
+
 - [ ] Response generation
 - [ ] Response review and scoring
 - [ ] Trust score calculation
@@ -73,6 +75,7 @@ export class ProposalService {
 ## Configuration
 
 Required environment variables:
+
 - `ANTHROPIC_API_KEY` - Anthropic API key (required in production)
 - `OPENAI_API_KEY` - OpenAI API key (optional, for embeddings/fallback)
 - `LLM_PRIMARY_PROVIDER` - Primary provider (default: 'anthropic')

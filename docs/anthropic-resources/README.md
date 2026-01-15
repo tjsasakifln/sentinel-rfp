@@ -15,20 +15,26 @@ A Anthropic fornece diversos recursos públicos para facilitar a integração e 
 ## Estrutura da Documentação
 
 ### [cookbooks.md](./cookbooks.md)
+
 Guia dos notebooks mais relevantes do repositório Claude Cookbooks, com foco em:
+
 - Multimodal prompting (processamento de documentos)
 - RAG patterns (knowledge retrieval)
 - Tool use (agents especializados)
 - Prompt engineering (otimização de qualidade)
 
 ### [quickstarts.md](./quickstarts.md)
+
 Templates de aplicações que podem ser adaptados para o Sentinel RFP:
+
 - Customer support agent → SME collaboration
 - Legal summarization → RFP question extraction
 - Document Q&A → RAG implementation
 
 ### [prompt-patterns.md](./prompt-patterns.md)
+
 Padrões de prompts otimizados para casos de uso específicos:
+
 - Response generation (respostas RFP)
 - Trust scoring (reviewer agent)
 - Question extraction (document processing)
@@ -37,22 +43,26 @@ Padrões de prompts otimizados para casos de uso específicos:
 ## Repositórios Principais
 
 ### anthropic-sdk-typescript
+
 **URL:** https://github.com/anthropics/anthropic-sdk-typescript
 **Status:** ✅ Instalado em `packages/ai/`
 **Versão:** 0.32.1
 
 SDK oficial para TypeScript com suporte completo para:
+
 - Messages API (text generation)
 - Streaming responses
 - Tool use (function calling)
 - Vision capabilities
 
 ### claude-cookbooks
+
 **URL:** https://github.com/anthropics/claude-cookbooks
 **Status:** 📚 Referência documentada
 **Notebooks:** 31k stars
 
 Coleção de notebooks Jupyter demonstrando:
+
 - Multimodal prompting
 - RAG patterns
 - Prompt engineering
@@ -60,11 +70,13 @@ Coleção de notebooks Jupyter demonstrando:
 - Citations
 
 ### claude-quickstarts
+
 **URL:** https://github.com/anthropics/claude-quickstarts
 **Status:** 📚 Templates documentados
 **Templates:** 13k stars
 
 Templates prontos de aplicações:
+
 - Customer support agent
 - Legal summarization
 - Document Q&A
@@ -72,29 +84,35 @@ Templates prontos de aplicações:
 - Content moderation
 
 ### skills
+
 **URL:** https://github.com/anthropics/skills
 **Status:** 🚧 Estrutura preparada
 **Skills Planejadas:** 4 customizadas
 
 Repositório de capacidades para Claude Code:
+
 - Skills customizadas para RFP
 - Automação de tarefas
 - Ver: `apps/api/src/skills/README.md`
 
 ### claude-agent-sdk-typescript
+
 **URL:** https://github.com/anthropics/claude-agent-sdk-typescript
 **Status:** ⏳ Planejado (Fase 2)
 
 Framework para construir agentes Claude:
+
 - Multi-agent orchestration
 - Tool coordination
 - State management
 
 ### github-mcp-server
+
 **URL:** https://github.com/anthropics/github-mcp-server
 **Status:** ⏳ Planejado (futuro)
 
 Model Context Protocol para GitHub:
+
 - Issue tracking integration
 - PR context
 - Repository structure
@@ -122,15 +140,15 @@ Model Context Protocol para GitHub:
 
 ## Status de Integração
 
-| Recurso | Status | Localização | Prioridade |
-|---------|--------|-------------|------------|
-| SDK TypeScript | ✅ Completo | `packages/ai/` | P0 |
-| Cookbooks | 📚 Documentado | Este diretório | P0 |
-| Quickstarts | 📚 Documentado | Este diretório | P1 |
-| Prompt Patterns | 📚 Documentado | Este diretório | P0 |
-| Skills | 🚧 Estrutura | `apps/api/src/skills/` | P1 |
-| Agent SDK | ⏳ Planejado | - | P2 |
-| MCP Server | ⏳ Planejado | - | P3 |
+| Recurso         | Status         | Localização            | Prioridade |
+| --------------- | -------------- | ---------------------- | ---------- |
+| SDK TypeScript  | ✅ Completo    | `packages/ai/`         | P0         |
+| Cookbooks       | 📚 Documentado | Este diretório         | P0         |
+| Quickstarts     | 📚 Documentado | Este diretório         | P1         |
+| Prompt Patterns | 📚 Documentado | Este diretório         | P0         |
+| Skills          | 🚧 Estrutura   | `apps/api/src/skills/` | P1         |
+| Agent SDK       | ⏳ Planejado   | -                      | P2         |
+| MCP Server      | ⏳ Planejado   | -                      | P3         |
 
 ## Próximos Passos
 
@@ -144,6 +162,7 @@ Model Context Protocol para GitHub:
 ## Contribuindo
 
 Ao adicionar novos recursos Anthropic:
+
 1. Documente o repositório neste README
 2. Crie guia específico se necessário (ex: `new-resource.md`)
 3. Atualize status de integração

@@ -65,20 +65,14 @@ describe('RequestIdInterceptor', () => {
     it('should set X-Request-ID response header', () => {
       interceptor.intercept(mockExecutionContext, mockCallHandler);
 
-      expect(mockResponse.setHeader).toHaveBeenCalledWith(
-        'X-Request-ID',
-        expect.any(String),
-      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Request-ID', expect.any(String));
     });
 
     it('should set response header to match request.id', () => {
       interceptor.intercept(mockExecutionContext, mockCallHandler);
 
       const requestId = mockRequest.id;
-      expect(mockResponse.setHeader).toHaveBeenCalledWith(
-        'X-Request-ID',
-        requestId,
-      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Request-ID', requestId);
     });
 
     it('should call next.handle()', () => {
@@ -88,10 +82,7 @@ describe('RequestIdInterceptor', () => {
     });
 
     it('should return observable from next.handle()', () => {
-      const result = interceptor.intercept(
-        mockExecutionContext,
-        mockCallHandler,
-      );
+      const result = interceptor.intercept(mockExecutionContext, mockCallHandler);
 
       expect(result).toBe(mockCallHandler.handle());
     });

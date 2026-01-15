@@ -5,6 +5,7 @@ This document explains how request IDs are tracked and propagated throughout the
 ## Overview
 
 Every HTTP request receives a unique UUID v4 identifier that is propagated through:
+
 - HTTP response headers (`X-Request-ID`)
 - Request object (`req.id`)
 - All logs (via Pino logger)
@@ -30,12 +31,14 @@ Request Object (req.id)
 Located at: `src/common/interceptors/request-id.interceptor.ts`
 
 **Responsibilities:**
+
 - Generate UUID v4 for each request
 - Support client-provided request IDs (idempotency)
 - Set `X-Request-ID` response header
 - Attach request ID to `req.id`
 
 **Usage:**
+
 ```typescript
 // Already registered globally in main.ts
 app.useGlobalInterceptors(new RequestIdInterceptor());
@@ -52,11 +55,13 @@ findAll(@Req() req: Request) {
 Located at: `src/common/logger/logger.module.ts`
 
 **Automatic Features:**
+
 - Request ID included in all HTTP logs
 - Custom property `requestId` in log context
 - Request/response serialization includes request ID
 
 **Log Output Example:**
+
 ```json
 {
   "level": 30,
@@ -79,6 +84,7 @@ Located at: `src/common/logger/logger.module.ts`
 When implementing background jobs with BullMQ, propagate request ID like this:
 
 **Adding Job to Queue:**
+
 ```typescript
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -102,6 +108,7 @@ export class ProposalService {
 ```
 
 **Processing Job:**
+
 ```typescript
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
@@ -144,6 +151,7 @@ curl -H "X-Request-ID: my-unique-id-123" \
 ```
 
 The server will:
+
 1. Use the provided request ID instead of generating one
 2. Return the same ID in the response header
 3. Log all operations with that ID
@@ -162,11 +170,13 @@ cat logs/api.log | grep "$REQUEST_ID"
 ## Error Tracking Integration
 
 When Sentry is integrated (issue #119), request IDs will be:
+
 - Added as tags to Sentry events
 - Used to correlate frontend and backend errors
 - Included in error reports for debugging
 
 **Example Sentry Integration:**
+
 ```typescript
 // In Sentry filter
 Sentry.beforeSend((event, hint) => {
@@ -185,6 +195,7 @@ Sentry.beforeSend((event, hint) => {
 Unit tests: `src/common/interceptors/request-id.interceptor.spec.ts`
 
 **Test Coverage:**
+
 - UUID v4 generation
 - Client-provided request ID handling
 - Response header setting
@@ -192,6 +203,7 @@ Unit tests: `src/common/interceptors/request-id.interceptor.spec.ts`
 - Multiple requests generate different IDs
 
 **Run tests:**
+
 ```bash
 cd apps/api
 npm test request-id.interceptor

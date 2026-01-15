@@ -30,7 +30,7 @@ describe('shadcn/ui Components', () => {
             <CardTitle>Test Card</CardTitle>
           </CardHeader>
           <CardContent>Card content here</CardContent>
-        </Card>
+        </Card>,
       );
       expect(screen.getByText('Test Card')).toBeInTheDocument();
       expect(screen.getByText('Card content here')).toBeInTheDocument();

@@ -21,9 +21,7 @@ if (process.env.SENTRY_DSN) {
     enabled: process.env.NODE_ENV !== 'test',
     tracesSampleRate: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1'),
     profilesSampleRate: parseFloat(process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.1'),
-    integrations: [
-      nodeProfilingIntegration(),
-    ],
+    integrations: [nodeProfilingIntegration()],
     beforeSend(event, hint) {
       // Add requestId to tags if available in hint
       if (hint.originalException && typeof hint.originalException === 'object') {

@@ -30,17 +30,18 @@ Este relatório apresenta uma análise técnica e metodologicamente rigorosa da 
 ### 1.1. Rigor Metodológico
 
 #### Problema Identificado: Folhas Contaminadas em Dezembro
+
 Durante a análise inicial, identificou-se que **Dezembro/2025 apresenta folhas contaminadas com 13º salário**, inflacionando artificialmente os valores brutos.
 
 **Exemplo de Contaminação Identificada:**
 
 **ADAO MARCOS FRANCA (SIE) - Comparativo Dezembro vs. Novembro:**
 
-| Mês | Remuneração Bruta | Remuneração Básica | 13º Salário | Férias |
-|-----|-------------------|-------------------|-------------|--------|
-| **Dezembro/2025** | R$ 44.628,36 | R$ 19.374,81 | **R$ 19.374,81** | R$ 0,00 |
-| **Novembro/2025** | R$ 23.180,31 | ~R$ 19.374,81 | R$ 0,00 | R$ 0,00 |
-| **Diferença** | **R$ 21.448,05** | ~R$ 0,00 | **R$ 19.374,81** | R$ 0,00 |
+| Mês               | Remuneração Bruta | Remuneração Básica | 13º Salário      | Férias  |
+| ----------------- | ----------------- | ------------------ | ---------------- | ------- |
+| **Dezembro/2025** | R$ 44.628,36      | R$ 19.374,81       | **R$ 19.374,81** | R$ 0,00 |
+| **Novembro/2025** | R$ 23.180,31      | ~R$ 19.374,81      | R$ 0,00          | R$ 0,00 |
+| **Diferença**     | **R$ 21.448,05**  | ~R$ 0,00           | **R$ 19.374,81** | R$ 0,00 |
 
 **Conclusão:** A diferença de R$ 21.448 entre dezembro e novembro é quase integralmente explicada pelo 13º salário de R$ 19.374,81, confirmando a contaminação da folha de dezembro.
 
@@ -74,25 +75,25 @@ Para garantir comparabilidade justa, foram adotados os seguintes critérios:
 
 ### 2.1. Universo Analisado (Novembro/2025 - Ativos)
 
-| Indicador | Valor |
-|-----------|-------|
-| **Total de Engenheiros Ativos** | 457 |
-| **Remuneração Bruta Total Mensal** | R$ 5.871.097,58 |
-| **Remuneração Média** | **R$ 12.848,57** |
+| Indicador                          | Valor            |
+| ---------------------------------- | ---------------- |
+| **Total de Engenheiros Ativos**    | 457              |
+| **Remuneração Bruta Total Mensal** | R$ 5.871.097,58  |
+| **Remuneração Média**              | **R$ 12.848,57** |
 
 ### 2.2. Composição do Universo por Secretaria (Estimativa)
 
 Baseado na amostragem observada:
 
-| Secretaria/Órgão | Engenheiros Observados | % Estimado |
-|------------------|------------------------|------------|
-| **Secretaria de Infraestrutura (SIE)** | ~280-300 | ~60-65% |
-| **Instituto do Meio Ambiente (IMA)** | ~30-40 | ~7-9% |
-| **Secretaria de Administração (SEA)** | Poucos | ~1-2% |
-| **Secretaria de Saúde** | Poucos | ~1-2% |
-| **Secretaria do Meio Ambiente e Economia Verde (SEMAE)** | Poucos | ~1-2% |
-| **UDESC** | Poucos | ~1-2% |
-| **Outros Órgãos** | ~80-100 | ~15-20% |
+| Secretaria/Órgão                                         | Engenheiros Observados | % Estimado |
+| -------------------------------------------------------- | ---------------------- | ---------- |
+| **Secretaria de Infraestrutura (SIE)**                   | ~280-300               | ~60-65%    |
+| **Instituto do Meio Ambiente (IMA)**                     | ~30-40                 | ~7-9%      |
+| **Secretaria de Administração (SEA)**                    | Poucos                 | ~1-2%      |
+| **Secretaria de Saúde**                                  | Poucos                 | ~1-2%      |
+| **Secretaria do Meio Ambiente e Economia Verde (SEMAE)** | Poucos                 | ~1-2%      |
+| **UDESC**                                                | Poucos                 | ~1-2%      |
+| **Outros Órgãos**                                        | ~80-100                | ~15-20%    |
 
 ---
 
@@ -103,6 +104,7 @@ Baseado na amostragem observada:
 #### 3.1.1. ADAO MARCOS FRANCA - Secretaria de Infraestrutura (SIE)
 
 **Dados Funcionais:**
+
 - **Matrícula:** 0247042001
 - **Cargo:** Engenheiro
 - **Nível de Referência:** **04 J**
@@ -112,12 +114,14 @@ Baseado na amostragem observada:
 - **Carga Horária:** 40 horas semanais
 
 **Remuneração (Novembro/2025):**
+
 - **Remuneração Bruta:** R$ 23.180,31
 - **Remuneração Básica (dez/2025):** R$ 19.374,81
 
 #### 3.1.2. ADEMIR ROQUE DA SILVA E SA - Secretaria de Administração (SEA)
 
 **Dados Funcionais:**
+
 - **Matrícula:** 0389808301
 - **Cargo:** Engenheiro
 - **Nível de Referência:** **04 J** (MESMO!)
@@ -127,6 +131,7 @@ Baseado na amostragem observada:
 - **Carga Horária:** 40 horas semanais
 
 **Remuneração (Novembro/2025):**
+
 - **Remuneração Bruta:** R$ 18.491,54
 - **Remuneração Básica:** R$ 15.786,88
 - **Gratificações Eventuais:** R$ 2.154,66
@@ -134,26 +139,29 @@ Baseado na amostragem observada:
 
 #### 3.1.3. Análise Comparativa
 
-| Indicador | ADAO MARCOS (SIE) | ADEMIR ROQUE (SEA) | Diferença |
-|-----------|-------------------|---------------------|-----------|
-| **Nível de Referência** | 04 J | 04 J | **MESMO** |
-| **Tempo de Serviço** | 39 anos e 5 meses | 17 anos e 5 meses | **+22 anos** |
-| **Remuneração Bruta (Nov/2025)** | R$ 23.180,31 | R$ 18.491,54 | **+25,4%** |
-| **Remuneração Básica** | ~R$ 19.374,81 | R$ 15.786,88 | **+22,7%** |
-| **Valor Adicional por Ano de Serviço** | R$ 213,07/ano | - | - |
+| Indicador                              | ADAO MARCOS (SIE) | ADEMIR ROQUE (SEA) | Diferença    |
+| -------------------------------------- | ----------------- | ------------------ | ------------ |
+| **Nível de Referência**                | 04 J              | 04 J               | **MESMO**    |
+| **Tempo de Serviço**                   | 39 anos e 5 meses | 17 anos e 5 meses  | **+22 anos** |
+| **Remuneração Bruta (Nov/2025)**       | R$ 23.180,31      | R$ 18.491,54       | **+25,4%**   |
+| **Remuneração Básica**                 | ~R$ 19.374,81     | R$ 15.786,88       | **+22,7%**   |
+| **Valor Adicional por Ano de Serviço** | R$ 213,07/ano     | -                  | -            |
 
 **Análise Crítica:**
 
 Apesar de ter **22 anos A MAIS de experiência** (mais do que o dobro), o engenheiro da SIE com quase 4 décadas de carreira recebe apenas:
+
 - **25,4% a mais** em remuneração bruta
 - **22,7% a mais** em remuneração básica
 
 **Valorização por Ano de Serviço:**
+
 - (R$ 23.180,31 - R$ 18.491,54) / 22 anos = **R$ 213,07 por ano adicional de experiência**
 
 Isso representa menos de **1% de aumento** por ano de serviço adicional, evidenciando progressão salarial extremamente limitada.
 
 **Implicação:** Um engenheiro que dedique 22 anos adicionais de sua vida profissional à SIE receberá um acréscimo mensal de apenas R$ 4.688,77, valor que não reflete adequadamente:
+
 - O acúmulo de conhecimento técnico
 - A expertise em projetos complexos
 - O valor institucional da experiência
@@ -165,25 +173,25 @@ Isso representa menos de **1% de aumento** por ano de serviço adicional, eviden
 
 #### Exemplos de Engenheiros com Remunerações Mais Baixas (SIE):
 
-| Nome | Secretaria | Remuneração (Nov/2025) | Observação |
-|------|-----------|------------------------|------------|
-| ADEMIR AFONSO BALDISSERA | SIE | R$ 11.521,24 | Faixa inicial |
-| ALESSANDRO DELLA GIUSTINA | SIE | R$ 11.665,66 | Faixa inicial |
-| ALEXANDRE DE SOUZA JACINTHO | SIE | R$ 11.521,24 | Faixa inicial |
-| ALEXANDRE MARTINI | SIE | R$ 11.839,19 | Faixa inicial |
-| ALLAN ROGER KOUSON | SIE | R$ 11.521,24 | Faixa inicial |
-| ANA ELISA BOETTGER | SIE | R$ 11.798,91 | Faixa inicial |
+| Nome                        | Secretaria | Remuneração (Nov/2025) | Observação    |
+| --------------------------- | ---------- | ---------------------- | ------------- |
+| ADEMIR AFONSO BALDISSERA    | SIE        | R$ 11.521,24           | Faixa inicial |
+| ALESSANDRO DELLA GIUSTINA   | SIE        | R$ 11.665,66           | Faixa inicial |
+| ALEXANDRE DE SOUZA JACINTHO | SIE        | R$ 11.521,24           | Faixa inicial |
+| ALEXANDRE MARTINI           | SIE        | R$ 11.839,19           | Faixa inicial |
+| ALLAN ROGER KOUSON          | SIE        | R$ 11.521,24           | Faixa inicial |
+| ANA ELISA BOETTGER          | SIE        | R$ 11.798,91           | Faixa inicial |
 
 **Remuneração Média da Faixa Inicial SIE:** ~R$ 11.644,58
 
 #### Comparação com Outras Secretarias (Faixa Similar):
 
-| Nome | Secretaria/Órgão | Remuneração (Nov/2025) | Diferença vs. SIE |
-|------|------------------|------------------------|-------------------|
-| AGUIDA GORETI PAGLIA | IMA | R$ 12.652,52 | **+8,7%** |
-| ALINE CRISTINA VELHO | IMA | R$ 12.113,73 | **+4,0%** |
-| AMANDA JOHANN FAZZINI | IMA | R$ 12.767,83 | **+9,6%** |
-| ANA CRISTINA LOPES | IMA | R$ 12.462,06 | **+7,0%** |
+| Nome                  | Secretaria/Órgão | Remuneração (Nov/2025) | Diferença vs. SIE |
+| --------------------- | ---------------- | ---------------------- | ----------------- |
+| AGUIDA GORETI PAGLIA  | IMA              | R$ 12.652,52           | **+8,7%**         |
+| ALINE CRISTINA VELHO  | IMA              | R$ 12.113,73           | **+4,0%**         |
+| AMANDA JOHANN FAZZINI | IMA              | R$ 12.767,83           | **+9,6%**         |
+| ANA CRISTINA LOPES    | IMA              | R$ 12.462,06           | **+7,0%**         |
 
 **Média IMA:** R$ 12.499,04 (**+7,3%** em relação à média SIE de mesma faixa)
 
@@ -196,15 +204,16 @@ Engenheiros em nível inicial/júnior no IMA (Instituto do Meio Ambiente) recebe
 
 #### Distribuição Observada (Novembro/2025 - Amostra):
 
-| Faixa Salarial | Exemplos (R$) | Quantidade Observada |
-|----------------|---------------|----------------------|
-| **R$ 11.000 - R$ 12.500** | 11.521, 11.665, 11.798, 11.839, 12.222, 12.267, 12.313, 12.437 | ~8+ casos |
-| **R$ 12.500 - R$ 15.000** | - | Poucos observados |
-| **R$ 15.000 - R$ 20.000** | - | Poucos observados |
-| **R$ 20.000 - R$ 25.000** | 23.180 | ~1 caso (topo) |
+| Faixa Salarial            | Exemplos (R$)                                                  | Quantidade Observada |
+| ------------------------- | -------------------------------------------------------------- | -------------------- |
+| **R$ 11.000 - R$ 12.500** | 11.521, 11.665, 11.798, 11.839, 12.222, 12.267, 12.313, 12.437 | ~8+ casos            |
+| **R$ 12.500 - R$ 15.000** | -                                                              | Poucos observados    |
+| **R$ 15.000 - R$ 20.000** | -                                                              | Poucos observados    |
+| **R$ 20.000 - R$ 25.000** | 23.180                                                         | ~1 caso (topo)       |
 
 **Observação Crítica:**
 Há uma concentração significativa de engenheiros na faixa de R$ 11.500 - R$ 12.500, com pouquíssimos casos acima de R$ 15.000, sugerindo:
+
 1. Teto de progressão limitado
 2. Falta de diferenciação por experiência/senioridade
 3. Possível "achatamento" da estrutura salarial
@@ -216,11 +225,13 @@ Há uma concentração significativa de engenheiros na faixa de R$ 11.500 - R$ 1
 ### 4.1. Problema 1: Progressão Salarial Insuficiente
 
 **Evidência:**
+
 - Engenheiro com **39 anos de serviço** (ADAO MARCOS) ganha apenas **25% a mais** que engenheiro com **17 anos** (ADEMIR ROQUE)
 - Diferença de **22 anos de experiência** resulta em apenas **R$ 4.688** mensais adicionais
 - Valorização média de **R$ 213/ano** de experiência adicional (<1% ao ano)
 
 **Impacto:**
+
 - Desestímulo à permanência de longo prazo
 - Perda de engenheiros experientes para outras oportunidades
 - Não valorização do conhecimento institucional acumulado
@@ -228,10 +239,12 @@ Há uma concentração significativa de engenheiros na faixa de R$ 11.500 - R$ 1
 ### 4.2. Problema 2: Desvalorização Relativa Inter-Secretarias
 
 **Evidência:**
+
 - Engenheiros júnior no IMA: 4% a 10% superior à SIE (mesma faixa)
 - Engenheiro na SEA (17 anos) com remuneração proporcionalmente superior ao engenheiro SIE (39 anos)
 
 **Impacto:**
+
 - Percepção de desvalorização pelos profissionais da SIE
 - Dificuldade em reter talentos que podem migrar internamente
 - Injustiça remuneratória entre secretarias para cargos equivalentes
@@ -239,11 +252,13 @@ Há uma concentração significativa de engenheiros na faixa de R$ 11.500 - R$ 1
 ### 4.3. Problema 3: Concentração na Faixa Inicial
 
 **Evidência:**
+
 - Maioria dos engenheiros SIE observados está na faixa de R$ 11.500 - R$ 12.500
 - Poucos casos acima de R$ 15.000
 - Amplitude entre menor e maior remuneração é limitada (R$ 11.521 a R$ 23.180 = fator 2x)
 
 **Impacto:**
+
 - Achatamento salarial dificulta diferenciação por mérito
 - Falta de perspectiva de crescimento salarial significativo
 - Perda de competitividade com setor privado
@@ -265,6 +280,7 @@ A SIE é responsável por atividades de alta complexidade técnica:
 ### 5.2. Criticidade dos Engenheiros para a SIE
 
 Diferentemente de outras secretarias onde engenheiros são apoio técnico, na SIE eles são:
+
 - **Core business:** Atividade-fim da secretaria
 - **Responsabilidade Técnica:** Assinatura de projetos e pareceres
 - **Expertise Especializada:** Conhecimento técnico insubstituível
@@ -280,6 +296,7 @@ Diferentemente de outras secretarias onde engenheiros são apoio técnico, na SI
 ### 6.1. Impacto na Retenção de Talentos
 
 **Cenário Atual:**
+
 - Engenheiro com 17 anos na SEA: R$ 18.491,54
 - Engenheiro com 39 anos na SIE: R$ 23.180,31
 - Diferença: Apenas R$ 4.688,77 para 22 anos adicionais
@@ -288,6 +305,7 @@ Diferentemente de outras secretarias onde engenheiros são apoio técnico, na SI
 Um engenheiro racional, ao avaliar dedicar mais 20 anos de carreira, vê um retorno marginal de apenas R$ 213/ano por ano adicional trabalhado.
 
 **Consequência:**
+
 - **Evasão Precoce:** Profissionais qualificados saem antes de acumular experiência
 - **Migração Interna:** Busca de oportunidades em outras secretarias
 - **Migração Externa:** Setor privado oferece progressões muito mais atrativas
@@ -295,16 +313,19 @@ Um engenheiro racional, ao avaliar dedicar mais 20 anos de carreira, vê um reto
 ### 6.2. Impacto na Qualidade Técnica
 
 **Risco 1: Perda de Conhecimento Institucional**
+
 - Projetos complexos de infraestrutura exigem anos de experiência
 - Perda de engenheiros seniores compromete continuidade técnica
 - Conhecimento tácito não é facilmente transferível
 
 **Risco 2: Sobrecarga dos Remanescentes**
+
 - Evasão de profissionais experientes sobrecarrega os que ficam
 - Qualidade dos projetos pode ser comprometida
 - Prazos de entrega podem ser impactados
 
 **Risco 3: Dificuldade de Atração de Novos Talentos**
+
 - Engenheiros em início de carreira avaliam perspectivas de longo prazo
 - Progressão limitada torna a carreira menos atrativa
 - Competição com setor privado é desfavorável
@@ -312,16 +333,19 @@ Um engenheiro racional, ao avaliar dedicar mais 20 anos de carreira, vê um reto
 ### 6.3. Impacto Financeiro Indireto
 
 **Risco 1: Aumento de Custos com Turnover**
+
 - Recrutamento e seleção
 - Capacitação de novos profissionais
 - Perda de produtividade durante transição
 
 **Risco 2: Erros e Retrabalhos**
+
 - Projetos mal elaborados por falta de experiência
 - Necessidade de aditivos contratuais
 - Custos de correção pós-execução
 
 **Risco 3: Dependência de Consultorias Externas**
+
 - Contratação de serviços que poderiam ser internos
 - Custos elevados com consultorias especializadas
 - Perda de autonomia técnica
@@ -334,16 +358,17 @@ Um engenheiro racional, ao avaliar dedicar mais 20 anos de carreira, vê um reto
 
 **Dados de Mercado (Estimativa Conservadora):**
 
-| Experiência | Setor Privado (R$/mês) | SIE Observado (R$/mês) | Diferença |
-|-------------|------------------------|------------------------|-----------|
-| **Júnior (0-5 anos)** | R$ 12.000 - R$ 15.000 | R$ 11.500 - R$ 12.500 | **-10% a -20%** |
-| **Pleno (5-10 anos)** | R$ 15.000 - R$ 22.000 | R$ 12.000 - R$ 15.000* | **-20% a -30%** |
-| **Sênior (10-20 anos)** | R$ 22.000 - R$ 35.000 | R$ 15.000 - R$ 20.000* | **-30% a -40%** |
-| **Especialista (20+ anos)** | R$ 35.000 - R$ 50.000+ | R$ 20.000 - R$ 25.000 | **-40% a -50%** |
+| Experiência                 | Setor Privado (R$/mês) | SIE Observado (R$/mês)  | Diferença       |
+| --------------------------- | ---------------------- | ----------------------- | --------------- |
+| **Júnior (0-5 anos)**       | R$ 12.000 - R$ 15.000  | R$ 11.500 - R$ 12.500   | **-10% a -20%** |
+| **Pleno (5-10 anos)**       | R$ 15.000 - R$ 22.000  | R$ 12.000 - R$ 15.000\* | **-20% a -30%** |
+| **Sênior (10-20 anos)**     | R$ 22.000 - R$ 35.000  | R$ 15.000 - R$ 20.000\* | **-30% a -40%** |
+| **Especialista (20+ anos)** | R$ 35.000 - R$ 50.000+ | R$ 20.000 - R$ 25.000   | **-40% a -50%** |
 
-*Valores estimados com base na progressão observada e amostra limitada
+\*Valores estimados com base na progressão observada e amostra limitada
 
 **Observação:** Setor privado oferece:
+
 - Bônus anuais (13º + participação nos lucros)
 - Plano de saúde robusto
 - Vale-alimentação superior
@@ -354,6 +379,7 @@ Um engenheiro racional, ao avaliar dedicar mais 20 anos de carreira, vê um reto
 A desvalorização relativa no setor público (já esperada) é agravada pela desvalorização relativa INTERNA (dentro do próprio estado) e pela progressão limitada.
 
 **Dupla Penalização:**
+
 1. Salário base já inferior ao setor privado (-10% a -50% dependendo da senioridade)
 2. Progressão salarial muito inferior (R$ 213/ano vs. aumentos significativos no privado)
 
@@ -364,22 +390,27 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 ### 8.1. Curto Prazo (0-6 meses) - URGENTE
 
 #### 8.1.1. Revisão Salarial Emergencial para Engenheiros Seniores
+
 **Objetivo:** Reduzir risco de evasão imediata de profissionais com expertise crítica
 
 **Ação:**
+
 - Identificar engenheiros com mais de 20 anos de SIE
 - Implementar gratificação técnica por experiência
 - Proposta: R$ 500-800/ano adicional de serviço (acima de 20 anos)
 
 **Impacto Financeiro Estimado:**
+
 - ~50 engenheiros com 20+ anos na SIE
 - Custo adicional: R$ 500 x 15 anos adicionais médios x 50 engenheiros = R$ 375.000/mês
 - **Benefício:** Retenção de conhecimento institucional inestimável
 
 #### 8.1.2. Equalização com IMA (Instituto do Meio Ambiente)
+
 **Objetivo:** Eliminar disparidade injustificada entre órgãos do mesmo estado
 
 **Ação:**
+
 - Engenheiros júnior/pleno da SIE: ajuste de 7-10% para equalizar com IMA
 - ~200 engenheiros nessa faixa
 - Custo adicional: R$ 11.644 x 8% x 200 = R$ 186.300/mês
@@ -389,9 +420,11 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 ### 8.2. Médio Prazo (6-12 meses)
 
 #### 8.2.1. Implementação de Plano de Carreira Estruturado
+
 **Objetivo:** Criar previsibilidade e perspectiva de crescimento
 
 **Componentes:**
+
 1. **Níveis de Senioridade Claros:**
    - Júnior: 0-5 anos (R$ 12.000 - R$ 15.000)
    - Pleno: 5-10 anos (R$ 15.000 - R$ 20.000)
@@ -409,9 +442,11 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
    - Projetos Estratégicos: +20% para engenheiros alocados em obras críticas
 
 #### 8.2.2. Programa de Retenção de Talentos
+
 **Objetivo:** Reduzir turnover de profissionais qualificados
 
 **Componentes:**
+
 1. **Bônus de Permanência:** Gratificação anual para engenheiros com 15+ anos
 2. **Capacitação Contínua:** Orçamento para cursos, certificações e congressos
 3. **Plano de Carreira Individual:** Mentoria e desenvolvimento personalizado
@@ -419,17 +454,21 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 ### 8.3. Longo Prazo (12-24 meses)
 
 #### 8.3.1. Política Estadual de Equidade Salarial
+
 **Objetivo:** Eliminar disparidades injustificadas entre secretarias
 
 **Ação:**
+
 - Comissão inter-secretarias para padronização de cargos técnicos
 - Definição de critérios unificados de progressão
 - Auditoria periódica de equidade salarial
 
 #### 8.3.2. Benchmarking Contínuo com Setor Privado
+
 **Objetivo:** Manter competitividade mínima
 
 **Ação:**
+
 - Pesquisa salarial anual (CREA-SC, sindicatos, consultorias)
 - Ajustes periódicos para manter gap máximo de 20-25% (aceitável para setor público)
 - Revisão de benefícios não monetários
@@ -440,21 +479,21 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 
 ### 9.1. Custo das Recomendações de Curto Prazo
 
-| Ação | Público-Alvo | Custo Mensal | Custo Anual |
-|------|--------------|--------------|-------------|
-| Gratificação Seniores (20+ anos) | ~50 eng. | R$ 375.000 | R$ 4.500.000 |
-| Equalização com IMA | ~200 eng. | R$ 186.300 | R$ 2.235.600 |
-| **TOTAL** | **~250 eng.** | **R$ 561.300** | **R$ 6.735.600** |
+| Ação                             | Público-Alvo  | Custo Mensal   | Custo Anual      |
+| -------------------------------- | ------------- | -------------- | ---------------- |
+| Gratificação Seniores (20+ anos) | ~50 eng.      | R$ 375.000     | R$ 4.500.000     |
+| Equalização com IMA              | ~200 eng.     | R$ 186.300     | R$ 2.235.600     |
+| **TOTAL**                        | **~250 eng.** | **R$ 561.300** | **R$ 6.735.600** |
 
 ### 9.2. Benefícios Esperados (Estimativa Conservadora)
 
-| Benefício | Valor Anual Estimado | Justificativa |
-|-----------|----------------------|---------------|
-| **Redução de Turnover** | R$ 2.000.000 | Economia com recrutamento, seleção e treinamento (estimativa: 10 saídas evitadas x R$ 200k cada) |
-| **Redução de Erros/Retrabalhos** | R$ 3.000.000 | Projetos melhor elaborados, menos aditivos contratuais (estimativa conservadora: 2% de economia em obras de R$ 150M) |
-| **Redução de Consultorias Externas** | R$ 1.500.000 | Maior autonomia técnica interna |
-| **Ganho de Produtividade** | R$ 1.000.000 | Profissionais mais motivados e engajados |
-| **TOTAL BENEFÍCIOS** | **R$ 7.500.000** | - |
+| Benefício                            | Valor Anual Estimado | Justificativa                                                                                                        |
+| ------------------------------------ | -------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Redução de Turnover**              | R$ 2.000.000         | Economia com recrutamento, seleção e treinamento (estimativa: 10 saídas evitadas x R$ 200k cada)                     |
+| **Redução de Erros/Retrabalhos**     | R$ 3.000.000         | Projetos melhor elaborados, menos aditivos contratuais (estimativa conservadora: 2% de economia em obras de R$ 150M) |
+| **Redução de Consultorias Externas** | R$ 1.500.000         | Maior autonomia técnica interna                                                                                      |
+| **Ganho de Produtividade**           | R$ 1.000.000         | Profissionais mais motivados e engajados                                                                             |
+| **TOTAL BENEFÍCIOS**                 | **R$ 7.500.000**     | -                                                                                                                    |
 
 ### 9.3. ROI (Retorno sobre Investimento)
 
@@ -469,10 +508,12 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 ## 10. RISCOS DA NÃO ATUAÇÃO
 
 ### 10.1. Risco Operacional: Colapso Técnico
+
 **Probabilidade:** Média-Alta
 **Impacto:** Crítico
 
 **Cenário:**
+
 - Continuidade da evasão de engenheiros seniores
 - Perda crítica de conhecimento institucional
 - Sobrecarga insustentável dos remanescentes
@@ -481,10 +522,12 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 **Consequência Financeira:** Paralisação de obras públicas, prejuízos de milhões
 
 ### 10.2. Risco Jurídico: Ações de Isonomia
+
 **Probabilidade:** Média
 **Impacto:** Alto
 
 **Cenário:**
+
 - Engenheiros da SIE pleiteiam isonomia com outras secretarias
 - Ações coletivas para equalização salarial
 - Passivo trabalhista retroativo
@@ -492,10 +535,12 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 **Consequência Financeira:** Pagamento retroativo + juros + custas processuais
 
 ### 10.3. Risco Reputacional: Percepção de Desvalorização
+
 **Probabilidade:** Alta
 **Impacto:** Médio
 
 **Cenário:**
+
 - Percepção pública de que estado não valoriza engenharia
 - Dificuldade de atração de novos talentos
 - Impacto negativo em concursos públicos
@@ -503,10 +548,12 @@ A desvalorização relativa no setor público (já esperada) é agravada pela de
 **Consequência:** Redução da qualidade do quadro técnico futuro
 
 ### 10.4. Risco Estratégico: Dependência Externa
+
 **Probabilidade:** Alta
 **Impacto:** Alto
 
 **Cenário:**
+
 - Perda de autonomia técnica por falta de engenheiros qualificados
 - Necessidade crescente de consultorias externas
 - Custos elevados e perda de controle sobre projetos
@@ -730,6 +777,7 @@ Para garantir a solidez técnica e científica deste relatório, antecipamos e r
    - **Amostra representativa + estatísticas gerais** são metodologias aceitas
 
 **Limitação Aceita:**
+
 - Relatório completo com 457 casos detalhados exigiria processamento computacional dos XLS com ferramentas específicas
 - Não disponível no momento da análise (Python não instalado no sistema)
 - **NÃO invalida conclusões** baseadas em método misto (quantitativo agregado + qualitativo detalhado)
@@ -811,6 +859,7 @@ Os dados demonstram que a situação requer **ação imediata**:
 ### 12.3. Fundamentação Técnica Sólida
 
 A análise apresentada:
+
 - ✅ **Utilizou mês limpo** (novembro) sem contaminação de 13º salário
 - ✅ **Filtrou apenas ativos** excluindo inativos e pensionistas
 - ✅ **Comparou mesmo nível** (04 J) controlando por cargo e nível de referência
@@ -820,6 +869,7 @@ A análise apresentada:
 ### 12.4. Chamado à Ação
 
 A desvalorização dos engenheiros da Secretaria de Estado da Infraestrutura não é apenas uma questão de justiça salarial, mas um **risco estratégico** para a capacidade do estado de:
+
 - Planejar e executar obras públicas de qualidade
 - Manter autonomia técnica em projetos críticos
 - Reter conhecimento institucional acumulado
@@ -856,6 +906,7 @@ A desvalorização dos engenheiros da Secretaria de Estado da Infraestrutura nã
 ### C. Metodologia de Cálculos
 
 **Cálculo de Valorização por Ano de Experiência:**
+
 ```
 Diferença Salarial / Diferença de Tempo de Serviço
 = (R$ 23.180,31 - R$ 18.491,54) / (39 - 17) anos
@@ -864,6 +915,7 @@ Diferença Salarial / Diferença de Tempo de Serviço
 ```
 
 **Cálculo de Média Salarial:**
+
 ```
 Remuneração Bruta Total / Número de Engenheiros
 = R$ 5.871.097,58 / 457
@@ -885,6 +937,7 @@ Remuneração Bruta Total / Número de Engenheiros
 Este relatório foi elaborado exclusivamente com base em **dados públicos** disponibilizados pelo Portal da Transparência do Poder Executivo de Santa Catarina.
 
 As análises, conclusões e recomendações representam interpretação técnica independente e não substituem:
+
 - Estudos atuariais oficiais
 - Análises de impacto orçamentário detalhadas
 - Pareceres jurídicos sobre isonomia e equidade

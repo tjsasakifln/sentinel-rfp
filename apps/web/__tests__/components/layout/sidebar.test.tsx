@@ -114,10 +114,7 @@ describe('Sidebar', () => {
   it('has proper ARIA attributes', () => {
     render(<Sidebar />);
 
-    expect(screen.getByRole('complementary')).toHaveAttribute(
-      'aria-label',
-      'Sidebar navigation',
-    );
+    expect(screen.getByRole('complementary')).toHaveAttribute('aria-label', 'Sidebar navigation');
     expect(screen.getByRole('navigation', { name: 'Main navigation' })).toBeInTheDocument();
   });
 
