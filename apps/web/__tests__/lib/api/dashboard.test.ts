@@ -1,5 +1,5 @@
-import { getDashboardMetrics } from '@/lib/api/dashboard';
 import { apiFetch } from '@/lib/api/client';
+import { getDashboardMetrics } from '@/lib/api/dashboard';
 
 // Mock the apiFetch function
 jest.mock('@/lib/api/client');

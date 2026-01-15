@@ -11,7 +11,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
-    public code?: string
+    public code?: string,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -25,10 +25,7 @@ interface RequestOptions extends RequestInit {
 /**
  * Base fetch wrapper with error handling
  */
-async function apiFetch<T>(
-  endpoint: string,
-  options: RequestOptions = {}
-): Promise<T> {
+async function apiFetch<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { token, ...fetchOptions } = options;
 
   const headers: Record<string, string> = {

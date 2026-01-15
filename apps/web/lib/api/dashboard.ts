@@ -19,9 +19,7 @@ export interface DashboardMetrics {
  * @param token - JWT authentication token
  * @returns Dashboard metrics
  */
-export async function getDashboardMetrics(
-  token: string
-): Promise<DashboardMetrics> {
+export async function getDashboardMetrics(token: string): Promise<DashboardMetrics> {
   return apiFetch<DashboardMetrics>('/dashboard/metrics', {
     method: 'GET',
     token,

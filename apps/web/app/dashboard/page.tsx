@@ -7,12 +7,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import {
-  FileText,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-} from 'lucide-react';
+import { FileText, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 
 import { MetricCard } from '@/components/dashboard/metric-card';
 import { getDashboardMetrics } from '@/lib/api/dashboard';
@@ -24,10 +19,7 @@ function DashboardSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {[...Array(4)].map((_, i) => (
-        <div
-          key={i}
-          className="h-32 animate-pulse rounded-lg bg-muted"
-        />
+        <div key={i} className="h-32 animate-pulse rounded-lg bg-muted" />
       ))}
     </div>
   );
@@ -39,9 +31,7 @@ function DashboardSkeleton() {
 function DashboardError({ error }: { error: Error }) {
   return (
     <div className="rounded-lg border border-destructive bg-destructive/10 p-6">
-      <h3 className="mb-2 text-lg font-semibold text-destructive">
-        Failed to load dashboard
-      </h3>
+      <h3 className="mb-2 text-lg font-semibold text-destructive">Failed to load dashboard</h3>
       <p className="text-sm text-muted-foreground">{error.message}</p>
     </div>
   );
@@ -55,7 +45,11 @@ export default function DashboardPage() {
   // For now, using a mock token for development
   const mockToken = 'dev-token';
 
-  const { data: metrics, isLoading, error } = useQuery({
+  const {
+    data: metrics,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['dashboard', 'metrics'],
     queryFn: () => getDashboardMetrics(mockToken),
     // Refetch every 30 seconds

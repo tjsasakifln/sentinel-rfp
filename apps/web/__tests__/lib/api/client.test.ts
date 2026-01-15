@@ -23,7 +23,7 @@ describe('apiFetch', () => {
         headers: {
           'Content-Type': 'application/json',
         },
-      })
+      }),
     );
     expect(result).toEqual(mockData);
   });
@@ -43,7 +43,7 @@ describe('apiFetch', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer test-token',
         },
-      })
+      }),
     );
   });
 
@@ -139,7 +139,7 @@ describe('apiFetch', () => {
           'Content-Type': 'application/json',
           'X-Custom-Header': 'custom-value',
         },
-      })
+      }),
     );
   });
 });

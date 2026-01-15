@@ -1,7 +1,7 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FileText } from 'lucide-react';
+import React from 'react';
 
 import { MetricCard } from '@/components/dashboard/metric-card';
 
@@ -14,9 +14,7 @@ describe('MetricCard', () => {
   });
 
   it('renders metric card with icon', () => {
-    const { container } = render(
-      <MetricCard title="Total Proposals" value={42} icon={FileText} />
-    );
+    const { container } = render(<MetricCard title="Total Proposals" value={42} icon={FileText} />);
 
     // Check if lucide icon is rendered (svg element)
     const svg = container.querySelector('svg');
@@ -29,7 +27,7 @@ describe('MetricCard', () => {
         title="Total Proposals"
         value={42}
         description="Active proposals in your organization"
-      />
+      />,
     );
 
     expect(screen.getByText('Active proposals in your organization')).toBeInTheDocument();
@@ -44,11 +42,7 @@ describe('MetricCard', () => {
 
   it('renders metric card with custom className', () => {
     const { container } = render(
-      <MetricCard
-        title="Total Proposals"
-        value={42}
-        className="custom-class"
-      />
+      <MetricCard title="Total Proposals" value={42} className="custom-class" />,
     );
 
     const card = container.firstChild as HTMLElement;
@@ -63,7 +57,7 @@ describe('MetricCard', () => {
         icon={FileText}
         description="Due within 7 days"
         className="border-orange-500"
-      />
+      />,
     );
 
     expect(screen.getByText('Due Soon')).toBeInTheDocument();
