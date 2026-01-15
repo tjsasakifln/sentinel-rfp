@@ -66,7 +66,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#93](https://github.com/tjsasakifln/sentinel-rfp/issues/93) - Setup React Query Provider
   - [x] [#94](https://github.com/tjsasakifln/sentinel-rfp/issues/94) - Setup Zustand Client State
   - [x] [#95](https://github.com/tjsasakifln/sentinel-rfp/issues/95) - Create Layout Base (Header, Sidebar, Main)
-- [ ] Docker development environment - [#16](https://github.com/tjsasakifln/sentinel-rfp/issues/16)
+- [x] Docker development environment - [#16](https://github.com/tjsasakifln/sentinel-rfp/issues/16)
 - [ ] CI/CD pipeline (GitHub Actions) - [#17](https://github.com/tjsasakifln/sentinel-rfp/issues/17)
 - [ ] Railway deployment configuration - [#18](https://github.com/tjsasakifln/sentinel-rfp/issues/18)
 
