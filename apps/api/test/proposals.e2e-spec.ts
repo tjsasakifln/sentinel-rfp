@@ -665,16 +665,16 @@ describe('Proposals (e2e)', () => {
         title: 'Malicious Update',
       };
 
+      // Should reject with 400 because organizationId is not in the DTO whitelist
       const response = await request(app.getHttpServer())
         .put(`/api/v1/proposals/${proposalToUpdate}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(maliciousUpdateDto)
-        .expect(200);
+        .expect(400);
 
-      // Verify organizationId was NOT changed
-      expect(response.body).toHaveProperty('data');
-      expect(response.body.data.organizationId).toBe(organizationId);
-      expect(response.body.data.organizationId).not.toBe('00000000-0000-0000-0000-000000000000');
+      // Verify error response
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('not allowed');
     });
   });
 

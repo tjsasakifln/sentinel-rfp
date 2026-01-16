@@ -326,7 +326,7 @@ describe('Tenant Isolation (e2e)', () => {
         .expect(200);
 
       expect(checkResponse.body.data.id).toBe(proposalToDeleteId);
-      expect(checkResponse.body.data.deletedAt).toBeUndefined();
+      expect(checkResponse.body.data.deletedAt).toBeNull(); // Not soft deleted
     });
   });
 
