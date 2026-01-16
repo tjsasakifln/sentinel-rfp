@@ -159,7 +159,7 @@ describe('Authentication (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('detail');
-      expect(response.body.detail).toContain('email');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('email');
     });
 
     it('should reject registration with weak password', async () => {
@@ -178,7 +178,7 @@ describe('Authentication (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('detail');
-      expect(response.body.detail).toContain('password');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('password');
     });
 
     it('should reject duplicate email in same organization', async () => {
@@ -214,8 +214,8 @@ describe('Authentication (e2e)', () => {
         .send(duplicateDto)
         .expect(409);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already exists');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already exists');
     });
 
     it('should reject registration with invalid organizationId', async () => {
@@ -368,7 +368,7 @@ describe('Authentication (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('detail');
-      expect(response.body.detail).toContain('email');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('email');
     });
 
     it('should reject login with missing password', async () => {
@@ -382,7 +382,7 @@ describe('Authentication (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('detail');
-      expect(response.body.detail).toContain('password');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('password');
     });
 
     it('should reject login for inactive user', async () => {
@@ -648,7 +648,7 @@ describe('Authentication (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('detail');
-      expect(response.body.detail).toContain('refreshToken');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('refreshtoken');
     });
 
     it('should reject refresh token after user logout', async () => {
@@ -860,7 +860,7 @@ describe('Authentication (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('detail');
-      expect(response.body.detail).toContain('refreshToken');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('refreshtoken');
     });
 
     it('should reject logout with invalid refresh token format', async () => {

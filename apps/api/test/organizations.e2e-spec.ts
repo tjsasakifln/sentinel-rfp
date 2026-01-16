@@ -85,6 +85,17 @@ describe('Organizations (e2e)', () => {
       data: { role: UserRole.ADMIN },
     });
 
+    // Login again to get JWT with updated ADMIN role
+    const adminLoginResponse = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({
+        email: `test+org-admin-real${timestamp}@example.com`,
+        password: 'SecurePass123!',
+      })
+      .expect(200);
+
+    adminToken = adminLoginResponse.body.data.accessToken;
+
     // Create MEMBER user
     const memberRegisterResponse = await request(app.getHttpServer())
       .post('/api/v1/auth/register')
@@ -109,6 +120,17 @@ describe('Organizations (e2e)', () => {
       where: { id: memberRegisterResponse.body.data.user.id },
       data: { role: UserRole.MEMBER },
     });
+
+    // Login again to get JWT with updated MEMBER role
+    const memberLoginResponse = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({
+        email: `test+org-member${timestamp}@example.com`,
+        password: 'SecurePass123!',
+      })
+      .expect(200);
+
+    memberToken = memberLoginResponse.body.data.accessToken;
   });
 
   afterAll(async () => {
