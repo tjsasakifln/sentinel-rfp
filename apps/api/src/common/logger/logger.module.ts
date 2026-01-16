@@ -97,8 +97,8 @@ import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
           res: (res) => ({
             statusCode: res.statusCode,
             headers: {
-              'content-type': res.getHeader('content-type'),
-              'x-request-id': res.getHeader('x-request-id'),
+              'content-type': res.getHeader ? res.getHeader('content-type') : undefined,
+              'x-request-id': res.getHeader ? res.getHeader('x-request-id') : undefined,
             },
           }),
           err: (err) => ({
