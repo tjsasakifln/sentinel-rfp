@@ -12,6 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    services:
+      postgres:
+        image: ankane/pgvector:v0.5.1
+        env:
+          POSTGRES_USER: sentinel
+          POSTGRES_PASSWORD: sentinel_dev_pass
+          POSTGRES_DB: sentinel_rfp_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sentinel -d sentinel_rfp_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,7 +71,33 @@ jobs:
         run: pnpm typecheck || echo "⚠ Typecheck skipped (no code yet)"
         continue-on-error: true
 
+      - name: Generate Prisma Client
+        run: |
+          cd packages/database
+          pnpm prisma generate
+        env:
+          DATABASE_URL: postgresql://sentinel:sentinel_dev_pass@localhost:5432/sentinel_rfp_test
+
+      - name: Run Database Migrations
+        run: |
+          cd packages/database
+          pnpm prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://sentinel:sentinel_dev_pass@localhost:5432/sentinel_rfp_test
+
+      - name: Run E2E Tests
+        run: |
+          cd apps/api
+          pnpm test:e2e
+        env:
+          DATABASE_URL: postgresql://sentinel:sentinel_dev_pass@localhost:5432/sentinel_rfp_test
+          NODE_ENV: test
+          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+
       - name: Summary
         run: |
           echo "✅ Monorepo setup validation completed"
-          echo "📦 Ready for app scaffolding (issues #14, #15)"
+          echo "✅ Database migrations applied"
+          echo "✅ E2E tests passed"
+          echo "📦 Ready for production deployment"

@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Backend: User-Organization Relationships** (#171, PR #178)
+  - Implemented many-to-many relationship between User and Organization models
+  - Created UserOrganization junction table with role-based access control
+  - Prisma schema update with unique constraint on (userId, organizationId) composite key
+  - Performance indexes on userId and organizationId for efficient queries
+  - Cascading deletes when User or Organization entities are removed
+  - UserService with complete relationship management methods:
+    - addToOrganization: Add user to organization with specified role
+    - removeFromOrganization: Remove user from organization
+    - getUserOrganizations: List all organizations for a user
+    - getUserRole: Get user's role in specific organization
+    - updateUserRole: Update user's role in organization
+  - Organization member management API endpoints:
+    - POST /v1/organizations/:id/members - Add member (OWNER/ADMIN only)
+    - GET /v1/organizations/:id/members - List members (OWNER/ADMIN only)
+    - DELETE /v1/organizations/:id/members/:userId - Remove member (OWNER/ADMIN only)
+  - Comprehensive E2E test suite with cross-tenant isolation validation
+  - Full Swagger/OpenAPI documentation for all member management endpoints
+  - Input validation with AddMemberDto using class-validator
+
 - **Backend: Organization CRUD Endpoints** (#170, PR #176)
   - Full CRUD operations for organization management (POST, GET, PATCH, DELETE)
   - Role-based access control (OWNER/ADMIN for most operations, OWNER-only for delete)
