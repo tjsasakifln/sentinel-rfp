@@ -92,13 +92,13 @@ import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
               'user-agent': req.headers['user-agent'],
               'content-type': req.headers['content-type'],
             },
-            remoteAddress: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            remoteAddress: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown',
           }),
           res: (res) => ({
             statusCode: res.statusCode,
             headers: {
-              'content-type': res.getHeader('content-type'),
-              'x-request-id': res.getHeader('x-request-id'),
+              'content-type': res.getHeader ? res.getHeader('content-type') : undefined,
+              'x-request-id': res.getHeader ? res.getHeader('x-request-id') : undefined,
             },
           }),
           err: (err) => ({

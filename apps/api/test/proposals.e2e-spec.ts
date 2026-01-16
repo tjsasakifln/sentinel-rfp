@@ -14,12 +14,13 @@
  * @module ProposalsE2ESpec
  */
 
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
+import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 
 const prisma = new PrismaClient();
 
@@ -36,6 +37,22 @@ describe('Proposals (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
+
+    // Configure same validation as main.ts
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+      }),
+    );
+
+    // Configure exception filters
+    app.useGlobalFilters(new HttpExceptionFilter());
+
     await app.init();
 
     // Create a test user and get auth token
@@ -53,8 +70,13 @@ describe('Proposals (e2e)', () => {
       .send(registerDto)
       .expect(201);
 
-    accessToken = authResponse.body.accessToken;
-    organizationId = authResponse.body.user.organizationId;
+    expect(authResponse.body).toHaveProperty('data');
+    expect(authResponse.body.data).toHaveProperty('accessToken');
+    expect(authResponse.body.data).toHaveProperty('user');
+    expect(authResponse.body.data.user).toHaveProperty('organizationId');
+
+    accessToken = authResponse.body.data.accessToken;
+    organizationId = authResponse.body.data.user.organizationId;
   });
 
   afterAll(async () => {
@@ -99,16 +121,17 @@ describe('Proposals (e2e)', () => {
         .expect(201);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('title', createProposalDto.title);
-      expect(response.body).toHaveProperty('rfpNumber', createProposalDto.rfpNumber);
-      expect(response.body).toHaveProperty('status', 'draft');
-      expect(response.body).toHaveProperty('organizationId', organizationId);
-      expect(response.body).toHaveProperty('createdAt');
-      expect(response.body).toHaveProperty('updatedAt');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('title', createProposalDto.title);
+      expect(response.body.data).toHaveProperty('rfpNumber', createProposalDto.rfpNumber);
+      expect(response.body.data).toHaveProperty('status', 'draft');
+      expect(response.body.data).toHaveProperty('organizationId', organizationId);
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
 
       // Validate UUID format
-      expect(response.body.id).toMatch(
+      expect(response.body.data.id).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
     });
@@ -124,8 +147,9 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(201);
 
-      expect(response.body).toHaveProperty('status', 'draft');
-      expect(response.body).toHaveProperty('title', createProposalDto.title);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('status', 'draft');
+      expect(response.body.data).toHaveProperty('title', createProposalDto.title);
     });
 
     it('should create proposal without optional rfpNumber', async () => {
@@ -140,9 +164,10 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(201);
 
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('title', createProposalDto.title);
-      expect(response.body.rfpNumber).toBeNull();
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('title', createProposalDto.title);
+      expect(response.body.data.rfpNumber).toBeNull();
     });
 
     it('should fail with 401 when no auth token provided', async () => {
@@ -155,7 +180,7 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     });
 
     it('should fail with 400 when title is missing', async () => {
@@ -170,8 +195,8 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Title');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('title');
     });
 
     it('should fail with 400 when title exceeds max length', async () => {
@@ -185,8 +210,8 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('500 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('500');
     });
 
     it('should fail with 400 when rfpNumber exceeds max length', async () => {
@@ -201,8 +226,8 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('100 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('100');
     });
 
     it('should enforce tenant isolation', async () => {
@@ -219,7 +244,7 @@ describe('Proposals (e2e)', () => {
         .expect(201);
 
       // Verify organizationId matches authenticated user's org
-      expect(response1.body.organizationId).toBe(organizationId);
+      expect(response1.body.data.organizationId).toBe(organizationId);
 
       // Create second user in different org
       const timestamp2 = Date.now();
@@ -236,8 +261,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      const accessToken2 = auth2Response.body.accessToken;
-      const organizationId2 = auth2Response.body.user.organizationId;
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
+
+      const accessToken2 = auth2Response.body.data.accessToken;
+      const organizationId2 = auth2Response.body.data.user.organizationId;
 
       // Create proposal with second user's token
       const proposal2Dto = {
@@ -252,15 +282,15 @@ describe('Proposals (e2e)', () => {
         .expect(201);
 
       // Verify tenant isolation: each proposal belongs to its own org
-      expect(response2.body.organizationId).toBe(organizationId2);
-      expect(response2.body.organizationId).not.toBe(organizationId);
+      expect(response2.body.data.organizationId).toBe(organizationId2);
+      expect(response2.body.data.organizationId).not.toBe(organizationId);
 
       // Cleanup second org
       await prisma.proposal.deleteMany({
         where: { organizationId: organizationId2 },
       });
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
         where: { id: organizationId2 },
@@ -277,7 +307,7 @@ describe('Proposals (e2e)', () => {
         .send({ title: 'List Test Proposal 1', rfpNumber: 'LIST-001' })
         .expect(201);
 
-      createdProposalId = proposal1.body.id;
+      createdProposalId = proposal1.body.data.id;
 
       await request(app.getHttpServer())
         .post('/api/v1/proposals')
@@ -346,6 +376,7 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // All proposals should belong to the authenticated user's org
+      expect(response.body).toHaveProperty('data');
       response.body.data.forEach((proposal: { organizationId: string }) => {
         expect(proposal.organizationId).toBe(organizationId);
       });
@@ -360,12 +391,13 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // Validate proposal structure
-      expect(response.body).toHaveProperty('id', createdProposalId);
-      expect(response.body).toHaveProperty('title');
-      expect(response.body).toHaveProperty('status');
-      expect(response.body).toHaveProperty('organizationId', organizationId);
-      expect(response.body).toHaveProperty('sections');
-      expect(Array.isArray(response.body.sections)).toBe(true);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id', createdProposalId);
+      expect(response.body.data).toHaveProperty('title');
+      expect(response.body.data).toHaveProperty('status');
+      expect(response.body.data).toHaveProperty('organizationId', organizationId);
+      expect(response.body.data).toHaveProperty('sections');
+      expect(Array.isArray(response.body.data.sections)).toBe(true);
     });
 
     it('should fail with 404 when proposal does not exist', async () => {
@@ -404,7 +436,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      const accessToken2 = auth2Response.body.accessToken;
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
+
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Try to access first user's proposal with second user's token
       await request(app.getHttpServer())
@@ -414,10 +452,10 @@ describe('Proposals (e2e)', () => {
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
   });
@@ -437,7 +475,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      proposalToUpdate = response.body.id;
+      proposalToUpdate = response.body.data.id;
     });
 
     it('should update a proposal with valid data', async () => {
@@ -454,16 +492,17 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('id', proposalToUpdate);
-      expect(response.body).toHaveProperty('title', updateDto.title);
-      expect(response.body).toHaveProperty('rfpNumber', updateDto.rfpNumber);
-      expect(response.body).toHaveProperty('status', updateDto.status);
-      expect(response.body).toHaveProperty('organizationId', organizationId);
-      expect(response.body).toHaveProperty('updatedAt');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id', proposalToUpdate);
+      expect(response.body.data).toHaveProperty('title', updateDto.title);
+      expect(response.body.data).toHaveProperty('rfpNumber', updateDto.rfpNumber);
+      expect(response.body.data).toHaveProperty('status', updateDto.status);
+      expect(response.body.data).toHaveProperty('organizationId', organizationId);
+      expect(response.body.data).toHaveProperty('updatedAt');
 
       // Verify updatedAt was modified
-      expect(new Date(response.body.updatedAt).getTime()).toBeGreaterThan(
-        new Date(response.body.createdAt).getTime(),
+      expect(new Date(response.body.data.updatedAt).getTime()).toBeGreaterThan(
+        new Date(response.body.data.createdAt).getTime(),
       );
     });
 
@@ -478,8 +517,9 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(200);
 
-      expect(response.body).toHaveProperty('title', updateDto.title);
-      expect(response.body).toHaveProperty('rfpNumber'); // Should remain unchanged
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('title', updateDto.title);
+      expect(response.body.data).toHaveProperty('rfpNumber'); // Should remain unchanged
     });
 
     it('should update only status (partial update)', async () => {
@@ -493,8 +533,9 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(200);
 
-      expect(response.body).toHaveProperty('status', 'completed');
-      expect(response.body).toHaveProperty('title'); // Should remain unchanged
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('status', 'completed');
+      expect(response.body.data).toHaveProperty('title'); // Should remain unchanged
     });
 
     it('should fail with 404 when proposal does not exist', async () => {
@@ -544,8 +585,8 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('500 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('500');
     });
 
     it('should fail with 400 when rfpNumber exceeds max length', async () => {
@@ -559,8 +600,8 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('100 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('100');
     });
 
     it('should enforce tenant isolation (404 for other org proposals)', async () => {
@@ -579,7 +620,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      const accessToken2 = auth2Response.body.accessToken;
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
+
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Try to update first user's proposal with second user's token
       const updateDto = {
@@ -598,14 +645,15 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(checkResponse.body.title).not.toBe('Should Fail - Wrong Org');
+      expect(checkResponse.body).toHaveProperty('data');
+      expect(checkResponse.body.data.title).not.toBe('Should Fail - Wrong Org');
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
 
@@ -622,8 +670,9 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // Verify organizationId was NOT changed
-      expect(response.body.organizationId).toBe(organizationId);
-      expect(response.body.organizationId).not.toBe('00000000-0000-0000-0000-000000000000');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data.organizationId).toBe(organizationId);
+      expect(response.body.data.organizationId).not.toBe('00000000-0000-0000-0000-000000000000');
     });
   });
 
@@ -643,7 +692,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      proposalToDelete = response1.body.id;
+      proposalToDelete = response1.body.data.id;
 
       // Create a proposal with sections for cascade delete test
       const response2 = await request(app.getHttpServer())
@@ -656,7 +705,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      proposalWithSections = response2.body.id;
+      proposalWithSections = response2.body.data.id;
 
       // Add sections to the proposal
       await prisma.proposalSection.createMany({
@@ -744,7 +793,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      const proposalId = response.body.id;
+      const proposalId = response.body.data.id;
 
       // First delete - should succeed
       await request(app.getHttpServer())
@@ -788,7 +837,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      const accessToken2 = auth2Response.body.accessToken;
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
+
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Create proposal for first org
       const proposal1 = await request(app.getHttpServer())
@@ -802,13 +857,13 @@ describe('Proposals (e2e)', () => {
 
       // Try to delete first user's proposal with second user's token
       await request(app.getHttpServer())
-        .delete(`/api/v1/proposals/${proposal1.body.id}`)
+        .delete(`/api/v1/proposals/${proposal1.body.data.id}`)
         .set('Authorization', `Bearer ${accessToken2}`)
         .expect(404); // Should return 404 (not 403) for security
 
       // Verify proposal was NOT deleted
       const checkProposal = await prisma.proposal.findUnique({
-        where: { id: proposal1.body.id },
+        where: { id: proposal1.body.data.id },
       });
 
       expect(checkProposal).not.toBeNull();
@@ -816,10 +871,10 @@ describe('Proposals (e2e)', () => {
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
   });
@@ -946,20 +1001,21 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('totalProposals');
-      expect(response.body).toHaveProperty('inProgress');
-      expect(response.body).toHaveProperty('completed');
-      expect(response.body).toHaveProperty('dueSoon');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('totalProposals');
+      expect(response.body.data).toHaveProperty('inProgress');
+      expect(response.body.data).toHaveProperty('completed');
+      expect(response.body.data).toHaveProperty('dueSoon');
 
-      expect(typeof response.body.totalProposals).toBe('number');
-      expect(typeof response.body.inProgress).toBe('number');
-      expect(typeof response.body.completed).toBe('number');
-      expect(typeof response.body.dueSoon).toBe('number');
+      expect(typeof response.body.data.totalProposals).toBe('number');
+      expect(typeof response.body.data.inProgress).toBe('number');
+      expect(typeof response.body.data.completed).toBe('number');
+      expect(typeof response.body.data.dueSoon).toBe('number');
 
       // Verify metrics are calculated correctly
-      expect(response.body.totalProposals).toBeGreaterThanOrEqual(3);
-      expect(response.body.inProgress).toBeGreaterThanOrEqual(1);
-      expect(response.body.completed).toBeGreaterThanOrEqual(1);
+      expect(response.body.data.totalProposals).toBeGreaterThanOrEqual(3);
+      expect(response.body.data.inProgress).toBeGreaterThanOrEqual(1);
+      expect(response.body.data.completed).toBeGreaterThanOrEqual(1);
     });
 
     it('should fail with 401 when no auth token provided', async () => {
@@ -982,7 +1038,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      const accessToken2 = auth2Response.body.accessToken;
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
+
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Get metrics for second org (should be 0 proposals)
       const response = await request(app.getHttpServer())
@@ -990,16 +1052,17 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken2}`)
         .expect(200);
 
-      expect(response.body.totalProposals).toBe(0);
-      expect(response.body.inProgress).toBe(0);
-      expect(response.body.completed).toBe(0);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data.totalProposals).toBe(0);
+      expect(response.body.data.inProgress).toBe(0);
+      expect(response.body.data.completed).toBe(0);
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
   });

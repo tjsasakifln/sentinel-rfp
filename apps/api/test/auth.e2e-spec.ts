@@ -11,12 +11,13 @@
  * @module AuthE2ESpec
  */
 
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
+import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 
 const prisma = new PrismaClient();
 
@@ -30,6 +31,22 @@ describe('Authentication (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
+
+    // Configure same validation as main.ts
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+      }),
+    );
+
+    // Configure exception filters
+    app.useGlobalFilters(new HttpExceptionFilter());
+
     await app.init();
   });
 
@@ -71,12 +88,13 @@ describe('Authentication (e2e)', () => {
         .expect(201);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
-      expect(response.body).toHaveProperty('user');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
+      expect(response.body.data).toHaveProperty('user');
 
       // Validate user data
-      const { user } = response.body;
+      const { user } = response.body.data;
       expect(user).toMatchObject({
         email: registerDto.email,
         name: `${registerDto.firstName} ${registerDto.lastName}`,
@@ -87,8 +105,8 @@ describe('Authentication (e2e)', () => {
       expect(user).toHaveProperty('organizationName', registerDto.organizationName);
 
       // Validate tokens are JWTs (basic format check)
-      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
-      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
 
       // Verify user was created in database
       const dbUser = await prisma.user.findUnique({
@@ -135,7 +153,10 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(201);
 
-      const { user } = response.body;
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('user');
+
+      const { user } = response.body.data;
       expect(user.role).toBe('MEMBER'); // Joining existing org = MEMBER role
       expect(user.organizationId).toBe(org.id);
     });
@@ -154,8 +175,8 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('email');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('email');
     });
 
     it('should reject registration with weak password', async () => {
@@ -173,8 +194,8 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('password');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('password');
     });
 
     it('should reject duplicate email in same organization', async () => {
@@ -210,8 +231,8 @@ describe('Authentication (e2e)', () => {
         .send(duplicateDto)
         .expect(409);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already exists');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already exists');
     });
 
     it('should reject registration with invalid organizationId', async () => {
@@ -221,7 +242,7 @@ describe('Authentication (e2e)', () => {
         password: 'SecurePass123!',
         firstName: 'Test',
         lastName: 'User',
-        organizationId: '00000000-0000-0000-0000-000000000000', // Non-existent UUID
+        organizationId: '12345678-1234-4123-8123-123456789012', // Valid UUID v4 format but non-existent
       };
 
       const response = await request(app.getHttpServer())
@@ -229,8 +250,8 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(404);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Organization not found');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('organization');
     });
 
     it('should reject registration without organizationName when creating new org', async () => {
@@ -248,8 +269,8 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Organization name required');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('organization');
     });
   });
 
@@ -274,12 +295,18 @@ describe('Authentication (e2e)', () => {
           firstName: 'Login',
           lastName: 'Test',
           organizationName: `Login Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('user');
+      expect(response.body.data.user).toHaveProperty('organizationId');
 
       testUser = {
         email,
         password,
-        organizationId: response.body.user.organizationId,
+        organizationId: response.body.data.user.organizationId,
       };
     });
 
@@ -295,12 +322,13 @@ describe('Authentication (e2e)', () => {
         .expect(200);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
-      expect(response.body).toHaveProperty('user');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
+      expect(response.body.data).toHaveProperty('user');
 
       // Validate user data
-      const { user } = response.body;
+      const { user } = response.body.data;
       expect(user).toMatchObject({
         email: testUser.email,
         organizationId: testUser.organizationId,
@@ -311,8 +339,8 @@ describe('Authentication (e2e)', () => {
       expect(user).toHaveProperty('organizationName');
 
       // Validate tokens are JWTs (basic format check)
-      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
-      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
     });
 
     it('should reject login with invalid email', async () => {
@@ -326,8 +354,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Invalid credentials');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('invalid');
     });
 
     it('should reject login with invalid password', async () => {
@@ -341,8 +369,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Invalid credentials');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('invalid');
     });
 
     it('should reject login with malformed email', async () => {
@@ -356,8 +384,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('email');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('email');
     });
 
     it('should reject login with missing password', async () => {
@@ -370,8 +398,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('password');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('password');
     });
 
     it('should reject login for inactive user', async () => {
@@ -388,9 +416,14 @@ describe('Authentication (e2e)', () => {
           firstName: 'Inactive',
           lastName: 'User',
           organizationName: `Inactive Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
 
-      const userId = registerResponse.body.user.id;
+      expect(registerResponse.body).toHaveProperty('data');
+      expect(registerResponse.body.data).toHaveProperty('user');
+      expect(registerResponse.body.data.user).toHaveProperty('id');
+
+      const userId = registerResponse.body.data.user.id;
 
       // Suspend user (deactivate)
       await prisma.user.update({
@@ -406,8 +439,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Account is not active');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('not active');
     });
 
     it('should reject login for user in inactive organization', async () => {
@@ -424,9 +457,14 @@ describe('Authentication (e2e)', () => {
           firstName: 'InactiveOrg',
           lastName: 'User',
           organizationName: `Inactive Org Test ${timestamp}`,
-        });
+        })
+        .expect(201);
 
-      const orgId = registerResponse.body.user.organizationId;
+      expect(registerResponse.body).toHaveProperty('data');
+      expect(registerResponse.body.data).toHaveProperty('user');
+      expect(registerResponse.body.data.user).toHaveProperty('organizationId');
+
+      const orgId = registerResponse.body.data.user.organizationId;
 
       // Suspend organization (deactivate)
       await prisma.organization.update({
@@ -442,8 +480,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Organization is not active');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('not active');
     });
 
     it('should handle rate limiting (5 req/min)', async () => {
@@ -463,7 +501,7 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(429);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     }, 10000); // Longer timeout for rate limiting test
   });
 
@@ -489,13 +527,18 @@ describe('Authentication (e2e)', () => {
           firstName: 'Refresh',
           lastName: 'Test',
           organizationName: `Refresh Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
 
       testUser = {
         email,
         password,
-        accessToken: response.body.accessToken,
-        refreshToken: response.body.refreshToken,
+        accessToken: response.body.data.accessToken,
+        refreshToken: response.body.data.refreshToken,
       };
     });
 
@@ -510,20 +553,21 @@ describe('Authentication (e2e)', () => {
         .expect(200);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
 
       // Validate new tokens are different from old ones (rotation)
-      expect(response.body.accessToken).not.toBe(testUser.accessToken);
-      expect(response.body.refreshToken).not.toBe(testUser.refreshToken);
+      expect(response.body.data.accessToken).not.toBe(testUser.accessToken);
+      expect(response.body.data.refreshToken).not.toBe(testUser.refreshToken);
 
       // Validate tokens are JWTs (basic format check)
-      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
-      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
 
       // Update test user tokens for subsequent tests
-      testUser.accessToken = response.body.accessToken;
-      testUser.refreshToken = response.body.refreshToken;
+      testUser.accessToken = response.body.data.accessToken;
+      testUser.refreshToken = response.body.data.refreshToken;
     });
 
     it('should reject already-used refresh token (rotation security)', async () => {
@@ -533,7 +577,7 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const oldRefreshToken = loginResponse.body.refreshToken;
+      const oldRefreshToken = loginResponse.body.data.refreshToken;
 
       // Use refresh token once (should succeed)
       await request(app.getHttpServer())
@@ -547,8 +591,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken: oldRefreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already used');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already used');
     });
 
     it('should reject expired refresh token', async () => {
@@ -563,7 +607,7 @@ describe('Authentication (e2e)', () => {
         .send(refreshDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     });
 
     it('should reject malformed refresh token', async () => {
@@ -576,7 +620,7 @@ describe('Authentication (e2e)', () => {
         .send(refreshDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     });
 
     it('should reject refresh token from different user', async () => {
@@ -592,9 +636,13 @@ describe('Authentication (e2e)', () => {
           firstName: 'Other',
           lastName: 'User',
           organizationName: `Other Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
 
-      const otherUserRefreshToken = otherUserResponse.body.refreshToken;
+      expect(otherUserResponse.body).toHaveProperty('data');
+      expect(otherUserResponse.body.data).toHaveProperty('refreshToken');
+
+      const otherUserRefreshToken = otherUserResponse.body.data.refreshToken;
 
       // Try to use other user's refresh token with current user context
       // (In practice, refresh tokens are bearer tokens and don't need user context,
@@ -605,8 +653,9 @@ describe('Authentication (e2e)', () => {
         .expect(200); // Should succeed as refresh tokens are standalone
 
       // Verify the returned token belongs to the other user
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
     });
 
     it('should reject refresh without refresh token', async () => {
@@ -615,8 +664,8 @@ describe('Authentication (e2e)', () => {
         .send({}) // Missing refreshToken
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('refreshToken');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('refreshtoken');
     });
 
     it('should reject refresh token after user logout', async () => {
@@ -626,8 +675,8 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const accessToken = loginResponse.body.accessToken;
-      const refreshToken = loginResponse.body.refreshToken;
+      const accessToken = loginResponse.body.data.accessToken;
+      const refreshToken = loginResponse.body.data.refreshToken;
 
       // Logout to blacklist tokens
       await request(app.getHttpServer())
@@ -642,8 +691,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already used');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already used');
     });
 
     it('should handle rate limiting (10 req/min)', async () => {
@@ -653,7 +702,7 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      let currentRefreshToken = loginResponse.body.refreshToken;
+      let currentRefreshToken = loginResponse.body.data.refreshToken;
 
       // Make 10 refresh requests (each should succeed and rotate token)
       for (let i = 0; i < 10; i++) {
@@ -662,7 +711,7 @@ describe('Authentication (e2e)', () => {
           .send({ refreshToken: currentRefreshToken });
 
         if (res.status === 200) {
-          currentRefreshToken = res.body.refreshToken;
+          currentRefreshToken = res.body.data.refreshToken;
         }
       }
 
@@ -672,7 +721,7 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken: currentRefreshToken })
         .expect(429);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     }, 15000); // Longer timeout for rate limiting test
   });
 
@@ -698,13 +747,18 @@ describe('Authentication (e2e)', () => {
           firstName: 'Logout',
           lastName: 'Test',
           organizationName: `Logout Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
 
       testUser = {
         email,
         password,
-        accessToken: response.body.accessToken,
-        refreshToken: response.body.refreshToken,
+        accessToken: response.body.data.accessToken,
+        refreshToken: response.body.data.refreshToken,
       };
     });
 
@@ -730,8 +784,8 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const accessToken = loginResponse.body.accessToken;
-      const refreshToken = loginResponse.body.refreshToken;
+      const accessToken = loginResponse.body.data.accessToken;
+      const refreshToken = loginResponse.body.data.refreshToken;
 
       // Logout to blacklist tokens
       await request(app.getHttpServer())
@@ -749,8 +803,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('invalidated');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('invalidated');
     });
 
     it('should reject refresh with blacklisted refresh token', async () => {
@@ -760,8 +814,8 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const accessToken = loginResponse.body.accessToken;
-      const refreshToken = loginResponse.body.refreshToken;
+      const accessToken = loginResponse.body.data.accessToken;
+      const refreshToken = loginResponse.body.data.refreshToken;
 
       // Logout to blacklist tokens
       await request(app.getHttpServer())
@@ -776,8 +830,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already used');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already used');
     });
 
     it('should reject logout without authorization header', async () => {
@@ -790,8 +844,8 @@ describe('Authentication (e2e)', () => {
         .send(logoutDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Authorization header');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('authorization');
     });
 
     it('should reject logout with invalid authorization header format', async () => {
@@ -805,8 +859,8 @@ describe('Authentication (e2e)', () => {
         .send(logoutDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Authorization header');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('authorization');
     });
 
     it('should reject logout with missing refresh token', async () => {
@@ -818,12 +872,12 @@ describe('Authentication (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/logout')
-        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
         .send({}) // Missing refreshToken
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('refreshToken');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('refreshtoken');
     });
 
     it('should reject logout with invalid refresh token format', async () => {
@@ -839,12 +893,12 @@ describe('Authentication (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/logout')
-        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
         .send(logoutDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Logout failed');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('logout');
     });
 
     it('should handle rate limiting (10 req/min)', async () => {
@@ -855,25 +909,25 @@ describe('Authentication (e2e)', () => {
       });
 
       const logoutDto = {
-        refreshToken: loginResponse.body.refreshToken,
+        refreshToken: loginResponse.body.data.refreshToken,
       };
 
       // Make 10 requests (should succeed on first, then fail with 401 for blacklisted token)
       for (let i = 0; i < 10; i++) {
         await request(app.getHttpServer())
           .post('/api/v1/auth/logout')
-          .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+          .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
           .send(logoutDto);
       }
 
       // 11th request should be rate limited
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/logout')
-        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
         .send(logoutDto)
         .expect(429);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     }, 10000); // Longer timeout for rate limiting test
   });
 });

@@ -40,7 +40,7 @@ interface JwtPayload {
 }
 
 @ApiTags('proposals')
-@Controller('proposals')
+@Controller('v1/proposals')
 @UseGuards(JwtAuthGuard)
 export class ProposalController {
   constructor(private readonly proposalService: ProposalService) {}

@@ -26,7 +26,7 @@ interface JwtPayload {
 }
 
 @ApiTags('dashboard')
-@Controller('dashboard')
+@Controller('v1/dashboard')
 @UseGuards(JwtAuthGuard)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}

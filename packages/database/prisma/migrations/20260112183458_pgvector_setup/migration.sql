@@ -23,16 +23,28 @@ CREATE EXTENSION IF NOT EXISTS vector;
 -- Distance operator: vector_cosine_ops (1 - cosine similarity)
 
 -- Index for DocumentChunk embeddings (semantic search on document content)
-CREATE INDEX IF NOT EXISTS document_chunks_embedding_idx
-  ON document_chunks
-  USING hnsw (embedding vector_cosine_ops)
-  WITH (m = 16, ef_construction = 64);
+-- Only create if table exists (table created in later migration)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'document_chunks') THEN
+    CREATE INDEX IF NOT EXISTS document_chunks_embedding_idx
+      ON document_chunks
+      USING hnsw (embedding vector_cosine_ops)
+      WITH (m = 16, ef_construction = 64);
+  END IF;
+END $$;
 
 -- Index for LibraryEntry embeddings (semantic search on reusable content)
-CREATE INDEX IF NOT EXISTS library_entries_embedding_idx
-  ON library_entries
-  USING hnsw (embedding vector_cosine_ops)
-  WITH (m = 16, ef_construction = 64);
+-- Only create if table exists (table created in later migration)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'library_entries') THEN
+    CREATE INDEX IF NOT EXISTS library_entries_embedding_idx
+      ON library_entries
+      USING hnsw (embedding vector_cosine_ops)
+      WITH (m = 16, ef_construction = 64);
+  END IF;
+END $$;
 
 -- ==========================================
 -- FILTER INDEXES (B-tree)
@@ -42,16 +54,28 @@ CREATE INDEX IF NOT EXISTS library_entries_embedding_idx
 -- Pattern: Filter by organization/category/document → then vector search on subset
 
 -- DocumentChunk filters
-CREATE INDEX IF NOT EXISTS document_chunks_document_id_idx
-  ON document_chunks(document_id);
+-- Only create if table exists
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'document_chunks') THEN
+    CREATE INDEX IF NOT EXISTS document_chunks_document_id_idx
+      ON document_chunks(document_id);
+  END IF;
+END $$;
 
 -- LibraryEntry filters
-CREATE INDEX IF NOT EXISTS library_entries_organization_id_idx
-  ON library_entries(organization_id);
+-- Only create if table exists
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'library_entries') THEN
+    CREATE INDEX IF NOT EXISTS library_entries_organization_id_idx
+      ON library_entries(organization_id);
 
-CREATE INDEX IF NOT EXISTS library_entries_category_idx
-  ON library_entries(category)
-  WHERE category IS NOT NULL; -- Partial index for non-null categories
+    CREATE INDEX IF NOT EXISTS library_entries_category_idx
+      ON library_entries(category)
+      WHERE category IS NOT NULL; -- Partial index for non-null categories
+  END IF;
+END $$;
 
 -- ==========================================
 -- PERFORMANCE NOTES

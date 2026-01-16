@@ -49,9 +49,16 @@ describe('Organizations (e2e)', () => {
         firstName: 'Owner',
         lastName: 'User',
         organizationName: `Test Org Owner ${timestamp}`,
-      });
-    ownerToken = ownerResponse.body.accessToken;
-    ownerOrgId = ownerResponse.body.user.organizationId;
+      })
+      .expect(201);
+
+    expect(ownerResponse.body).toHaveProperty('data');
+    expect(ownerResponse.body.data).toHaveProperty('accessToken');
+    expect(ownerResponse.body.data).toHaveProperty('user');
+    expect(ownerResponse.body.data.user).toHaveProperty('organizationId');
+
+    ownerToken = ownerResponse.body.data.accessToken;
+    ownerOrgId = ownerResponse.body.data.user.organizationId;
 
     // Create ADMIN via register and update role
     const adminRegisterResponse = await request(app.getHttpServer())
@@ -62,14 +69,32 @@ describe('Organizations (e2e)', () => {
         firstName: 'Admin',
         lastName: 'User',
         organizationName: `Test Org Admin ${timestamp}`,
-      });
-    adminToken = adminRegisterResponse.body.accessToken;
+      })
+      .expect(201);
+
+    expect(adminRegisterResponse.body).toHaveProperty('data');
+    expect(adminRegisterResponse.body.data).toHaveProperty('accessToken');
+    expect(adminRegisterResponse.body.data).toHaveProperty('user');
+    expect(adminRegisterResponse.body.data.user).toHaveProperty('id');
+
+    adminToken = adminRegisterResponse.body.data.accessToken;
 
     // Update user role to ADMIN
     await prisma.user.update({
-      where: { id: adminRegisterResponse.body.user.id },
+      where: { id: adminRegisterResponse.body.data.user.id },
       data: { role: UserRole.ADMIN },
     });
+
+    // Login again to get JWT with updated ADMIN role
+    const adminLoginResponse = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({
+        email: `test+org-admin-real${timestamp}@example.com`,
+        password: 'SecurePass123!',
+      })
+      .expect(200);
+
+    adminToken = adminLoginResponse.body.data.accessToken;
 
     // Create MEMBER user
     const memberRegisterResponse = await request(app.getHttpServer())
@@ -80,14 +105,32 @@ describe('Organizations (e2e)', () => {
         firstName: 'Member',
         lastName: 'User',
         organizationName: `Test Org Member ${timestamp}`,
-      });
-    memberToken = memberRegisterResponse.body.accessToken;
+      })
+      .expect(201);
+
+    expect(memberRegisterResponse.body).toHaveProperty('data');
+    expect(memberRegisterResponse.body.data).toHaveProperty('accessToken');
+    expect(memberRegisterResponse.body.data).toHaveProperty('user');
+    expect(memberRegisterResponse.body.data.user).toHaveProperty('id');
+
+    memberToken = memberRegisterResponse.body.data.accessToken;
 
     // Update user role to MEMBER
     await prisma.user.update({
-      where: { id: memberRegisterResponse.body.user.id },
+      where: { id: memberRegisterResponse.body.data.user.id },
       data: { role: UserRole.MEMBER },
     });
+
+    // Login again to get JWT with updated MEMBER role
+    const memberLoginResponse = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({
+        email: `test+org-member${timestamp}@example.com`,
+        password: 'SecurePass123!',
+      })
+      .expect(200);
+
+    memberToken = memberLoginResponse.body.data.accessToken;
   });
 
   afterAll(async () => {
@@ -124,15 +167,16 @@ describe('Organizations (e2e)', () => {
         .send(createDto)
         .expect(201);
 
-      expect(response.body).toMatchObject({
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toMatchObject({
         name: createDto.name,
         plan: 'PROFESSIONAL', // default
         status: 'ACTIVE',
         settings: createDto.settings,
       });
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('slug');
-      expect(response.body).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('slug');
+      expect(response.body.data).toHaveProperty('createdAt');
     });
 
     it('should create organization as ADMIN', async () => {
@@ -184,8 +228,8 @@ describe('Organizations (e2e)', () => {
         .send(createDto)
         .expect(201);
 
-      expect(response1.body.slug).not.toBe(response2.body.slug);
-      expect(response2.body.slug).toMatch(/test-org-slug-generation-\d+/);
+      expect(response1.body.data.slug).not.toBe(response2.body.data.slug);
+      expect(response2.body.data.slug).toMatch(/test-org-slug-generation-\d+/);
     });
   });
 
@@ -196,10 +240,11 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body).toHaveProperty('data');
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data.length).toBeGreaterThan(0);
 
-      const org = response.body[0];
+      const org = response.body.data[0];
       expect(org).toHaveProperty('id');
       expect(org).toHaveProperty('name');
       expect(org).toHaveProperty('slug');
@@ -229,10 +274,11 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('id', ownerOrgId);
-      expect(response.body).toHaveProperty('name');
-      expect(response.body).toHaveProperty('users');
-      expect(Array.isArray(response.body.users)).toBe(true);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id', ownerOrgId);
+      expect(response.body.data).toHaveProperty('name');
+      expect(response.body.data).toHaveProperty('users');
+      expect(Array.isArray(response.body.data.users)).toBe(true);
     });
 
     it('should return 404 for non-existent organization', async () => {
@@ -257,7 +303,8 @@ describe('Organizations (e2e)', () => {
         .send(updateDto)
         .expect(200);
 
-      expect(response.body).toMatchObject(updateDto);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toMatchObject(updateDto);
     });
 
     it('should reject slug modification (409)', async () => {
@@ -318,8 +365,12 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .send({
           name: `Org To Delete ${Date.now()}`,
-        });
-      orgToDelete = response.body.id;
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      orgToDelete = response.body.data.id;
     });
 
     it('should soft delete organization as OWNER', async () => {
@@ -328,8 +379,9 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('deletedAt');
-      expect(response.body.deletedAt).not.toBeNull();
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('deletedAt');
+      expect(response.body.data.deletedAt).not.toBeNull();
 
       // Verify soft delete in database
       const deletedOrg = await prisma.organization.findUnique({
