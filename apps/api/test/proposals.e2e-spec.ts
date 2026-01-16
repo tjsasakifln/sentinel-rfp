@@ -53,6 +53,10 @@ describe('Proposals (e2e)', () => {
       .send(registerDto)
       .expect(201);
 
+    expect(authResponse.body).toHaveProperty('accessToken');
+    expect(authResponse.body).toHaveProperty('user');
+    expect(authResponse.body.user).toHaveProperty('organizationId');
+
     accessToken = authResponse.body.accessToken;
     organizationId = authResponse.body.user.organizationId;
   });
@@ -236,6 +240,10 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
+      expect(auth2Response.body).toHaveProperty('accessToken');
+      expect(auth2Response.body).toHaveProperty('user');
+      expect(auth2Response.body.user).toHaveProperty('organizationId');
+
       const accessToken2 = auth2Response.body.accessToken;
       const organizationId2 = auth2Response.body.user.organizationId;
 
@@ -403,6 +411,11 @@ describe('Proposals (e2e)', () => {
         .post('/api/v1/auth/register')
         .send(register2Dto)
         .expect(201);
+
+      expect(auth2Response.body).toHaveProperty('accessToken');
+      expect(auth2Response.body).toHaveProperty('user');
+      expect(auth2Response.body.user).toHaveProperty('id');
+      expect(auth2Response.body.user).toHaveProperty('organizationId');
 
       const accessToken2 = auth2Response.body.accessToken;
 
@@ -578,6 +591,11 @@ describe('Proposals (e2e)', () => {
         .post('/api/v1/auth/register')
         .send(register2Dto)
         .expect(201);
+
+      expect(auth2Response.body).toHaveProperty('accessToken');
+      expect(auth2Response.body).toHaveProperty('user');
+      expect(auth2Response.body.user).toHaveProperty('id');
+      expect(auth2Response.body.user).toHaveProperty('organizationId');
 
       const accessToken2 = auth2Response.body.accessToken;
 
@@ -788,6 +806,11 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
+      expect(auth2Response.body).toHaveProperty('accessToken');
+      expect(auth2Response.body).toHaveProperty('user');
+      expect(auth2Response.body.user).toHaveProperty('id');
+      expect(auth2Response.body.user).toHaveProperty('organizationId');
+
       const accessToken2 = auth2Response.body.accessToken;
 
       // Create proposal for first org
@@ -981,6 +1004,11 @@ describe('Proposals (e2e)', () => {
         .post('/api/v1/auth/register')
         .send(register2Dto)
         .expect(201);
+
+      expect(auth2Response.body).toHaveProperty('accessToken');
+      expect(auth2Response.body).toHaveProperty('user');
+      expect(auth2Response.body.user).toHaveProperty('id');
+      expect(auth2Response.body.user).toHaveProperty('organizationId');
 
       const accessToken2 = auth2Response.body.accessToken;
 

@@ -135,6 +135,8 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(201);
 
+      expect(response.body).toHaveProperty('user');
+
       const { user } = response.body;
       expect(user.role).toBe('MEMBER'); // Joining existing org = MEMBER role
       expect(user.organizationId).toBe(org.id);
@@ -274,7 +276,12 @@ describe('Authentication (e2e)', () => {
           firstName: 'Login',
           lastName: 'Test',
           organizationName: `Login Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('user');
+      expect(response.body.user).toHaveProperty('organizationId');
 
       testUser = {
         email,
@@ -388,7 +395,11 @@ describe('Authentication (e2e)', () => {
           firstName: 'Inactive',
           lastName: 'User',
           organizationName: `Inactive Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(registerResponse.body).toHaveProperty('user');
+      expect(registerResponse.body.user).toHaveProperty('id');
 
       const userId = registerResponse.body.user.id;
 
@@ -424,7 +435,11 @@ describe('Authentication (e2e)', () => {
           firstName: 'InactiveOrg',
           lastName: 'User',
           organizationName: `Inactive Org Test ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(registerResponse.body).toHaveProperty('user');
+      expect(registerResponse.body.user).toHaveProperty('organizationId');
 
       const orgId = registerResponse.body.user.organizationId;
 
@@ -489,7 +504,11 @@ describe('Authentication (e2e)', () => {
           firstName: 'Refresh',
           lastName: 'Test',
           organizationName: `Refresh Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
 
       testUser = {
         email,
@@ -592,7 +611,10 @@ describe('Authentication (e2e)', () => {
           firstName: 'Other',
           lastName: 'User',
           organizationName: `Other Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(otherUserResponse.body).toHaveProperty('refreshToken');
 
       const otherUserRefreshToken = otherUserResponse.body.refreshToken;
 
@@ -698,7 +720,11 @@ describe('Authentication (e2e)', () => {
           firstName: 'Logout',
           lastName: 'Test',
           organizationName: `Logout Test Org ${timestamp}`,
-        });
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
 
       testUser = {
         email,

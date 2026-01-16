@@ -49,7 +49,13 @@ describe('Organizations (e2e)', () => {
         firstName: 'Owner',
         lastName: 'User',
         organizationName: `Test Org Owner ${timestamp}`,
-      });
+      })
+      .expect(201);
+
+    expect(ownerResponse.body).toHaveProperty('accessToken');
+    expect(ownerResponse.body).toHaveProperty('user');
+    expect(ownerResponse.body.user).toHaveProperty('organizationId');
+
     ownerToken = ownerResponse.body.accessToken;
     ownerOrgId = ownerResponse.body.user.organizationId;
 
@@ -62,7 +68,13 @@ describe('Organizations (e2e)', () => {
         firstName: 'Admin',
         lastName: 'User',
         organizationName: `Test Org Admin ${timestamp}`,
-      });
+      })
+      .expect(201);
+
+    expect(adminRegisterResponse.body).toHaveProperty('accessToken');
+    expect(adminRegisterResponse.body).toHaveProperty('user');
+    expect(adminRegisterResponse.body.user).toHaveProperty('id');
+
     adminToken = adminRegisterResponse.body.accessToken;
 
     // Update user role to ADMIN
@@ -80,7 +92,13 @@ describe('Organizations (e2e)', () => {
         firstName: 'Member',
         lastName: 'User',
         organizationName: `Test Org Member ${timestamp}`,
-      });
+      })
+      .expect(201);
+
+    expect(memberRegisterResponse.body).toHaveProperty('accessToken');
+    expect(memberRegisterResponse.body).toHaveProperty('user');
+    expect(memberRegisterResponse.body.user).toHaveProperty('id');
+
     memberToken = memberRegisterResponse.body.accessToken;
 
     // Update user role to MEMBER
@@ -318,7 +336,10 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .send({
           name: `Org To Delete ${Date.now()}`,
-        });
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty('id');
       orgToDelete = response.body.id;
     });
 
