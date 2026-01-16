@@ -21,6 +21,9 @@ import { TenantGuard } from './tenant.guard';
  * - TenantContext: Request-scoped service for storing current organization ID
  * - TenantGuard: Guard for extracting organizationId from JWT
  *
+ * ⚠️ Prisma Middleware Implementation Pending (Issue #169)
+ * See TENANT_MIDDLEWARE_IMPLEMENTATION.md for migration guide to Prisma 6.x Client Extensions
+ *
  * @example
  * ```typescript
  * // In your feature module
