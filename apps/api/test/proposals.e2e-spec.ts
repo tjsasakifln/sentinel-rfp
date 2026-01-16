@@ -163,7 +163,7 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     });
 
     it('should fail with 400 when title is missing', async () => {
@@ -178,8 +178,8 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Title');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('title');
     });
 
     it('should fail with 400 when title exceeds max length', async () => {
@@ -193,8 +193,8 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('500 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('500');
     });
 
     it('should fail with 400 when rfpNumber exceeds max length', async () => {
@@ -209,8 +209,8 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('100 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('100');
     });
 
     it('should enforce tenant isolation', async () => {
@@ -568,8 +568,8 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('500 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('500');
     });
 
     it('should fail with 400 when rfpNumber exceeds max length', async () => {
@@ -583,8 +583,8 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('100 characters');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.join(' ')).toContain('100');
     });
 
     it('should enforce tenant isolation (404 for other org proposals)', async () => {

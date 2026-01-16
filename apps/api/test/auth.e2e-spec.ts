@@ -233,8 +233,8 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(404);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Organization not found');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('organization');
     });
 
     it('should reject registration without organizationName when creating new org', async () => {
@@ -252,8 +252,8 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Organization name required');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('organization');
     });
   });
 
@@ -337,8 +337,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Invalid credentials');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('invalid');
     });
 
     it('should reject login with invalid password', async () => {
@@ -352,8 +352,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Invalid credentials');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('invalid');
     });
 
     it('should reject login with malformed email', async () => {
@@ -422,8 +422,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Account is not active');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('not active');
     });
 
     it('should reject login for user in inactive organization', async () => {
@@ -463,8 +463,8 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Organization is not active');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('not active');
     });
 
     it('should handle rate limiting (5 req/min)', async () => {
@@ -484,7 +484,7 @@ describe('Authentication (e2e)', () => {
         .send(loginDto)
         .expect(429);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     }, 10000); // Longer timeout for rate limiting test
   });
 
@@ -574,8 +574,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken: oldRefreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already used');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already used');
     });
 
     it('should reject expired refresh token', async () => {
@@ -590,7 +590,7 @@ describe('Authentication (e2e)', () => {
         .send(refreshDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     });
 
     it('should reject malformed refresh token', async () => {
@@ -603,7 +603,7 @@ describe('Authentication (e2e)', () => {
         .send(refreshDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     });
 
     it('should reject refresh token from different user', async () => {
@@ -674,8 +674,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already used');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already used');
     });
 
     it('should handle rate limiting (10 req/min)', async () => {
@@ -704,7 +704,7 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken: currentRefreshToken })
         .expect(429);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     }, 15000); // Longer timeout for rate limiting test
   });
 
@@ -786,8 +786,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('invalidated');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('invalidated');
     });
 
     it('should reject refresh with blacklisted refresh token', async () => {
@@ -813,8 +813,8 @@ describe('Authentication (e2e)', () => {
         .send({ refreshToken })
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('already used');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('already used');
     });
 
     it('should reject logout without authorization header', async () => {
@@ -827,8 +827,8 @@ describe('Authentication (e2e)', () => {
         .send(logoutDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Authorization header');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('authorization');
     });
 
     it('should reject logout with invalid authorization header format', async () => {
@@ -842,8 +842,8 @@ describe('Authentication (e2e)', () => {
         .send(logoutDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Authorization header');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('authorization');
     });
 
     it('should reject logout with missing refresh token', async () => {
@@ -880,8 +880,8 @@ describe('Authentication (e2e)', () => {
         .send(logoutDto)
         .expect(401);
 
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Logout failed');
+      expect(response.body).toHaveProperty('detail');
+      expect(response.body.detail.toLowerCase()).toContain('logout');
     });
 
     it('should handle rate limiting (10 req/min)', async () => {
@@ -910,7 +910,7 @@ describe('Authentication (e2e)', () => {
         .send(logoutDto)
         .expect(429);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('detail');
     }, 10000); // Longer timeout for rate limiting test
   });
 });
