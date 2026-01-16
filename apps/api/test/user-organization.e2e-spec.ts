@@ -50,7 +50,13 @@ describe('User-Organization Relationships (e2e)', () => {
         firstName: 'Owner',
         lastName: 'User',
         organizationName: `Test UO Org Owner ${timestamp}`,
-      });
+      })
+      .expect(201);
+
+    expect(ownerResponse.body).toHaveProperty('accessToken');
+    expect(ownerResponse.body).toHaveProperty('user');
+    expect(ownerResponse.body.user).toHaveProperty('organizationId');
+
     ownerToken = ownerResponse.body.accessToken;
     ownerOrgId = ownerResponse.body.user.organizationId;
 
@@ -63,7 +69,13 @@ describe('User-Organization Relationships (e2e)', () => {
         firstName: 'Admin',
         lastName: 'User',
         organizationName: `Test UO Org Admin ${timestamp}`,
-      });
+      })
+      .expect(201);
+
+    expect(adminRegisterResponse.body).toHaveProperty('accessToken');
+    expect(adminRegisterResponse.body).toHaveProperty('user');
+    expect(adminRegisterResponse.body.user).toHaveProperty('id');
+
     adminToken = adminRegisterResponse.body.accessToken;
 
     // Update user role to ADMIN
@@ -81,7 +93,13 @@ describe('User-Organization Relationships (e2e)', () => {
         firstName: 'Member',
         lastName: 'User',
         organizationName: `Test UO Org Member ${timestamp}`,
-      });
+      })
+      .expect(201);
+
+    expect(memberRegisterResponse.body).toHaveProperty('accessToken');
+    expect(memberRegisterResponse.body).toHaveProperty('user');
+    expect(memberRegisterResponse.body.user).toHaveProperty('id');
+
     memberToken = memberRegisterResponse.body.accessToken;
 
     // Update user role to MEMBER
@@ -116,31 +134,37 @@ describe('User-Organization Relationships (e2e)', () => {
 
   afterAll(async () => {
     // Cleanup: delete test data
-    await prisma.userOrganization.deleteMany({
-      where: {
-        user: {
+    try {
+      await prisma.userOrganization.deleteMany({
+        where: {
+          user: {
+            email: {
+              startsWith: 'test+uo',
+            },
+          },
+        },
+      });
+
+      await prisma.user.deleteMany({
+        where: {
           email: {
             startsWith: 'test+uo',
           },
         },
-      },
-    });
+      });
 
-    await prisma.user.deleteMany({
-      where: {
-        email: {
-          startsWith: 'test+uo',
+      await prisma.organization.deleteMany({
+        where: {
+          name: {
+            startsWith: 'Test UO',
+          },
         },
-      },
-    });
+      });
 
-    await prisma.organization.deleteMany({
-      where: {
-        name: {
-          startsWith: 'Test UO',
-        },
-      },
-    });
+      await prisma.$disconnect();
+    } catch (error) {
+      console.error('Cleanup error:', error);
+    }
 
     await app.close();
   });
