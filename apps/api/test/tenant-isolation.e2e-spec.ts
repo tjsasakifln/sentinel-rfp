@@ -361,15 +361,15 @@ describe('Tenant Isolation (e2e)', () => {
         organizationId: org2Id, // Trying to inject another org's ID
       };
 
+      // Should reject with 400 because organizationId is not in the DTO whitelist
       const response = await request(app.getHttpServer())
         .post('/api/v1/proposals')
         .set('Authorization', `Bearer ${org1Token}`)
         .send(maliciousDto)
-        .expect(201);
+        .expect(400);
 
-      // organizationId should be ignored and use the token's org
-      expect(response.body.data.organizationId).toBe(org1Id);
-      expect(response.body.data.organizationId).not.toBe(org2Id);
+      // Verify error response
+      expect(response.body).toHaveProperty('detail');
     });
 
     it('should NOT allow client to change organizationId on update (security)', async () => {
@@ -382,7 +382,7 @@ describe('Tenant Isolation (e2e)', () => {
 
       const proposalId = createResponse.body.data.id;
 
-      // Try to change organizationId via update
+      // Try to change organizationId via update (should reject with 400)
       const updateResponse = await request(app.getHttpServer())
         .put(`/api/v1/proposals/${proposalId}`)
         .set('Authorization', `Bearer ${org1Token}`)
@@ -390,11 +390,10 @@ describe('Tenant Isolation (e2e)', () => {
           organizationId: org2Id, // Malicious attempt
           title: 'Updated Title',
         })
-        .expect(200);
+        .expect(400);
 
-      // organizationId should remain unchanged
-      expect(updateResponse.body.data.organizationId).toBe(org1Id);
-      expect(updateResponse.body.data.organizationId).not.toBe(org2Id);
+      // Verify error response
+      expect(updateResponse.body).toHaveProperty('detail');
     });
   });
 
