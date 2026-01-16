@@ -59,6 +59,13 @@ jobs:
           test -d packages && echo "✓ packages/ directory exists"
           echo "✓ All configuration files validated"
 
+      - name: Generate Prisma Client
+        run: |
+          cd packages/database
+          pnpm prisma generate
+        env:
+          DATABASE_URL: postgresql://sentinel:sentinel_dev_pass@localhost:5432/sentinel_rfp_test
+
       - name: Check code formatting
         run: pnpm format:check || echo "⚠ Format check skipped (no code yet)"
         continue-on-error: true
@@ -70,13 +77,6 @@ jobs:
       - name: Type check
         run: pnpm typecheck || echo "⚠ Typecheck skipped (no code yet)"
         continue-on-error: true
-
-      - name: Generate Prisma Client
-        run: |
-          cd packages/database
-          pnpm prisma generate
-        env:
-          DATABASE_URL: postgresql://sentinel:sentinel_dev_pass@localhost:5432/sentinel_rfp_test
 
       - name: Run Database Migrations
         run: |
