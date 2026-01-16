@@ -40,10 +40,11 @@ model Organization {
   deletedAt DateTime? // Soft delete timestamp
 
   // Relations
-  users          User[]
-  proposals      Proposal[]
-  documents      Document[]
-  libraryEntries LibraryEntry[]
+  users             User[]
+  userOrganizations UserOrganization[]
+  proposals         Proposal[]
+  documents         Document[]
+  libraryEntries    LibraryEntry[]
 
   @@index([deletedAt]) // Index for filtering active organizations
   @@map("organizations")
@@ -79,11 +80,32 @@ model User {
   updatedAt   DateTime  @updatedAt
 
   // Relations
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userOrganizations UserOrganization[]
 
   @@unique([organizationId, email])
   @@index([organizationId])
   @@map("users")
+}
+
+/// UserOrganization model - Many-to-Many relationship between User and Organization
+/// Enables users to belong to multiple organizations with different roles
+model UserOrganization {
+  id             String       @id @default(uuid()) @db.Uuid
+  userId         String       @db.Uuid
+  organizationId String       @db.Uuid
+  role           UserRole     @default(MEMBER)
+  joinedAt       DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+
+  // Relations
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([userId])
+  @@index([organizationId])
+  @@map("user_organizations")
 }
 
 // ==========================================
