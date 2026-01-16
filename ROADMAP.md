@@ -96,7 +96,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 - [ ] Organization multi-tenancy - [#22](https://github.com/tjsasakifln/sentinel-rfp/issues/22)
   - [x] [#168](https://github.com/tjsasakifln/sentinel-rfp/issues/168) - Setup TenantContext Service
   - [x] [#169](https://github.com/tjsasakifln/sentinel-rfp/issues/169) - Implementar Prisma Tenant Middleware
-  - [ ] [#170](https://github.com/tjsasakifln/sentinel-rfp/issues/170) - Criar Organization CRUD Endpoints
+  - [x] [#170](https://github.com/tjsasakifln/sentinel-rfp/issues/170) - Criar Organization CRUD Endpoints
   - [ ] [#171](https://github.com/tjsasakifln/sentinel-rfp/issues/171) - Implementar User-Organization Relationships
   - [ ] [#172](https://github.com/tjsasakifln/sentinel-rfp/issues/172) - Criar Testes de Isolamento Cross-Tenant
 - [ ] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
