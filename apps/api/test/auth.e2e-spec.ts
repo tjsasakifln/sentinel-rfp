@@ -71,12 +71,13 @@ describe('Authentication (e2e)', () => {
         .expect(201);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
-      expect(response.body).toHaveProperty('user');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
+      expect(response.body.data).toHaveProperty('user');
 
       // Validate user data
-      const { user } = response.body;
+      const { user } = response.body.data;
       expect(user).toMatchObject({
         email: registerDto.email,
         name: `${registerDto.firstName} ${registerDto.lastName}`,
@@ -87,8 +88,8 @@ describe('Authentication (e2e)', () => {
       expect(user).toHaveProperty('organizationName', registerDto.organizationName);
 
       // Validate tokens are JWTs (basic format check)
-      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
-      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
 
       // Verify user was created in database
       const dbUser = await prisma.user.findUnique({
@@ -135,9 +136,10 @@ describe('Authentication (e2e)', () => {
         .send(registerDto)
         .expect(201);
 
-      expect(response.body).toHaveProperty('user');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('user');
 
-      const { user } = response.body;
+      const { user } = response.body.data;
       expect(user.role).toBe('MEMBER'); // Joining existing org = MEMBER role
       expect(user.organizationId).toBe(org.id);
     });
@@ -279,14 +281,15 @@ describe('Authentication (e2e)', () => {
         })
         .expect(201);
 
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('user');
-      expect(response.body.user).toHaveProperty('organizationId');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('user');
+      expect(response.body.data.user).toHaveProperty('organizationId');
 
       testUser = {
         email,
         password,
-        organizationId: response.body.user.organizationId,
+        organizationId: response.body.data.user.organizationId,
       };
     });
 
@@ -302,12 +305,13 @@ describe('Authentication (e2e)', () => {
         .expect(200);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
-      expect(response.body).toHaveProperty('user');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
+      expect(response.body.data).toHaveProperty('user');
 
       // Validate user data
-      const { user } = response.body;
+      const { user } = response.body.data;
       expect(user).toMatchObject({
         email: testUser.email,
         organizationId: testUser.organizationId,
@@ -318,8 +322,8 @@ describe('Authentication (e2e)', () => {
       expect(user).toHaveProperty('organizationName');
 
       // Validate tokens are JWTs (basic format check)
-      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
-      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
     });
 
     it('should reject login with invalid email', async () => {
@@ -398,10 +402,11 @@ describe('Authentication (e2e)', () => {
         })
         .expect(201);
 
-      expect(registerResponse.body).toHaveProperty('user');
-      expect(registerResponse.body.user).toHaveProperty('id');
+      expect(registerResponse.body).toHaveProperty('data');
+      expect(registerResponse.body.data).toHaveProperty('user');
+      expect(registerResponse.body.data.user).toHaveProperty('id');
 
-      const userId = registerResponse.body.user.id;
+      const userId = registerResponse.body.data.user.id;
 
       // Suspend user (deactivate)
       await prisma.user.update({
@@ -438,10 +443,11 @@ describe('Authentication (e2e)', () => {
         })
         .expect(201);
 
-      expect(registerResponse.body).toHaveProperty('user');
-      expect(registerResponse.body.user).toHaveProperty('organizationId');
+      expect(registerResponse.body).toHaveProperty('data');
+      expect(registerResponse.body.data).toHaveProperty('user');
+      expect(registerResponse.body.data.user).toHaveProperty('organizationId');
 
-      const orgId = registerResponse.body.user.organizationId;
+      const orgId = registerResponse.body.data.user.organizationId;
 
       // Suspend organization (deactivate)
       await prisma.organization.update({
@@ -507,14 +513,15 @@ describe('Authentication (e2e)', () => {
         })
         .expect(201);
 
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
 
       testUser = {
         email,
         password,
-        accessToken: response.body.accessToken,
-        refreshToken: response.body.refreshToken,
+        accessToken: response.body.data.accessToken,
+        refreshToken: response.body.data.refreshToken,
       };
     });
 
@@ -529,20 +536,21 @@ describe('Authentication (e2e)', () => {
         .expect(200);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
 
       // Validate new tokens are different from old ones (rotation)
-      expect(response.body.accessToken).not.toBe(testUser.accessToken);
-      expect(response.body.refreshToken).not.toBe(testUser.refreshToken);
+      expect(response.body.data.accessToken).not.toBe(testUser.accessToken);
+      expect(response.body.data.refreshToken).not.toBe(testUser.refreshToken);
 
       // Validate tokens are JWTs (basic format check)
-      expect(response.body.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
-      expect(response.body.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.accessToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+      expect(response.body.data.refreshToken).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
 
       // Update test user tokens for subsequent tests
-      testUser.accessToken = response.body.accessToken;
-      testUser.refreshToken = response.body.refreshToken;
+      testUser.accessToken = response.body.data.accessToken;
+      testUser.refreshToken = response.body.data.refreshToken;
     });
 
     it('should reject already-used refresh token (rotation security)', async () => {
@@ -552,7 +560,7 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const oldRefreshToken = loginResponse.body.refreshToken;
+      const oldRefreshToken = loginResponse.body.data.refreshToken;
 
       // Use refresh token once (should succeed)
       await request(app.getHttpServer())
@@ -614,9 +622,10 @@ describe('Authentication (e2e)', () => {
         })
         .expect(201);
 
-      expect(otherUserResponse.body).toHaveProperty('refreshToken');
+      expect(otherUserResponse.body).toHaveProperty('data');
+      expect(otherUserResponse.body.data).toHaveProperty('refreshToken');
 
-      const otherUserRefreshToken = otherUserResponse.body.refreshToken;
+      const otherUserRefreshToken = otherUserResponse.body.data.refreshToken;
 
       // Try to use other user's refresh token with current user context
       // (In practice, refresh tokens are bearer tokens and don't need user context,
@@ -627,8 +636,9 @@ describe('Authentication (e2e)', () => {
         .expect(200); // Should succeed as refresh tokens are standalone
 
       // Verify the returned token belongs to the other user
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
     });
 
     it('should reject refresh without refresh token', async () => {
@@ -648,8 +658,8 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const accessToken = loginResponse.body.accessToken;
-      const refreshToken = loginResponse.body.refreshToken;
+      const accessToken = loginResponse.body.data.accessToken;
+      const refreshToken = loginResponse.body.data.refreshToken;
 
       // Logout to blacklist tokens
       await request(app.getHttpServer())
@@ -675,7 +685,7 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      let currentRefreshToken = loginResponse.body.refreshToken;
+      let currentRefreshToken = loginResponse.body.data.refreshToken;
 
       // Make 10 refresh requests (each should succeed and rotate token)
       for (let i = 0; i < 10; i++) {
@@ -684,7 +694,7 @@ describe('Authentication (e2e)', () => {
           .send({ refreshToken: currentRefreshToken });
 
         if (res.status === 200) {
-          currentRefreshToken = res.body.refreshToken;
+          currentRefreshToken = res.body.data.refreshToken;
         }
       }
 
@@ -723,14 +733,15 @@ describe('Authentication (e2e)', () => {
         })
         .expect(201);
 
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('accessToken');
+      expect(response.body.data).toHaveProperty('refreshToken');
 
       testUser = {
         email,
         password,
-        accessToken: response.body.accessToken,
-        refreshToken: response.body.refreshToken,
+        accessToken: response.body.data.accessToken,
+        refreshToken: response.body.data.refreshToken,
       };
     });
 
@@ -756,8 +767,8 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const accessToken = loginResponse.body.accessToken;
-      const refreshToken = loginResponse.body.refreshToken;
+      const accessToken = loginResponse.body.data.accessToken;
+      const refreshToken = loginResponse.body.data.refreshToken;
 
       // Logout to blacklist tokens
       await request(app.getHttpServer())
@@ -786,8 +797,8 @@ describe('Authentication (e2e)', () => {
         password: testUser.password,
       });
 
-      const accessToken = loginResponse.body.accessToken;
-      const refreshToken = loginResponse.body.refreshToken;
+      const accessToken = loginResponse.body.data.accessToken;
+      const refreshToken = loginResponse.body.data.refreshToken;
 
       // Logout to blacklist tokens
       await request(app.getHttpServer())
@@ -844,7 +855,7 @@ describe('Authentication (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/logout')
-        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
         .send({}) // Missing refreshToken
         .expect(400);
 
@@ -865,7 +876,7 @@ describe('Authentication (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/logout')
-        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
         .send(logoutDto)
         .expect(401);
 
@@ -881,21 +892,21 @@ describe('Authentication (e2e)', () => {
       });
 
       const logoutDto = {
-        refreshToken: loginResponse.body.refreshToken,
+        refreshToken: loginResponse.body.data.refreshToken,
       };
 
       // Make 10 requests (should succeed on first, then fail with 401 for blacklisted token)
       for (let i = 0; i < 10; i++) {
         await request(app.getHttpServer())
           .post('/api/v1/auth/logout')
-          .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+          .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
           .send(logoutDto);
       }
 
       // 11th request should be rate limited
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/logout')
-        .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+        .set('Authorization', `Bearer ${loginResponse.body.data.accessToken}`)
         .send(logoutDto)
         .expect(429);
 

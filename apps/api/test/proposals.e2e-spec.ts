@@ -53,12 +53,13 @@ describe('Proposals (e2e)', () => {
       .send(registerDto)
       .expect(201);
 
-    expect(authResponse.body).toHaveProperty('accessToken');
-    expect(authResponse.body).toHaveProperty('user');
-    expect(authResponse.body.user).toHaveProperty('organizationId');
+    expect(authResponse.body).toHaveProperty('data');
+    expect(authResponse.body.data).toHaveProperty('accessToken');
+    expect(authResponse.body.data).toHaveProperty('user');
+    expect(authResponse.body.data.user).toHaveProperty('organizationId');
 
-    accessToken = authResponse.body.accessToken;
-    organizationId = authResponse.body.user.organizationId;
+    accessToken = authResponse.body.data.accessToken;
+    organizationId = authResponse.body.data.user.organizationId;
   });
 
   afterAll(async () => {
@@ -240,12 +241,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      expect(auth2Response.body).toHaveProperty('accessToken');
-      expect(auth2Response.body).toHaveProperty('user');
-      expect(auth2Response.body.user).toHaveProperty('organizationId');
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
 
-      const accessToken2 = auth2Response.body.accessToken;
-      const organizationId2 = auth2Response.body.user.organizationId;
+      const accessToken2 = auth2Response.body.data.accessToken;
+      const organizationId2 = auth2Response.body.data.user.organizationId;
 
       // Create proposal with second user's token
       const proposal2Dto = {
@@ -268,7 +270,7 @@ describe('Proposals (e2e)', () => {
         where: { organizationId: organizationId2 },
       });
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
         where: { id: organizationId2 },
@@ -285,7 +287,7 @@ describe('Proposals (e2e)', () => {
         .send({ title: 'List Test Proposal 1', rfpNumber: 'LIST-001' })
         .expect(201);
 
-      createdProposalId = proposal1.body.id;
+      createdProposalId = proposal1.body.data.id;
 
       await request(app.getHttpServer())
         .post('/api/v1/proposals')
@@ -412,12 +414,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      expect(auth2Response.body).toHaveProperty('accessToken');
-      expect(auth2Response.body).toHaveProperty('user');
-      expect(auth2Response.body.user).toHaveProperty('id');
-      expect(auth2Response.body.user).toHaveProperty('organizationId');
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
 
-      const accessToken2 = auth2Response.body.accessToken;
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Try to access first user's proposal with second user's token
       await request(app.getHttpServer())
@@ -427,10 +430,10 @@ describe('Proposals (e2e)', () => {
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
   });
@@ -450,7 +453,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      proposalToUpdate = response.body.id;
+      proposalToUpdate = response.body.data.id;
     });
 
     it('should update a proposal with valid data', async () => {
@@ -592,12 +595,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      expect(auth2Response.body).toHaveProperty('accessToken');
-      expect(auth2Response.body).toHaveProperty('user');
-      expect(auth2Response.body.user).toHaveProperty('id');
-      expect(auth2Response.body.user).toHaveProperty('organizationId');
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
 
-      const accessToken2 = auth2Response.body.accessToken;
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Try to update first user's proposal with second user's token
       const updateDto = {
@@ -620,10 +624,10 @@ describe('Proposals (e2e)', () => {
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
 
@@ -661,7 +665,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      proposalToDelete = response1.body.id;
+      proposalToDelete = response1.body.data.id;
 
       // Create a proposal with sections for cascade delete test
       const response2 = await request(app.getHttpServer())
@@ -674,7 +678,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      proposalWithSections = response2.body.id;
+      proposalWithSections = response2.body.data.id;
 
       // Add sections to the proposal
       await prisma.proposalSection.createMany({
@@ -762,7 +766,7 @@ describe('Proposals (e2e)', () => {
         })
         .expect(201);
 
-      const proposalId = response.body.id;
+      const proposalId = response.body.data.id;
 
       // First delete - should succeed
       await request(app.getHttpServer())
@@ -806,12 +810,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      expect(auth2Response.body).toHaveProperty('accessToken');
-      expect(auth2Response.body).toHaveProperty('user');
-      expect(auth2Response.body.user).toHaveProperty('id');
-      expect(auth2Response.body.user).toHaveProperty('organizationId');
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
 
-      const accessToken2 = auth2Response.body.accessToken;
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Create proposal for first org
       const proposal1 = await request(app.getHttpServer())
@@ -825,13 +830,13 @@ describe('Proposals (e2e)', () => {
 
       // Try to delete first user's proposal with second user's token
       await request(app.getHttpServer())
-        .delete(`/api/v1/proposals/${proposal1.body.id}`)
+        .delete(`/api/v1/proposals/${proposal1.body.data.id}`)
         .set('Authorization', `Bearer ${accessToken2}`)
         .expect(404); // Should return 404 (not 403) for security
 
       // Verify proposal was NOT deleted
       const checkProposal = await prisma.proposal.findUnique({
-        where: { id: proposal1.body.id },
+        where: { id: proposal1.body.data.id },
       });
 
       expect(checkProposal).not.toBeNull();
@@ -839,10 +844,10 @@ describe('Proposals (e2e)', () => {
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
   });
@@ -1005,12 +1010,13 @@ describe('Proposals (e2e)', () => {
         .send(register2Dto)
         .expect(201);
 
-      expect(auth2Response.body).toHaveProperty('accessToken');
-      expect(auth2Response.body).toHaveProperty('user');
-      expect(auth2Response.body.user).toHaveProperty('id');
-      expect(auth2Response.body.user).toHaveProperty('organizationId');
+      expect(auth2Response.body).toHaveProperty('data');
+      expect(auth2Response.body.data).toHaveProperty('accessToken');
+      expect(auth2Response.body.data).toHaveProperty('user');
+      expect(auth2Response.body.data.user).toHaveProperty('id');
+      expect(auth2Response.body.data.user).toHaveProperty('organizationId');
 
-      const accessToken2 = auth2Response.body.accessToken;
+      const accessToken2 = auth2Response.body.data.accessToken;
 
       // Get metrics for second org (should be 0 proposals)
       const response = await request(app.getHttpServer())
@@ -1024,10 +1030,10 @@ describe('Proposals (e2e)', () => {
 
       // Cleanup second org
       await prisma.user.deleteMany({
-        where: { id: auth2Response.body.user.id },
+        where: { id: auth2Response.body.data.user.id },
       });
       await prisma.organization.deleteMany({
-        where: { id: auth2Response.body.user.organizationId },
+        where: { id: auth2Response.body.data.user.organizationId },
       });
     });
   });

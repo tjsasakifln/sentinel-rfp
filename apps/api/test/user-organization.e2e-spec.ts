@@ -53,12 +53,13 @@ describe('User-Organization Relationships (e2e)', () => {
       })
       .expect(201);
 
-    expect(ownerResponse.body).toHaveProperty('accessToken');
-    expect(ownerResponse.body).toHaveProperty('user');
-    expect(ownerResponse.body.user).toHaveProperty('organizationId');
+    expect(ownerResponse.body).toHaveProperty('data');
+    expect(ownerResponse.body.data).toHaveProperty('accessToken');
+    expect(ownerResponse.body.data).toHaveProperty('user');
+    expect(ownerResponse.body.data.user).toHaveProperty('organizationId');
 
-    ownerToken = ownerResponse.body.accessToken;
-    ownerOrgId = ownerResponse.body.user.organizationId;
+    ownerToken = ownerResponse.body.data.accessToken;
+    ownerOrgId = ownerResponse.body.data.user.organizationId;
 
     // Create ADMIN user
     const adminRegisterResponse = await request(app.getHttpServer())
@@ -72,15 +73,16 @@ describe('User-Organization Relationships (e2e)', () => {
       })
       .expect(201);
 
-    expect(adminRegisterResponse.body).toHaveProperty('accessToken');
-    expect(adminRegisterResponse.body).toHaveProperty('user');
-    expect(adminRegisterResponse.body.user).toHaveProperty('id');
+    expect(adminRegisterResponse.body).toHaveProperty('data');
+    expect(adminRegisterResponse.body.data).toHaveProperty('accessToken');
+    expect(adminRegisterResponse.body.data).toHaveProperty('user');
+    expect(adminRegisterResponse.body.data.user).toHaveProperty('id');
 
-    adminToken = adminRegisterResponse.body.accessToken;
+    adminToken = adminRegisterResponse.body.data.accessToken;
 
     // Update user role to ADMIN
     await prisma.user.update({
-      where: { id: adminRegisterResponse.body.user.id },
+      where: { id: adminRegisterResponse.body.data.user.id },
       data: { role: UserRole.ADMIN },
     });
 
@@ -96,15 +98,16 @@ describe('User-Organization Relationships (e2e)', () => {
       })
       .expect(201);
 
-    expect(memberRegisterResponse.body).toHaveProperty('accessToken');
-    expect(memberRegisterResponse.body).toHaveProperty('user');
-    expect(memberRegisterResponse.body.user).toHaveProperty('id');
+    expect(memberRegisterResponse.body).toHaveProperty('data');
+    expect(memberRegisterResponse.body.data).toHaveProperty('accessToken');
+    expect(memberRegisterResponse.body.data).toHaveProperty('user');
+    expect(memberRegisterResponse.body.data.user).toHaveProperty('id');
 
-    memberToken = memberRegisterResponse.body.accessToken;
+    memberToken = memberRegisterResponse.body.data.accessToken;
 
     // Update user role to MEMBER
     await prisma.user.update({
-      where: { id: memberRegisterResponse.body.user.id },
+      where: { id: memberRegisterResponse.body.data.user.id },
       data: { role: UserRole.MEMBER },
     });
 
