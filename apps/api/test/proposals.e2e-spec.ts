@@ -104,16 +104,17 @@ describe('Proposals (e2e)', () => {
         .expect(201);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('title', createProposalDto.title);
-      expect(response.body).toHaveProperty('rfpNumber', createProposalDto.rfpNumber);
-      expect(response.body).toHaveProperty('status', 'draft');
-      expect(response.body).toHaveProperty('organizationId', organizationId);
-      expect(response.body).toHaveProperty('createdAt');
-      expect(response.body).toHaveProperty('updatedAt');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('title', createProposalDto.title);
+      expect(response.body.data).toHaveProperty('rfpNumber', createProposalDto.rfpNumber);
+      expect(response.body.data).toHaveProperty('status', 'draft');
+      expect(response.body.data).toHaveProperty('organizationId', organizationId);
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
 
       // Validate UUID format
-      expect(response.body.id).toMatch(
+      expect(response.body.data.id).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
     });
@@ -129,8 +130,9 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(201);
 
-      expect(response.body).toHaveProperty('status', 'draft');
-      expect(response.body).toHaveProperty('title', createProposalDto.title);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('status', 'draft');
+      expect(response.body.data).toHaveProperty('title', createProposalDto.title);
     });
 
     it('should create proposal without optional rfpNumber', async () => {
@@ -145,9 +147,10 @@ describe('Proposals (e2e)', () => {
         .send(createProposalDto)
         .expect(201);
 
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('title', createProposalDto.title);
-      expect(response.body.rfpNumber).toBeNull();
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('title', createProposalDto.title);
+      expect(response.body.data.rfpNumber).toBeNull();
     });
 
     it('should fail with 401 when no auth token provided', async () => {
@@ -224,7 +227,7 @@ describe('Proposals (e2e)', () => {
         .expect(201);
 
       // Verify organizationId matches authenticated user's org
-      expect(response1.body.organizationId).toBe(organizationId);
+      expect(response1.body.data.organizationId).toBe(organizationId);
 
       // Create second user in different org
       const timestamp2 = Date.now();
@@ -262,8 +265,8 @@ describe('Proposals (e2e)', () => {
         .expect(201);
 
       // Verify tenant isolation: each proposal belongs to its own org
-      expect(response2.body.organizationId).toBe(organizationId2);
-      expect(response2.body.organizationId).not.toBe(organizationId);
+      expect(response2.body.data.organizationId).toBe(organizationId2);
+      expect(response2.body.data.organizationId).not.toBe(organizationId);
 
       // Cleanup second org
       await prisma.proposal.deleteMany({
@@ -356,6 +359,7 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // All proposals should belong to the authenticated user's org
+      expect(response.body).toHaveProperty('data');
       response.body.data.forEach((proposal: { organizationId: string }) => {
         expect(proposal.organizationId).toBe(organizationId);
       });
@@ -370,12 +374,13 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // Validate proposal structure
-      expect(response.body).toHaveProperty('id', createdProposalId);
-      expect(response.body).toHaveProperty('title');
-      expect(response.body).toHaveProperty('status');
-      expect(response.body).toHaveProperty('organizationId', organizationId);
-      expect(response.body).toHaveProperty('sections');
-      expect(Array.isArray(response.body.sections)).toBe(true);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id', createdProposalId);
+      expect(response.body.data).toHaveProperty('title');
+      expect(response.body.data).toHaveProperty('status');
+      expect(response.body.data).toHaveProperty('organizationId', organizationId);
+      expect(response.body.data).toHaveProperty('sections');
+      expect(Array.isArray(response.body.data.sections)).toBe(true);
     });
 
     it('should fail with 404 when proposal does not exist', async () => {
@@ -470,16 +475,17 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // Validate response structure
-      expect(response.body).toHaveProperty('id', proposalToUpdate);
-      expect(response.body).toHaveProperty('title', updateDto.title);
-      expect(response.body).toHaveProperty('rfpNumber', updateDto.rfpNumber);
-      expect(response.body).toHaveProperty('status', updateDto.status);
-      expect(response.body).toHaveProperty('organizationId', organizationId);
-      expect(response.body).toHaveProperty('updatedAt');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id', proposalToUpdate);
+      expect(response.body.data).toHaveProperty('title', updateDto.title);
+      expect(response.body.data).toHaveProperty('rfpNumber', updateDto.rfpNumber);
+      expect(response.body.data).toHaveProperty('status', updateDto.status);
+      expect(response.body.data).toHaveProperty('organizationId', organizationId);
+      expect(response.body.data).toHaveProperty('updatedAt');
 
       // Verify updatedAt was modified
-      expect(new Date(response.body.updatedAt).getTime()).toBeGreaterThan(
-        new Date(response.body.createdAt).getTime(),
+      expect(new Date(response.body.data.updatedAt).getTime()).toBeGreaterThan(
+        new Date(response.body.data.createdAt).getTime(),
       );
     });
 
@@ -494,8 +500,9 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(200);
 
-      expect(response.body).toHaveProperty('title', updateDto.title);
-      expect(response.body).toHaveProperty('rfpNumber'); // Should remain unchanged
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('title', updateDto.title);
+      expect(response.body.data).toHaveProperty('rfpNumber'); // Should remain unchanged
     });
 
     it('should update only status (partial update)', async () => {
@@ -509,8 +516,9 @@ describe('Proposals (e2e)', () => {
         .send(updateDto)
         .expect(200);
 
-      expect(response.body).toHaveProperty('status', 'completed');
-      expect(response.body).toHaveProperty('title'); // Should remain unchanged
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('status', 'completed');
+      expect(response.body.data).toHaveProperty('title'); // Should remain unchanged
     });
 
     it('should fail with 404 when proposal does not exist', async () => {
@@ -620,7 +628,8 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(checkResponse.body.title).not.toBe('Should Fail - Wrong Org');
+      expect(checkResponse.body).toHaveProperty('data');
+      expect(checkResponse.body.data.title).not.toBe('Should Fail - Wrong Org');
 
       // Cleanup second org
       await prisma.user.deleteMany({
@@ -644,8 +653,9 @@ describe('Proposals (e2e)', () => {
         .expect(200);
 
       // Verify organizationId was NOT changed
-      expect(response.body.organizationId).toBe(organizationId);
-      expect(response.body.organizationId).not.toBe('00000000-0000-0000-0000-000000000000');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data.organizationId).toBe(organizationId);
+      expect(response.body.data.organizationId).not.toBe('00000000-0000-0000-0000-000000000000');
     });
   });
 
@@ -974,20 +984,21 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('totalProposals');
-      expect(response.body).toHaveProperty('inProgress');
-      expect(response.body).toHaveProperty('completed');
-      expect(response.body).toHaveProperty('dueSoon');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('totalProposals');
+      expect(response.body.data).toHaveProperty('inProgress');
+      expect(response.body.data).toHaveProperty('completed');
+      expect(response.body.data).toHaveProperty('dueSoon');
 
-      expect(typeof response.body.totalProposals).toBe('number');
-      expect(typeof response.body.inProgress).toBe('number');
-      expect(typeof response.body.completed).toBe('number');
-      expect(typeof response.body.dueSoon).toBe('number');
+      expect(typeof response.body.data.totalProposals).toBe('number');
+      expect(typeof response.body.data.inProgress).toBe('number');
+      expect(typeof response.body.data.completed).toBe('number');
+      expect(typeof response.body.data.dueSoon).toBe('number');
 
       // Verify metrics are calculated correctly
-      expect(response.body.totalProposals).toBeGreaterThanOrEqual(3);
-      expect(response.body.inProgress).toBeGreaterThanOrEqual(1);
-      expect(response.body.completed).toBeGreaterThanOrEqual(1);
+      expect(response.body.data.totalProposals).toBeGreaterThanOrEqual(3);
+      expect(response.body.data.inProgress).toBeGreaterThanOrEqual(1);
+      expect(response.body.data.completed).toBeGreaterThanOrEqual(1);
     });
 
     it('should fail with 401 when no auth token provided', async () => {
@@ -1024,9 +1035,10 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken2}`)
         .expect(200);
 
-      expect(response.body.totalProposals).toBe(0);
-      expect(response.body.inProgress).toBe(0);
-      expect(response.body.completed).toBe(0);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data.totalProposals).toBe(0);
+      expect(response.body.data.inProgress).toBe(0);
+      expect(response.body.data.completed).toBe(0);
 
       // Cleanup second org
       await prisma.user.deleteMany({

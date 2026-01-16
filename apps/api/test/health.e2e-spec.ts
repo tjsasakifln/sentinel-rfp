@@ -27,7 +27,7 @@ describe('Health (e2e)', () => {
       .expect(200)
       .expect((res: request.Response) => {
         expect(res.body).toHaveProperty('data');
-        expect(res.body.data).toHaveProperty('status', 'ok');
+        expect(res.body.data).toHaveProperty('status', 'healthy');
         expect(res.body.data).toHaveProperty('timestamp');
         expect(res.body.data).toHaveProperty('uptime');
         expect(res.body.data).toHaveProperty('environment');

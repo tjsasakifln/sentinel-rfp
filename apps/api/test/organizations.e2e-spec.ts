@@ -145,15 +145,16 @@ describe('Organizations (e2e)', () => {
         .send(createDto)
         .expect(201);
 
-      expect(response.body).toMatchObject({
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toMatchObject({
         name: createDto.name,
         plan: 'PROFESSIONAL', // default
         status: 'ACTIVE',
         settings: createDto.settings,
       });
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('slug');
-      expect(response.body).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('slug');
+      expect(response.body.data).toHaveProperty('createdAt');
     });
 
     it('should create organization as ADMIN', async () => {
@@ -205,8 +206,8 @@ describe('Organizations (e2e)', () => {
         .send(createDto)
         .expect(201);
 
-      expect(response1.body.slug).not.toBe(response2.body.slug);
-      expect(response2.body.slug).toMatch(/test-org-slug-generation-\d+/);
+      expect(response1.body.data.slug).not.toBe(response2.body.data.slug);
+      expect(response2.body.data.slug).toMatch(/test-org-slug-generation-\d+/);
     });
   });
 
@@ -217,10 +218,11 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body).toHaveProperty('data');
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data.length).toBeGreaterThan(0);
 
-      const org = response.body[0];
+      const org = response.body.data[0];
       expect(org).toHaveProperty('id');
       expect(org).toHaveProperty('name');
       expect(org).toHaveProperty('slug');
@@ -250,10 +252,11 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('id', ownerOrgId);
-      expect(response.body).toHaveProperty('name');
-      expect(response.body).toHaveProperty('users');
-      expect(Array.isArray(response.body.users)).toBe(true);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id', ownerOrgId);
+      expect(response.body.data).toHaveProperty('name');
+      expect(response.body.data).toHaveProperty('users');
+      expect(Array.isArray(response.body.data.users)).toBe(true);
     });
 
     it('should return 404 for non-existent organization', async () => {
@@ -278,7 +281,8 @@ describe('Organizations (e2e)', () => {
         .send(updateDto)
         .expect(200);
 
-      expect(response.body).toMatchObject(updateDto);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toMatchObject(updateDto);
     });
 
     it('should reject slug modification (409)', async () => {
@@ -353,8 +357,9 @@ describe('Organizations (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('deletedAt');
-      expect(response.body.deletedAt).not.toBeNull();
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('deletedAt');
+      expect(response.body.data.deletedAt).not.toBeNull();
 
       // Verify soft delete in database
       const deletedOrg = await prisma.organization.findUnique({

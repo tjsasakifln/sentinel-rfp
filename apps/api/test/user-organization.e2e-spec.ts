@@ -185,14 +185,15 @@ describe('User-Organization Relationships (e2e)', () => {
         .send(addMemberDto)
         .expect(201);
 
-      expect(response.body).toMatchObject({
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toMatchObject({
         userId: testUserId,
         organizationId: ownerOrgId,
         role: UserRole.MEMBER,
       });
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('joinedAt');
-      expect(response.body.user).toMatchObject({
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('joinedAt');
+      expect(response.body.data.user).toMatchObject({
         id: testUserId,
         email: expect.stringContaining('test+uo-test-user'),
       });
@@ -272,11 +273,12 @@ describe('User-Organization Relationships (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body).toHaveProperty('data');
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data.length).toBeGreaterThan(0);
 
       // Verify structure
-      const firstMember = response.body[0];
+      const firstMember = response.body.data[0];
       expect(firstMember).toHaveProperty('id');
       expect(firstMember).toHaveProperty('userId');
       expect(firstMember).toHaveProperty('organizationId');
@@ -293,7 +295,8 @@ describe('User-Organization Relationships (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
 
-      expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body).toHaveProperty('data');
+      expect(Array.isArray(response.body.data)).toBe(true);
     });
 
     it('should reject listing members as MEMBER (403)', async () => {
@@ -311,7 +314,8 @@ describe('User-Organization Relationships (e2e)', () => {
         .set('Authorization', `Bearer ${ownerToken}`)
         .expect(200);
 
-      expect(response.body).toMatchObject({
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toMatchObject({
         userId: testUserId,
         organizationId: ownerOrgId,
       });
@@ -353,7 +357,8 @@ describe('User-Organization Relationships (e2e)', () => {
 
       // Should return empty or only members visible to this user
       // (depends on tenant isolation implementation)
-      expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body).toHaveProperty('data');
+      expect(Array.isArray(response.body.data)).toBe(true);
     });
   });
 });
