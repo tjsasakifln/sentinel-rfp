@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Backend: Organization CRUD Endpoints** (#170, PR #176)
+  - Full CRUD operations for organization management (POST, GET, PATCH, DELETE)
+  - Role-based access control (OWNER/ADMIN for most operations, OWNER-only for delete)
+  - Automatic slug generation from organization name with uniqueness validation
+  - Soft delete pattern with deletedAt timestamp for data preservation
+  - Comprehensive E2E test suite covering all CRUD operations and RBAC scenarios
+  - Swagger/OpenAPI documentation for all endpoints with detailed response schemas
+  - Input validation with class-validator DTOs (CreateOrganizationDto, UpdateOrganizationDto)
+  - Immutable slug enforcement to prevent breaking external integrations
+  - Multi-tenant architecture support with Prisma tenant middleware integration
+
 - **Backend: JWT Authentication Module** (#109, PR #140)
   - JWT-based authentication using RS256 asymmetric signing with RSA 4096-bit keys
   - Argon2id password hashing with memory-hard algorithm (64MB, 3 iterations, 4 threads)
