@@ -8,6 +8,7 @@ import { configValidationSchema } from './config/config.schema';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './identity/auth/auth.module';
+import { OrganizationModule } from './identity/organization/organization.module';
 import { TenantModule } from './identity/tenant/tenant.module';
 import { ProposalModule } from './proposal/proposal.module';
 
@@ -38,6 +39,7 @@ import { ProposalModule } from './proposal/proposal.module';
     CommonModule,
     HealthModule,
     AuthModule,
+    OrganizationModule,
     TenantModule,
     ProposalModule,
     DashboardModule,
