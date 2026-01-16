@@ -11,12 +11,13 @@
  * @module AuthE2ESpec
  */
 
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
+import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 
 const prisma = new PrismaClient();
 
@@ -30,6 +31,22 @@ describe('Authentication (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
+
+    // Configure same validation as main.ts
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+      }),
+    );
+
+    // Configure exception filters
+    app.useGlobalFilters(new HttpExceptionFilter());
+
     await app.init();
   });
 
@@ -225,7 +242,7 @@ describe('Authentication (e2e)', () => {
         password: 'SecurePass123!',
         firstName: 'Test',
         lastName: 'User',
-        organizationId: '00000000-0000-0000-0000-000000000000', // Non-existent UUID
+        organizationId: '12345678-1234-4123-8123-123456789012', // Valid UUID v4 format but non-existent
       };
 
       const response = await request(app.getHttpServer())
