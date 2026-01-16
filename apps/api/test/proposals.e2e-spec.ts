@@ -324,20 +324,21 @@ describe('Proposals (e2e)', () => {
 
       // Validate response structure
       expect(response.body).toHaveProperty('data');
-      expect(response.body).toHaveProperty('meta');
-      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('meta');
+      expect(Array.isArray(response.body.data.data)).toBe(true);
 
       // Validate meta pagination
-      expect(response.body.meta).toHaveProperty('total');
-      expect(response.body.meta).toHaveProperty('page', 1);
-      expect(response.body.meta).toHaveProperty('limit', 20);
-      expect(response.body.meta).toHaveProperty('totalPages');
+      expect(response.body.data.meta).toHaveProperty('total');
+      expect(response.body.data.meta).toHaveProperty('page', 1);
+      expect(response.body.data.meta).toHaveProperty('limit', 20);
+      expect(response.body.data.meta).toHaveProperty('totalPages');
 
       // Verify we have at least 2 proposals
-      expect(response.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(response.body.data.data.length).toBeGreaterThanOrEqual(2);
 
       // Validate proposal structure
-      const proposal = response.body.data[0];
+      const proposal = response.body.data.data[0];
       expect(proposal).toHaveProperty('id');
       expect(proposal).toHaveProperty('title');
       expect(proposal).toHaveProperty('status');
@@ -350,9 +351,9 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(response.body.data.length).toBe(1);
-      expect(response.body.meta.page).toBe(1);
-      expect(response.body.meta.limit).toBe(1);
+      expect(response.body.data.data.length).toBe(1);
+      expect(response.body.data.meta.page).toBe(1);
+      expect(response.body.data.meta.limit).toBe(1);
     });
 
     it('should return empty data for page beyond total', async () => {
@@ -361,8 +362,8 @@ describe('Proposals (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(response.body.data.length).toBe(0);
-      expect(response.body.meta.page).toBe(999);
+      expect(response.body.data.data.length).toBe(0);
+      expect(response.body.data.meta.page).toBe(999);
     });
 
     it('should fail with 401 when no auth token provided', async () => {
@@ -377,7 +378,8 @@ describe('Proposals (e2e)', () => {
 
       // All proposals should belong to the authenticated user's org
       expect(response.body).toHaveProperty('data');
-      response.body.data.forEach((proposal: { organizationId: string }) => {
+      expect(response.body.data).toHaveProperty('data');
+      response.body.data.data.forEach((proposal: { organizationId: string }) => {
         expect(proposal.organizationId).toBe(organizationId);
       });
     });

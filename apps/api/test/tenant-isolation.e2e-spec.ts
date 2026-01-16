@@ -199,10 +199,11 @@ describe('Tenant Isolation (e2e)', () => {
         .expect(200);
 
       expect(org1Response.body).toHaveProperty('data');
-      expect(Array.isArray(org1Response.body.data)).toBe(true);
+      expect(org1Response.body.data).toHaveProperty('data');
+      expect(Array.isArray(org1Response.body.data.data)).toBe(true);
 
       // All proposals should belong to Org 1
-      org1Response.body.data.forEach((proposal: { organizationId: string }) => {
+      org1Response.body.data.data.forEach((proposal: { organizationId: string }) => {
         expect(proposal.organizationId).toBe(org1Id);
       });
 
@@ -213,10 +214,11 @@ describe('Tenant Isolation (e2e)', () => {
         .expect(200);
 
       expect(org2Response.body).toHaveProperty('data');
-      expect(Array.isArray(org2Response.body.data)).toBe(true);
+      expect(org2Response.body.data).toHaveProperty('data');
+      expect(Array.isArray(org2Response.body.data.data)).toBe(true);
 
       // All proposals should belong to Org 2
-      org2Response.body.data.forEach((proposal: { organizationId: string }) => {
+      org2Response.body.data.data.forEach((proposal: { organizationId: string }) => {
         expect(proposal.organizationId).toBe(org2Id);
       });
     });
@@ -230,7 +232,8 @@ describe('Tenant Isolation (e2e)', () => {
         .expect(200);
 
       expect(response.body).toHaveProperty('data');
-      expect(response.body.data.length).toBe(0); // Should find nothing
+      expect(response.body.data).toHaveProperty('data');
+      expect(response.body.data.data.length).toBe(0); // Should find nothing
 
       // Org 1 searches for "Secret" (their own proposal title)
       const ownResponse = await request(app.getHttpServer())
@@ -239,7 +242,7 @@ describe('Tenant Isolation (e2e)', () => {
         .set('Authorization', `Bearer ${org1Token}`)
         .expect(200);
 
-      expect(ownResponse.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(ownResponse.body.data.data.length).toBeGreaterThanOrEqual(1);
     });
 
     it('should not leak data through status filter (GET /proposals?status=)', async () => {
@@ -252,7 +255,8 @@ describe('Tenant Isolation (e2e)', () => {
 
       // Should not contain Org 2's proposal
       expect(response.body).toHaveProperty('data');
-      response.body.data.forEach((proposal: { organizationId: string }) => {
+      expect(response.body.data).toHaveProperty('data');
+      response.body.data.data.forEach((proposal: { organizationId: string }) => {
         expect(proposal.organizationId).toBe(org1Id);
       });
     });
@@ -521,7 +525,8 @@ describe('Tenant Isolation (e2e)', () => {
       const elapsed = Date.now() - startTime;
 
       expect(response.body).toHaveProperty('data');
-      expect(response.body).toHaveProperty('meta');
+      expect(response.body.data).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('meta');
       expect(elapsed).toBeLessThan(500);
     });
 
@@ -591,7 +596,7 @@ describe('Tenant Isolation (e2e)', () => {
       // First two responses (Org 1) should only contain Org 1 data
       responses.slice(0, 2).forEach((response) => {
         expect(response.status).toBe(200);
-        response.body.data.forEach((proposal: { organizationId: string }) => {
+        response.body.data.data.forEach((proposal: { organizationId: string }) => {
           expect(proposal.organizationId).toBe(org1Id);
         });
       });
@@ -599,7 +604,7 @@ describe('Tenant Isolation (e2e)', () => {
       // Last two responses (Org 2) should only contain Org 2 data
       responses.slice(2, 4).forEach((response) => {
         expect(response.status).toBe(200);
-        response.body.data.forEach((proposal: { organizationId: string }) => {
+        response.body.data.data.forEach((proposal: { organizationId: string }) => {
           expect(proposal.organizationId).toBe(org2Id);
         });
       });
