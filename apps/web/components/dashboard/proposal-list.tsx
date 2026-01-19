@@ -10,10 +10,6 @@ import { useQuery } from '@tanstack/react-query';
 import { FileText, Search } from 'lucide-react';
 import { useState } from 'react';
 
-import { EmptyState } from './empty-state';
-import { ProposalListSkeleton } from './proposal-list-skeleton';
-import { ProposalRow } from './proposal-row';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -25,6 +21,10 @@ import {
 } from '@/components/ui/select';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { listProposals, type ProposalStatus } from '@/lib/api/proposals';
+
+import { EmptyState } from './empty-state';
+import { ProposalListSkeleton } from './proposal-list-skeleton';
+import { ProposalRow } from './proposal-row';
 
 interface ProposalListProps {
   token: string;
