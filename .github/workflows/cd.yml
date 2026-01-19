@@ -1,0 +1,51 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only run on main branch after successful CI
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build applications
+        run: pnpm build
+
+      - name: Deploy to Railway (Placeholder)
+        run: |
+          echo "🚀 Deploy to Railway staging would happen here"
+          echo "📦 Build completed successfully"
+          echo "⏳ Waiting for Railway CLI integration (Issue #190)"
+        # TODO: Add Railway CLI deployment in Issue #190
+        # - Install Railway CLI
+        # - Deploy using railway up
+        # - Verify deployment
+
+      - name: Summary
+        run: |
+          echo "✅ Build completed successfully"
+          echo "⏳ Railway deployment pending (Issue #190)"
+          echo "📝 Next: Configure Railway CLI in CD workflow"
