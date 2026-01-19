@@ -223,7 +223,8 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#120](https://github.com/tjsasakifln/sentinel-rfp/issues/120) - Error Alerting & Monitoring Rules
 - [ ] Observability - [#86](https://github.com/tjsasakifln/sentinel-rfp/issues/86)
 - [ ] User onboarding flow
-- [ ] Developer Experience - [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87)
+- [x] Developer Experience - [#87](https://github.com/tjsasakifln/sentinel-rfp/issues/87)
+  - [x] [#121](https://github.com/tjsasakifln/sentinel-rfp/issues/121) - Developer Documentation (setup.md, code-conventions.md, database.md, testing.md, troubleshooting.md)
   - [x] [#122](https://github.com/tjsasakifln/sentinel-rfp/issues/122) - Configure Storybook para Web App
   - [ ] [#123](https://github.com/tjsasakifln/sentinel-rfp/issues/123) - Create Development Scripts & CLI Tools
   - [x] [#124](https://github.com/tjsasakifln/sentinel-rfp/issues/124) - Setup Git Hooks com Husky + lint-staged
