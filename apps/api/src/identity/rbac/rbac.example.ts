@@ -158,8 +158,9 @@ export class ProposalServiceExample {
 
     // Hide sensitive pricing if user doesn't have permission
     if (!hasPermission(userRole, Permission.PROPOSAL_EXPORT)) {
-      delete proposal.pricing;
-      delete proposal.costBreakdown;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { pricing, costBreakdown, ...safeProposal } = proposal;
+      return safeProposal;
     }
 
     return proposal;
