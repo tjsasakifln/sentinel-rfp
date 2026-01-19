@@ -84,7 +84,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#106](https://github.com/tjsasakifln/sentinel-rfp/issues/106) - Configurar pgvector extension e indexes
   - [x] [#107](https://github.com/tjsasakifln/sentinel-rfp/issues/107) - Criar seed script com dados de teste
   - [x] [#108](https://github.com/tjsasakifln/sentinel-rfp/issues/108) - Criar migration inicial e validar schema completo
-- [ ] PostgreSQL + pgvector setup - [#20](https://github.com/tjsasakifln/sentinel-rfp/issues/20)
+- [x] PostgreSQL + pgvector setup - [#20](https://github.com/tjsasakifln/sentinel-rfp/issues/20)
 - [ ] User authentication (JWT) - [#21](https://github.com/tjsasakifln/sentinel-rfp/issues/21)
   - [x] [#109](https://github.com/tjsasakifln/sentinel-rfp/issues/109) - Setup JWT module e Argon2id password hashing
   - [x] [#110](https://github.com/tjsasakifln/sentinel-rfp/issues/110) - Implementar endpoint de registro (POST /v1/auth/register)
@@ -568,6 +568,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                                                                                                                                         |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.3     | 2026-01-19 | Marked #20 complete (PostgreSQL 16 + pgvector setup with PgBouncer connection pooling, automated backups, HNSW indexes)                                                                         |
 | 2.2     | 2026-01-19 | Marked #23 complete after PR #185 merge (RBAC system with 35 granular permissions, role hierarchy, PermissionsGuard, AnyPermissionsGuard, 100% test coverage)                                   |
 | 2.1     | 2026-01-19 | Marked #126 complete after PR #183 merge (Swagger/OpenAPI documentation for backend API with 19 documented endpoints)                                                                           |
 | 2.0     | 2026-01-15 | Comprehensive ROADMAP audit: Fixed GitHub Project Status (133 issues, 41 closed = 31%), added missing decompositions (#22→#168-172, #49→#144-148), corrected milestone tracking (#52, #87, #56) |

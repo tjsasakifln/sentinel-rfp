@@ -25,6 +25,45 @@ services:
     networks:
       - sentinel-network
 
+  # PgBouncer - Connection pooling for PostgreSQL
+  # Routes application connections through a pool to reduce connection overhead
+  pgbouncer:
+    image: edoburu/pgbouncer:1.21.0
+    container_name: sentinel-pgbouncer
+    restart: unless-stopped
+    ports:
+      - '6432:6432'
+    environment:
+      # Database connection (points to postgres service)
+      DATABASE_URL: postgres://sentinel_user:sentinel_password@postgres:5432/sentinel_rfp
+      # Pooling mode: transaction (fastest, recommended for web apps)
+      # - transaction: Connection returned to pool after each transaction (best performance)
+      # - session: Connection held until client disconnects (use for prepared statements)
+      # - statement: Connection returned after each statement (most aggressive, breaks transactions)
+      POOL_MODE: transaction
+      # Maximum connections per user+database pair (default: 100)
+      MAX_CLIENT_CONN: 1000
+      # Maximum server connections to PostgreSQL (limits backend load)
+      DEFAULT_POOL_SIZE: 25
+      # Reserve pool for emergencies (connections kept open for priority use)
+      RESERVE_POOL_SIZE: 5
+      # Server lifetime: Close server connections after this time (seconds)
+      # Prevents connection leaks and stale connections
+      SERVER_LIFETIME: 3600
+      # Query timeout: Cancel queries running longer than this (seconds)
+      # Prevents runaway queries from blocking the pool
+      QUERY_TIMEOUT: 60
+      # Log connections and disconnections
+      LOG_CONNECTIONS: 1
+      LOG_DISCONNECTIONS: 1
+      # Stats period (how often to log pool stats, in seconds)
+      STATS_PERIOD: 60
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sentinel-network
+
   # Redis 7.x for caching and BullMQ job queues
   redis:
     image: redis:7-alpine
