@@ -693,7 +693,7 @@ describe('Authentication (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('detail');
-      expect(response.body.detail.join(' ').toLowerCase()).toContain('refreshtoken');
+      expect(response.body.detail.join(' ').toLowerCase()).toContain('refresh token');
     });
 
     it('should reject refresh token after user logout', async () => {
