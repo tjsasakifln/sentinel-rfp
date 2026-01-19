@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **VS Code Workspace Configuration** (#125, PR #181)
+  - Added .vscode/extensions.json with 10 recommended extensions (ESLint, Prettier, Prisma, Tailwind, Jest, GitHub Copilot, etc.)
+  - Configured .vscode/settings.json with format-on-save, ESLint auto-fix, consistent indentation, and line rulers
+  - Created 5 debug configurations in .vscode/launch.json (backend, frontend, tests, attach, full-stack compound)
+  - Added 20 VS Code tasks in .vscode/tasks.json (dev, build, test, lint, format, docker operations)
+  - Created comprehensive development setup guide in docs/development/setup.md
+  - Removed .vscode/ from .gitignore to share team configuration
+  - Standardized development environment across team for consistent coding experience
+
 - **Backend: User-Organization Relationships** (#171, PR #178)
   - Implemented many-to-many relationship between User and Organization models
   - Created UserOrganization junction table with role-based access control
