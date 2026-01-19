@@ -21,7 +21,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '../identity/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../identity/auth/guards/jwt-auth.guard';
@@ -40,6 +40,7 @@ interface JwtPayload {
 }
 
 @ApiTags('proposals')
+@ApiBearerAuth()
 @Controller('v1/proposals')
 @UseGuards(JwtAuthGuard)
 export class ProposalController {

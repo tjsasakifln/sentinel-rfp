@@ -7,52 +7,78 @@
  * @module AuthResponseDto
  */
 
-export interface AuthResponseDto {
+import { ApiProperty } from '@nestjs/swagger';
+
+class UserDto {
+  @ApiProperty({
+    description: 'User UUID',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    format: 'uuid',
+  })
+  id!: string;
+
+  @ApiProperty({
+    description: 'User email',
+    example: 'john.doe@example.com',
+    format: 'email',
+  })
+  email!: string;
+
+  @ApiProperty({
+    description: 'User full name (firstName + lastName)',
+    example: 'John Doe',
+  })
+  name!: string;
+
+  @ApiProperty({
+    description: 'User role within organization',
+    example: 'OWNER',
+    enum: ['OWNER', 'ADMIN', 'MEMBER', 'VIEWER'],
+  })
+  role!: string;
+
+  @ApiProperty({
+    description: 'Organization UUID',
+    example: '660e8400-e29b-41d4-a716-446655440001',
+    format: 'uuid',
+  })
+  organizationId!: string;
+
+  @ApiProperty({
+    description: 'Organization name',
+    example: 'Acme Corporation',
+  })
+  organizationName!: string;
+}
+
+export class AuthResponseDto {
   /**
    * JWT Access Token - Short-lived (15 minutes)
    * Used in Authorization header: Bearer <accessToken>
    */
-  accessToken: string;
+  @ApiProperty({
+    description: 'JWT Access Token (15-minute expiration)',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  accessToken!: string;
 
   /**
    * JWT Refresh Token - Long-lived (7 days)
    * Used to obtain new access tokens
    * Stored securely in httpOnly cookie (recommended) or client storage
    */
-  refreshToken: string;
+  @ApiProperty({
+    description: 'JWT Refresh Token (7-day expiration)',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  refreshToken!: string;
 
   /**
    * Sanitized user data (no sensitive fields like passwordHash)
    */
-  user: {
-    /**
-     * User UUID
-     */
-    id: string;
-
-    /**
-     * User email
-     */
-    email: string;
-
-    /**
-     * User full name (firstName + lastName)
-     */
-    name: string;
-
-    /**
-     * User role within organization
-     */
-    role: string;
-
-    /**
-     * Organization UUID
-     */
-    organizationId: string;
-
-    /**
-     * Organization name
-     */
-    organizationName: string;
-  };
+  @ApiProperty({
+    description: 'Sanitized user data (no sensitive fields)',
+    type: UserDto,
+  })
+  user!: UserDto;
 }

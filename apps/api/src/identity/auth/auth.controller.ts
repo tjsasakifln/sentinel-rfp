@@ -18,6 +18,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 
 import { AuthService } from './auth.service';
@@ -29,6 +30,7 @@ import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LoginAttemptsGuard } from './guards/login-attempts.guard';
 
+@ApiTags('identity')
 @Controller('v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -48,6 +50,32 @@ export class AuthController {
    * @throws BadRequestException if validation fails (400)
    * @throws ThrottlerException if rate limit exceeded (429)
    */
+  @ApiOperation({
+    summary: 'Register new user',
+    description:
+      'Creates new user and optionally new organization. Returns JWT tokens and user info.',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'User successfully registered',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Email already exists',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Organization ID not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation failed',
+  })
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: 'Rate limit exceeded (10 requests per minute)',
+  })
   @Public()
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 req/min
   @Post('register')
@@ -82,6 +110,28 @@ export class AuthController {
    * @throws ThrottlerException if IP rate limit exceeded (429)
    * @throws TooManyRequestsException if email-based limit exceeded (429)
    */
+  @ApiOperation({
+    summary: 'User login',
+    description:
+      'Validates credentials and returns JWT tokens. Dual-layer rate limiting prevents brute force attacks.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Login successful',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid credentials',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation failed',
+  })
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: 'Rate limit exceeded (5 requests per minute or 5 failed attempts in 15 minutes)',
+  })
   @Public()
   @UseGuards(LoginAttemptsGuard)
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 req/min (stricter than register)
@@ -118,6 +168,28 @@ export class AuthController {
    * @throws BadRequestException if validation fails (400)
    * @throws ThrottlerException if rate limit exceeded (429)
    */
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description:
+      'Exchanges refresh token for new access + refresh tokens. Implements refresh token rotation for security.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Token refreshed successfully',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid, expired, or already used refresh token',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation failed',
+  })
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: 'Rate limit exceeded (20 requests per minute)',
+  })
   @Public()
   @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 req/min
   @Post('refresh')
@@ -155,6 +227,28 @@ export class AuthController {
    * @throws BadRequestException if validation fails (400)
    * @throws ThrottlerException if rate limit exceeded (429)
    */
+  @ApiOperation({
+    summary: 'Logout user',
+    description:
+      'Invalidates both access and refresh tokens via blacklisting. Prevents token reuse after logout.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Logout successful',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid tokens or missing authorization header',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation failed',
+  })
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: 'Rate limit exceeded (10 requests per minute)',
+  })
+  @ApiBearerAuth()
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 req/min
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
