@@ -1,0 +1,162 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Dev: Start All Services",
+      "type": "shell",
+      "command": "pnpm dev",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "Dev: Start Backend Only",
+      "type": "shell",
+      "command": "pnpm --filter @sentinel-rfp/api dev",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Dev: Start Frontend Only",
+      "type": "shell",
+      "command": "pnpm --filter @sentinel-rfp/web dev",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Docker: Start Services",
+      "type": "shell",
+      "command": "pnpm docker:up",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Docker: Stop Services",
+      "type": "shell",
+      "command": "pnpm docker:down",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: View Logs",
+      "type": "shell",
+      "command": "pnpm docker:logs",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Build: All Packages",
+      "type": "shell",
+      "command": "pnpm build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Build: Backend",
+      "type": "shell",
+      "command": "pnpm --filter @sentinel-rfp/api build",
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Build: Frontend",
+      "type": "shell",
+      "command": "pnpm --filter @sentinel-rfp/web build",
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Test: All Tests",
+      "type": "shell",
+      "command": "pnpm test",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: Backend",
+      "type": "shell",
+      "command": "pnpm --filter @sentinel-rfp/api test",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: Frontend",
+      "type": "shell",
+      "command": "pnpm --filter @sentinel-rfp/web test",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: Coverage",
+      "type": "shell",
+      "command": "pnpm --filter @sentinel-rfp/api test:cov",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: All",
+      "type": "shell",
+      "command": "pnpm lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Lint: Fix All",
+      "type": "shell",
+      "command": "pnpm lint --fix",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Format: All Files",
+      "type": "shell",
+      "command": "pnpm format",
+      "problemMatcher": []
+    },
+    {
+      "label": "Format: Check",
+      "type": "shell",
+      "command": "pnpm format:check",
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeCheck: All",
+      "type": "shell",
+      "command": "pnpm typecheck",
+      "problemMatcher": ["$tsc-watch"]
+    },
+    {
+      "label": "Clean: All",
+      "type": "shell",
+      "command": "pnpm clean",
+      "problemMatcher": []
+    }
+  ]
+}
