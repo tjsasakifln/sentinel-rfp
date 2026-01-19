@@ -10,6 +10,10 @@ import { useQuery } from '@tanstack/react-query';
 import { FileText, Search } from 'lucide-react';
 import { useState } from 'react';
 
+import { EmptyState } from './empty-state';
+import { ProposalListSkeleton } from './proposal-list-skeleton';
+import { ProposalRow } from './proposal-row';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -22,50 +26,8 @@ import {
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { listProposals, type ProposalStatus } from '@/lib/api/proposals';
 
-import { ProposalRow } from './proposal-row';
-
 interface ProposalListProps {
   token: string;
-}
-
-/**
- * Loading skeleton for proposal list
- */
-function ProposalListSkeleton() {
-  return (
-    <div className="space-y-3">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="h-16 animate-pulse rounded-lg bg-muted" />
-      ))}
-    </div>
-  );
-}
-
-/**
- * Empty state when no proposals found
- */
-function EmptyState({ hasFilters }: { hasFilters: boolean }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="rounded-full bg-muted p-4 mb-4">
-        <FileText className="h-8 w-8 text-muted-foreground" />
-      </div>
-      <h3 className="text-lg font-semibold mb-2">
-        {hasFilters ? 'No proposals found' : 'No proposals yet'}
-      </h3>
-      <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-        {hasFilters
-          ? "Try adjusting your filters or search query to find what you're looking for."
-          : 'Create your first proposal to get started with Sentinel RFP.'}
-      </p>
-      {!hasFilters && (
-        <Button>
-          <FileText className="mr-2 h-4 w-4" />
-          Create Proposal
-        </Button>
-      )}
-    </div>
-  );
 }
 
 /**
@@ -181,40 +143,52 @@ export function ProposalList({ token }: ProposalListProps) {
       </div>
 
       {/* Table */}
-      {isLoading ? (
-        <ProposalListSkeleton />
-      ) : data && data.data.length > 0 ? (
-        <>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[40%]">Title</TableHead>
-                  <TableHead className="w-[20%]">Status</TableHead>
-                  <TableHead className="w-[15%]">Deadline</TableHead>
-                  <TableHead className="w-[25%]">Progress</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.data.map((proposal) => (
-                  <ProposalRow key={proposal.id} proposal={proposal} />
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+      <div className="transition-opacity duration-200">
+        {isLoading ? (
+          <ProposalListSkeleton />
+        ) : data && data.data.length > 0 ? (
+          <>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[40%]">Title</TableHead>
+                    <TableHead className="w-[20%]">Status</TableHead>
+                    <TableHead className="w-[15%]">Deadline</TableHead>
+                    <TableHead className="w-[25%]">Progress</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.data.map((proposal) => (
+                    <ProposalRow key={proposal.id} proposal={proposal} />
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
 
-          {/* Pagination */}
-          {data.meta.totalPages > 1 && (
-            <Pagination
-              currentPage={page}
-              totalPages={data.meta.totalPages}
-              onPageChange={setPage}
-            />
-          )}
-        </>
-      ) : (
-        <EmptyState hasFilters={hasFilters} />
-      )}
+            {/* Pagination */}
+            {data.meta.totalPages > 1 && (
+              <Pagination
+                currentPage={page}
+                totalPages={data.meta.totalPages}
+                onPageChange={setPage}
+              />
+            )}
+          </>
+        ) : (
+          <EmptyState
+            icon={<FileText className="h-8 w-8 text-muted-foreground" />}
+            title={hasFilters ? 'No proposals found' : 'No proposals yet'}
+            description={
+              hasFilters
+                ? "Try adjusting your filters or search query to find what you're looking for."
+                : 'Create your first proposal to get started with Sentinel RFP.'
+            }
+            showCTA={!hasFilters}
+            ctaText="Create Proposal"
+          />
+        )}
+      </div>
     </div>
   );
 }
