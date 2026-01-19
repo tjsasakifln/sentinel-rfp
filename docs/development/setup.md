@@ -1,293 +1,582 @@
-# Development Setup
+# Developer Setup Guide
 
-This guide covers the development environment setup for Sentinel RFP.
+**Last Updated:** January 2026
+**Version:** 1.0.0
+**Target Audience:** New Developers
+
+---
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Initial Setup](#initial-setup)
+3. [Environment Configuration](#environment-configuration)
+4. [Running the Application](#running-the-application)
+5. [Verifying Installation](#verifying-installation)
+6. [Common Setup Issues](#common-setup-issues)
+7. [Next Steps](#next-steps)
+
+---
 
 ## Prerequisites
 
-- Node.js >= 20.0.0
-- pnpm >= 8.0.0
-- Docker Desktop
-- VS Code (recommended)
+Before you begin, ensure you have the following installed on your system:
 
-## Quick Start
+### Required Software
+
+| Tool               | Minimum Version | Installation Command                                        | Verification       |
+| ------------------ | --------------- | ----------------------------------------------------------- | ------------------ |
+| **Node.js**        | 20.0.0+         | [Download](https://nodejs.org/)                             | `node --version`   |
+| **pnpm**           | 8.0.0+          | `npm install -g pnpm@8.15.0`                                | `pnpm --version`   |
+| **Docker Desktop** | 24.0+           | [Download](https://www.docker.com/products/docker-desktop/) | `docker --version` |
+| **Git**            | 2.40+           | [Download](https://git-scm.com/)                            | `git --version`    |
+
+### Optional but Recommended
+
+| Tool                  | Purpose                   | Installation                                                     |
+| --------------------- | ------------------------- | ---------------------------------------------------------------- |
+| **VS Code**           | IDE with workspace config | [Download](https://code.visualstudio.com/)                       |
+| **GitHub CLI**        | PR/issue management       | `brew install gh` (macOS) or [Download](https://cli.github.com/) |
+| **PostgreSQL Client** | Database inspection       | `brew install postgresql` (macOS)                                |
+| **Redis CLI**         | Cache inspection          | `brew install redis` (macOS)                                     |
+
+### System Requirements
+
+- **OS:** Windows 10+ (WSL2), macOS 12+, or Linux (Ubuntu 20.04+)
+- **RAM:** 8GB minimum (16GB recommended)
+- **Storage:** 10GB free space
+- **Network:** Stable internet connection for dependencies
+
+---
+
+## Initial Setup
+
+### 1. Clone the Repository
 
 ```bash
-# Clone repository
+# Using HTTPS
 git clone https://github.com/tjsasakifln/sentinel-rfp.git
 cd sentinel-rfp
 
-# Install dependencies
-pnpm install
+# Using SSH (recommended for contributors)
+git clone git@github.com:tjsasakifln/sentinel-rfp.git
+cd sentinel-rfp
+```
 
-# Start Docker services (PostgreSQL, Redis)
+### 2. Install Dependencies
+
+```bash
+# Install all workspace dependencies (may take 2-3 minutes)
+pnpm install
+```
+
+This will install dependencies for:
+
+- Root workspace
+- `apps/api` (Backend NestJS)
+- `apps/web` (Frontend Next.js)
+- `packages/database` (Prisma shared schema)
+- `packages/ai` (AI/LLM abstraction layer)
+- `packages/shared` (Common types/utils)
+
+**Expected Output:**
+
+```
+Packages: +XXX
+Progress: resolved XXX, reused XXX, downloaded X, added XXX, done
+```
+
+### 3. Start Docker Services
+
+```bash
+# Start PostgreSQL, Redis, and Meilisearch
 pnpm docker:up
 
-# Run database migrations
-cd packages/database
-pnpm prisma:migrate:dev
-cd ../..
-
-# Start development servers
-pnpm dev
+# Wait for services to be healthy (30-60 seconds)
+pnpm docker:ps
 ```
 
-## VS Code Setup
+**Expected Services:**
 
-### Recommended Extensions
+- `sentinel-postgres` (port 5432) - PostgreSQL 16 with pgvector
+- `sentinel-redis` (port 6379) - Redis 7.x for caching/queues
+- `sentinel-meilisearch` (port 7700) - Full-text search engine
 
-The project includes a `.vscode/extensions.json` file with recommended extensions. When you open the project in VS Code, you'll be prompted to install them:
-
-- **ESLint** - JavaScript/TypeScript linting
-- **Prettier** - Code formatting
-- **Prisma** - Prisma schema support
-- **Tailwind CSS IntelliSense** - Tailwind class completion
-- **TypeScript** - Enhanced TypeScript support
-- **GitHub Copilot** - AI code completion
-- **Jest** - Test runner integration
-- **Path Intellisense** - Auto-complete file paths
-- **Import Cost** - Display import sizes
-
-### Workspace Settings
-
-The `.vscode/settings.json` configures:
-
-- **Format on Save**: Automatically formats code when saving
-- **ESLint Auto-Fix**: Fixes linting issues on save
-- **Prettier as Default Formatter**: Uses Prettier for all file types
-- **Line Rulers**: Visual guides at 80 and 120 characters
-- **Consistent Indentation**: 2 spaces, no tabs
-- **Unix Line Endings**: LF (`\n`) for cross-platform compatibility
-
-### Debug Configurations
-
-Press `F5` to start debugging. Available configurations:
-
-1. **Debug Backend (NestJS)**: Starts the API server with debugger attached
-2. **Debug Frontend (Next.js)**: Starts the web app with debugger
-3. **Debug Backend Tests**: Run backend tests with debugger
-4. **Debug Frontend Tests**: Run frontend tests with debugger
-5. **Attach to Backend**: Attach to running backend process
-6. **Debug Full Stack**: Start both backend and frontend with debuggers
-
-#### Setting Breakpoints
-
-1. Open a `.ts` file (e.g., `apps/api/src/identity/auth/auth.service.ts`)
-2. Click left of line number to add breakpoint (red dot)
-3. Press `F5` and select "Debug Backend (NestJS)"
-4. Trigger the code path (e.g., make API request)
-5. Debugger will pause at breakpoint
-
-### VS Code Tasks
-
-Run tasks via:
-
-- Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) → "Tasks: Run Task"
-- Menu: Terminal → Run Task
-
-Available tasks:
-
-#### Development
-
-- **Dev: Start All Services** - Start backend + frontend (default build task: `Ctrl+Shift+B`)
-- **Dev: Start Backend Only** - Start API server only
-- **Dev: Start Frontend Only** - Start web app only
-
-#### Docker
-
-- **Docker: Start Services** - Start PostgreSQL + Redis
-- **Docker: Stop Services** - Stop all Docker services
-- **Docker: View Logs** - Tail Docker container logs
-
-#### Build
-
-- **Build: All Packages** - Build all apps and packages
-- **Build: Backend** - Build API server
-- **Build: Frontend** - Build web app
-
-#### Testing
-
-- **Test: All Tests** - Run all tests
-- **Test: Backend** - Run backend tests
-- **Test: Frontend** - Run frontend tests
-- **Test: Coverage** - Generate coverage report
-
-#### Code Quality
-
-- **Lint: All** - Run ESLint on all files
-- **Lint: Fix All** - Auto-fix linting issues
-- **Format: All Files** - Format all files with Prettier
-- **Format: Check** - Check if files are formatted
-- **TypeCheck: All** - Run TypeScript type checking
-
-#### Maintenance
-
-- **Clean: All** - Remove build artifacts and node_modules
-
-## Project Structure
-
-```
-sentinel-rfp/
-├── apps/
-│   ├── api/          # NestJS backend API
-│   └── web/          # Next.js frontend
-├── packages/
-│   ├── database/     # Prisma schema & migrations
-│   └── ai/           # LLM abstraction layer
-├── docs/             # Documentation
-├── scripts/          # Development scripts
-└── .vscode/          # VS Code configuration
-```
-
-## Environment Variables
-
-Create `.env` files in each app:
+**Verify Services:**
 
 ```bash
-# apps/api/.env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sentinel_rfp"
+# Check all services are healthy
+docker-compose ps
+
+# Expected output: All services showing "healthy" status
+```
+
+---
+
+## Environment Configuration
+
+### 1. Create Environment Files
+
+The repository includes example environment files. Copy them to create your local configuration:
+
+```bash
+# Backend API environment
+cp apps/api/.env.example apps/api/.env
+
+# Frontend Web environment
+cp apps/web/.env.example apps/web/.env
+
+# Database package environment
+cp packages/database/.env.example packages/database/.env
+```
+
+### 2. Configure API Environment
+
+Edit `apps/api/.env` with the following configuration:
+
+```bash
+# Database Configuration (PostgreSQL + pgvector)
+DATABASE_URL="postgresql://sentinel_user:sentinel_password@localhost:5432/sentinel_rfp"
+
+# Redis Configuration (BullMQ queues + caching)
 REDIS_URL="redis://localhost:6379"
-JWT_SECRET="your-secret-key"
-JWT_REFRESH_SECRET="your-refresh-secret"
 
-# apps/web/.env.local
-NEXT_PUBLIC_API_URL="http://localhost:4000"
+# Meilisearch Configuration (Full-text search)
+MEILI_HOST="http://localhost:7700"
+MEILI_MASTER_KEY="sentinel_meili_master_key_dev_only"
+
+# JWT Configuration
+JWT_SECRET="your-development-secret-key-change-in-production"
+JWT_EXPIRES_IN="1h"
+JWT_REFRESH_SECRET="your-development-refresh-secret-key"
+JWT_REFRESH_EXPIRES_IN="7d"
+
+# AI/LLM Configuration
+ANTHROPIC_API_KEY="your-anthropic-api-key-here"
+OPENAI_API_KEY="your-openai-api-key-here"  # Optional for embeddings
+
+# Application Configuration
+NODE_ENV="development"
+PORT=3001
+LOG_LEVEL="debug"
+
+# Sentry Configuration (Optional for local dev)
+SENTRY_DSN=""  # Leave empty for local development
 ```
 
-## Common Development Tasks
+### 3. Configure Web Environment
 
-### Running Tests
+Edit `apps/web/.env` with:
 
 ```bash
-# All tests
-pnpm test
+# API Backend URL
+NEXT_PUBLIC_API_URL="http://localhost:3001/api/v1"
 
-# Backend tests with coverage
-cd apps/api
-pnpm test:cov
+# Authentication
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-nextauth-secret-key"
 
-# Frontend tests with watch mode
-cd apps/web
-pnpm test:watch
-
-# E2E tests
-cd apps/api
-pnpm test:e2e
+# Application
+NEXT_PUBLIC_APP_ENV="development"
 ```
 
-### Database Management
+### 4. Configure Database Package
+
+Edit `packages/database/.env`:
 
 ```bash
+DATABASE_URL="postgresql://sentinel_user:sentinel_password@localhost:5432/sentinel_rfp"
+```
+
+### 5. Obtain API Keys
+
+**Anthropic API Key (Required for AI features):**
+
+1. Visit [Anthropic Console](https://console.anthropic.com/)
+2. Create account or sign in
+3. Navigate to API Keys section
+4. Generate new API key
+5. Copy and paste into `apps/api/.env` as `ANTHROPIC_API_KEY`
+
+**OpenAI API Key (Optional - for embeddings):**
+
+1. Visit [OpenAI Platform](https://platform.openai.com/)
+2. Sign in and navigate to API Keys
+3. Generate new key
+4. Copy and paste into `apps/api/.env` as `OPENAI_API_KEY`
+
+---
+
+## Running the Application
+
+### 1. Database Setup
+
+#### Initialize Database with Prisma
+
+```bash
+# Navigate to database package
 cd packages/database
-
-# Create migration
-pnpm prisma:migrate:dev --name migration_name
-
-# Reset database
-pnpm prisma:migrate:reset
 
 # Generate Prisma Client
 pnpm prisma:generate
 
-# Open Prisma Studio
+# Run migrations to create schema
+pnpm prisma:migrate:deploy
+
+# Seed database with sample data
+pnpm prisma:seed
+
+# Return to root
+cd ../..
+```
+
+**What this does:**
+
+- Creates all database tables (User, Organization, Proposal, etc.)
+- Installs pgvector extension for vector search
+- Creates indexes for performance
+- Seeds initial data (test users, organizations, sample proposals)
+
+#### Verify Database
+
+```bash
+# Open Prisma Studio (database GUI)
+cd packages/database
 pnpm prisma:studio
+
+# Opens browser at http://localhost:5555
+# Explore: User, Organization, Proposal tables
 ```
 
-### Code Quality
+### 2. Start Development Servers
+
+**Option A: Start All Services (Recommended)**
 
 ```bash
-# Lint and fix
-pnpm lint
-
-# Format all files
-pnpm format
-
-# Type checking
-pnpm typecheck
+# From project root
+pnpm dev
 ```
 
-### Docker Operations
+This starts:
+
+- **Backend API** at `http://localhost:3001`
+- **Frontend Web** at `http://localhost:3000`
+- **Auto-reload** enabled for both
+
+**Option B: Start Services Individually**
 
 ```bash
-# Start services
-pnpm docker:up
+# Terminal 1: Backend API
+cd apps/api
+pnpm dev
 
-# Stop services
-pnpm docker:down
+# Terminal 2: Frontend Web
+cd apps/web
+pnpm dev
+```
 
-# View logs
-pnpm docker:logs
+### 3. Verify Development Environment
+
+After services start successfully, you should see:
+
+**Backend API:**
+
+```
+[Nest] INFO [NestFactory] Starting Nest application...
+[Nest] INFO [InstanceLoader] AppModule dependencies initialized
+[Nest] INFO [RoutesResolver] AuthController {/api/v1/auth}
+[Nest] INFO [RoutesResolver] ProposalController {/api/v1/proposals}
+[Nest] INFO [NestApplication] Nest application successfully started
+[Nest] INFO Application listening on http://localhost:3001
+```
+
+**Frontend Web:**
+
+```
+▲ Next.js 14.x
+- Local:        http://localhost:3000
+- Network:      http://192.168.x.x:3000
+
+✓ Ready in 3.2s
+```
+
+---
+
+## Verifying Installation
+
+### 1. Health Check Endpoints
+
+```bash
+# Backend health check
+curl http://localhost:3001/health
+
+# Expected response:
+{
+  "status": "ok",
+  "info": {
+    "database": { "status": "up" },
+    "redis": { "status": "up" }
+  }
+}
+```
+
+### 2. Frontend Access
+
+Open browser and navigate to:
+
+- **Frontend:** http://localhost:3000
+- **Backend API Health:** http://localhost:3001/health
+- **Prisma Studio:** http://localhost:5555 (if running)
+
+### 3. Test Authentication Flow
+
+```bash
+# Register a test user
+curl -X POST http://localhost:3001/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "dev@example.com",
+    "password": "DevPassword123!",
+    "organizationName": "Test Org"
+  }'
+
+# Login with test user
+curl -X POST http://localhost:3001/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "dev@example.com",
+    "password": "DevPassword123!"
+  }'
+
+# Expected: JWT tokens in response
+```
+
+### 4. Run Tests
+
+```bash
+# Run all tests
+pnpm test
+
+# Run backend tests only
+cd apps/api
+pnpm test
+
+# Run frontend tests only
+cd apps/web
+pnpm test
+```
+
+**Expected:** All tests should pass (✓ green checkmarks)
+
+---
+
+## Common Setup Issues
+
+### Issue 1: Docker Services Not Starting
+
+**Symptom:**
+
+```
+ERROR: Container sentinel-postgres exited with code 1
+```
+
+**Solution:**
+
+```bash
+# Stop and remove all containers
+docker-compose down -v
+
+# Remove old volumes
+docker volume prune -f
 
 # Restart services
-pnpm docker:restart
-
-# Clean volumes
-pnpm docker:clean
+pnpm docker:up
 ```
 
-## Troubleshooting
+### Issue 2: Port Already in Use
 
-### Port Already in Use
+**Symptom:**
 
-If you see "Port 4000/3000 already in use":
+```
+Error: listen EADDRINUSE: address already in use :::3001
+```
+
+**Solution:**
 
 ```bash
 # Find process using port
-lsof -i :4000  # macOS/Linux
-netstat -ano | findstr :4000  # Windows
+lsof -i :3001  # macOS/Linux
+netstat -ano | findstr :3001  # Windows
 
-# Kill process
+# Kill the process
 kill -9 <PID>  # macOS/Linux
 taskkill /PID <PID> /F  # Windows
+
+# Or change port in .env file
 ```
 
-### Database Connection Issues
+### Issue 3: Database Connection Refused
+
+**Symptom:**
+
+```
+Error: connect ECONNREFUSED 127.0.0.1:5432
+```
+
+**Solution:**
 
 ```bash
-# Check Docker services are running
-docker ps
+# Wait for PostgreSQL to finish initializing
+docker-compose logs postgres
 
-# Restart PostgreSQL
-pnpm docker:restart postgres
+# Wait for message: "database system is ready to accept connections"
 
-# View database logs
-docker logs sentinel-rfp-postgres-1
+# Verify PostgreSQL is running
+docker-compose ps postgres
+
+# Retry connection
 ```
 
-### ESLint/Prettier Not Working
+### Issue 4: Prisma Client Not Generated
 
-1. Ensure extensions are installed (check `.vscode/extensions.json`)
-2. Reload VS Code window: `Ctrl+Shift+P` → "Reload Window"
-3. Check output panel: View → Output → Select "ESLint" from dropdown
+**Symptom:**
 
-### TypeScript Errors in VS Code
+```
+Error: Cannot find module '@prisma/client'
+```
 
-1. Ensure using workspace TypeScript: `Ctrl+Shift+P` → "TypeScript: Select TypeScript Version" → "Use Workspace Version"
-2. Restart TS server: `Ctrl+Shift+P` → "TypeScript: Restart TS Server"
-
-## Git Workflow
+**Solution:**
 
 ```bash
-# Create feature branch
-git checkout -b feat/123-feature-name
-
-# Commit with conventional commits
-git commit -m "feat(scope): description"
-
-# Push and create PR
-git push origin feat/123-feature-name
-gh pr create
+cd packages/database
+pnpm prisma:generate
+cd ../..
+pnpm install
 ```
 
-Pre-commit hooks (via Husky) will automatically:
+### Issue 5: pnpm Install Fails
 
-- Lint and fix staged files
-- Format code with Prettier
-- Validate commit message format
+**Symptom:**
 
-## Further Reading
+```
+ERR_PNPM_LOCKFILE_BREAKING_CHANGE
+```
 
-- [Architecture Overview](../ARCHITECTURE.md)
-- [API Design](../API_DESIGN.md)
-- [Security Guidelines](../SECURITY.md)
-- [Docker Setup](../DOCKER.md)
-- [Git Hooks](./git-hooks.md)
+**Solution:**
+
+```bash
+# Remove lock file and reinstall
+rm pnpm-lock.yaml
+pnpm install
+```
+
+### Issue 6: Missing API Keys
+
+**Symptom:**
+
+```
+ERROR: ANTHROPIC_API_KEY environment variable is not set
+```
+
+**Solution:**
+
+1. Obtain API key from [Anthropic Console](https://console.anthropic.com/)
+2. Add to `apps/api/.env`:
+   ```
+   ANTHROPIC_API_KEY="sk-ant-api03-xxxx"
+   ```
+3. Restart backend: `pnpm dev`
+
+---
+
+## Next Steps
+
+Congratulations! Your development environment is ready. Here's what to explore next:
+
+### 1. Understand the Architecture
+
+Read the architecture documentation:
+
+```bash
+# High-level overview
+cat docs/development/architecture.md
+
+# Detailed technical architecture
+cat ARCHITECTURE.md
+```
+
+### 2. Review Code Conventions
+
+Learn our coding standards:
+
+```bash
+cat docs/development/code-conventions.md
+```
+
+### 3. Explore the Database Schema
+
+```bash
+# Open Prisma Studio
+cd packages/database
+pnpm prisma:studio
+
+# View schema definition
+cat packages/database/prisma/schema.prisma
+```
+
+### 4. Set Up Your IDE
+
+If using VS Code:
+
+```bash
+# Open workspace with recommended settings
+code sentinel-rfp.code-workspace
+```
+
+Install recommended extensions when prompted.
+
+### 5. Pick Your First Issue
+
+Check the project board:
+
+```bash
+gh issue list --label "good-first-issue"
+```
+
+### 6. Join Development Discussions
+
+- **GitHub Issues:** [Issues](https://github.com/tjsasakifln/sentinel-rfp/issues)
+- **Pull Requests:** [PRs](https://github.com/tjsasakifln/sentinel-rfp/pulls)
+- **Architecture Decisions:** See `ARCHITECTURE.md` → ADRs
+
+---
+
+## Useful Development Commands
+
+| Command             | Description                            |
+| ------------------- | -------------------------------------- |
+| `pnpm dev`          | Start all services in development mode |
+| `pnpm build`        | Build all apps and packages            |
+| `pnpm lint`         | Lint all code                          |
+| `pnpm format`       | Format code with Prettier              |
+| `pnpm test`         | Run all tests                          |
+| `pnpm typecheck`    | Type check with TypeScript             |
+| `pnpm docker:up`    | Start Docker services                  |
+| `pnpm docker:down`  | Stop Docker services                   |
+| `pnpm docker:logs`  | View Docker logs                       |
+| `pnpm docker:clean` | Remove all Docker data                 |
+
+---
+
+## Getting Help
+
+If you encounter issues not covered here:
+
+1. **Check Troubleshooting Guide:** `docs/development/troubleshooting.md`
+2. **Search Existing Issues:** [GitHub Issues](https://github.com/tjsasakifln/sentinel-rfp/issues)
+3. **Create New Issue:** Use template for bug reports
+4. **Ask in Discussions:** For questions and ideas
+
+---
+
+**Ready to build?** Continue to [Architecture Overview](./architecture.md) →
