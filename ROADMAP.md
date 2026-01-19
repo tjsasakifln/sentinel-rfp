@@ -196,7 +196,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#128](https://github.com/tjsasakifln/sentinel-rfp/issues/128) - Dashboard Layout & Metrics Cards
   - [x] [#129](https://github.com/tjsasakifln/sentinel-rfp/issues/129) - Proposals List Component com Filters
   - [x] [#130](https://github.com/tjsasakifln/sentinel-rfp/issues/130) - Quick Actions Menu & Create Proposal Button
-  - [ ] [#131](https://github.com/tjsasakifln/sentinel-rfp/issues/131) - Empty States & Loading Skeletons
+  - [x] [#131](https://github.com/tjsasakifln/sentinel-rfp/issues/131) - Empty States & Loading Skeletons
 
 #### Milestone 4.2: Response Editing ([EPIC #10](https://github.com/tjsasakifln/sentinel-rfp/issues/10))
 
