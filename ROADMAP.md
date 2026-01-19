@@ -99,7 +99,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#170](https://github.com/tjsasakifln/sentinel-rfp/issues/170) - Criar Organization CRUD Endpoints
   - [x] [#171](https://github.com/tjsasakifln/sentinel-rfp/issues/171) - Implementar User-Organization Relationships
   - [x] [#172](https://github.com/tjsasakifln/sentinel-rfp/issues/172) - Criar Testes de Isolamento Cross-Tenant
-- [ ] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
+- [x] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
 - [ ] Password reset flow - [#24](https://github.com/tjsasakifln/sentinel-rfp/issues/24)
 
 **Exit Criteria:**
@@ -568,6 +568,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                                                                                                                                         |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.2     | 2026-01-19 | Marked #23 complete after PR #185 merge (RBAC system with 35 granular permissions, role hierarchy, PermissionsGuard, AnyPermissionsGuard, 100% test coverage)                                   |
 | 2.1     | 2026-01-19 | Marked #126 complete after PR #183 merge (Swagger/OpenAPI documentation for backend API with 19 documented endpoints)                                                                           |
 | 2.0     | 2026-01-15 | Comprehensive ROADMAP audit: Fixed GitHub Project Status (133 issues, 41 closed = 31%), added missing decompositions (#22→#168-172, #49→#144-148), corrected milestone tracking (#52, #87, #56) |
 | 1.9     | 2026-01-15 | Marked #120 complete after PR #162 merge (Error alerting & monitoring rules with enhanced health check endpoint) - All Error Handling & Logging sub-issues complete!                            |
@@ -599,17 +600,17 @@ These epics run in parallel throughout the development cycle:
 
 **Total Issues Created:** 133
 
-- **Open:** 92 (69%)
-- **Closed:** 41 (31%)
+- **Open:** 91 (68%)
+- **Closed:** 42 (32%)
 - **Epics:** 12
 - **Features:** 121
 - **Milestones:** 13
 - **Labels:** 38 (estimated)
-- **Overall Progress:** 41/133 issues closed (31%)
+- **Overall Progress:** 42/133 issues closed (32%)
 
 **Milestone Breakdown:**
 
-- **Phase 1 - Month 1 (Infrastructure & Auth):** 32/53 closed (60%)
+- **Phase 1 - Month 1 (Infrastructure & Auth):** 33/53 closed (62%)
 - **Phase 1 - Month 4 (MVP Polish & Launch):** 9/29 closed (31%)
 - **Phase 1 - Month 2 (Document Processing):** 0/13 closed (0%)
 - **Phase 1 - Month 3 (AI Response):** 0/17 closed (0%)
