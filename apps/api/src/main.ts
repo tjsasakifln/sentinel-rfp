@@ -101,14 +101,17 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document, {
+    jsonDocumentUrl: 'api/v1/docs-json',
+  });
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
 
   const logger = app.get(Logger);
   logger.log(`🚀 Application is running on: http://localhost:${port}/api`);
-  logger.log(`📚 Swagger docs available at: http://localhost:${port}/api/docs`);
+  logger.log(`📚 Swagger docs available at: http://localhost:${port}/api/v1/docs`);
+  logger.log(`📄 Swagger JSON available at: http://localhost:${port}/api/v1/docs-json`);
 }
 
 bootstrap();

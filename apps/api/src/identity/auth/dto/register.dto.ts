@@ -9,6 +9,7 @@
  * @module RegisterDto
  */
 
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -25,6 +26,12 @@ export class RegisterDto {
    * User email - Must be unique within organization
    * Format validation via IsEmail
    */
+  @ApiProperty({
+    description: 'User email address (must be unique)',
+    example: 'jane.smith@company.com',
+    format: 'email',
+    maxLength: 255,
+  })
   @IsEmail({}, { message: 'Invalid email format' })
   @MaxLength(255, { message: 'Email must not exceed 255 characters' })
   email!: string;
@@ -39,6 +46,12 @@ export class RegisterDto {
    * - At least 1 number
    * - At least 1 symbol
    */
+  @ApiProperty({
+    description: 'Strong password (min 8 chars, uppercase, lowercase, number, symbol)',
+    example: 'SecurePass123!',
+    format: 'password',
+    minLength: 8,
+  })
   @IsStrongPassword(
     {
       minLength: 8,
@@ -57,6 +70,12 @@ export class RegisterDto {
   /**
    * User's first name
    */
+  @ApiProperty({
+    description: "User's first name",
+    example: 'Jane',
+    minLength: 1,
+    maxLength: 100,
+  })
   @IsString()
   @IsNotEmpty({ message: 'First name is required' })
   @MinLength(1, { message: 'First name must not be empty' })
@@ -66,6 +85,12 @@ export class RegisterDto {
   /**
    * User's last name
    */
+  @ApiProperty({
+    description: "User's last name",
+    example: 'Smith',
+    minLength: 1,
+    maxLength: 100,
+  })
   @IsString()
   @IsNotEmpty({ message: 'Last name is required' })
   @MinLength(1, { message: 'Last name must not be empty' })
@@ -80,6 +105,11 @@ export class RegisterDto {
    *
    * If provided, organization must exist and be ACTIVE.
    */
+  @ApiPropertyOptional({
+    description: 'Organization ID to join (optional - creates new org if omitted)',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    format: 'uuid',
+  })
   @IsOptional()
   @IsUUID(4, { message: 'Invalid organization ID format' })
   organizationId?: string;
@@ -90,6 +120,12 @@ export class RegisterDto {
    * Required if organizationId is not provided.
    * Ignored if organizationId is provided (joining existing org).
    */
+  @ApiPropertyOptional({
+    description: 'Organization name (required if creating new organization)',
+    example: 'Acme Corporation',
+    minLength: 1,
+    maxLength: 200,
+  })
   @IsOptional()
   @IsString()
   @MinLength(1, { message: 'Organization name must not be empty' })
