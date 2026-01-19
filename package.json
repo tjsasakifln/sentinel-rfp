@@ -10,11 +10,15 @@
   "packageManager": "pnpm@8.15.0",
   "scripts": {
     "dev": "turbo run dev",
+    "dev:full": "bash scripts/dev.sh",
     "build": "turbo run build",
     "lint": "turbo run lint",
+    "lint:fix": "bash scripts/lint-fix.sh",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
     "test": "turbo run test",
+    "test:all": "bash scripts/test-all.sh",
+    "test:coverage": "bash scripts/test-all.sh --coverage",
     "test:watch": "turbo run test:watch",
     "clean": "turbo run clean && rm -rf node_modules",
     "typecheck": "turbo run typecheck",
@@ -25,6 +29,8 @@
     "docker:ps": "docker-compose ps",
     "docker:clean": "docker-compose down -v",
     "docker:init": "bash scripts/docker-up.sh",
+    "db:reset": "bash scripts/db-reset.sh",
+    "db:migrate": "bash scripts/generate-migration.sh",
     "prepare": "husky"
   },
   "devDependencies": {

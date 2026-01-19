@@ -551,20 +551,146 @@ gh issue list --label "good-first-issue"
 
 ---
 
+## Development CLI Scripts
+
+Sentinel RFP includes powerful CLI scripts to streamline common development tasks. All scripts include `--help` for detailed usage.
+
+### Quick Start Scripts
+
+| Command            | Description                                 | Usage                     |
+| ------------------ | ------------------------------------------- | ------------------------- |
+| `pnpm dev:full`    | Start complete dev environment (all-in-one) | `pnpm dev:full`           |
+| `./scripts/dev.sh` | Same as above with options                  | `./scripts/dev.sh --help` |
+| `pnpm dev`         | Start backend + frontend only               | `pnpm dev`                |
+
+**Example: Full Startup**
+
+```bash
+# Starts Docker + migrations + backend + frontend in one command
+pnpm dev:full
+
+# Same with options
+./scripts/dev.sh --skip-docker  # If Docker already running
+./scripts/dev.sh --docker-only  # Only start Docker services
+```
+
+### Database Scripts
+
+| Command                           | Description                         | Usage                                    |
+| --------------------------------- | ----------------------------------- | ---------------------------------------- |
+| `pnpm db:reset`                   | Reset database (drop/recreate/seed) | `pnpm db:reset`                          |
+| `./scripts/db-reset.sh`           | Same with options                   | `./scripts/db-reset.sh --help`           |
+| `pnpm db:migrate <name>`          | Create new Prisma migration         | `pnpm db:migrate add_user_roles`         |
+| `./scripts/generate-migration.sh` | Same with validation                | `./scripts/generate-migration.sh --help` |
+
+**Example: Reset Database**
+
+```bash
+# Interactive (asks for confirmation)
+pnpm db:reset
+
+# Force reset without confirmation
+./scripts/db-reset.sh --force
+
+# Reset without seed data (empty database)
+./scripts/db-reset.sh --no-seed
+```
+
+**Example: Create Migration**
+
+```bash
+# Create and apply migration
+pnpm db:migrate add_email_verification
+
+# Create migration without applying (review SQL first)
+./scripts/generate-migration.sh update_proposal_schema --create-only
+```
+
+### Linting & Formatting Scripts
+
+| Command                 | Description                       | Usage                          |
+| ----------------------- | --------------------------------- | ------------------------------ |
+| `pnpm lint:fix`         | Auto-fix ESLint + Prettier issues | `pnpm lint:fix`                |
+| `./scripts/lint-fix.sh` | Same with options                 | `./scripts/lint-fix.sh --help` |
+
+**Example: Lint & Format**
+
+```bash
+# Auto-fix everything (ESLint + Prettier)
+pnpm lint:fix
+
+# Check only (no auto-fix)
+./scripts/lint-fix.sh --check
+
+# Only run ESLint
+./scripts/lint-fix.sh --lint-only
+
+# Only run Prettier
+./scripts/lint-fix.sh --format-only
+```
+
+### Testing Scripts
+
+| Command                 | Description                  | Usage                          |
+| ----------------------- | ---------------------------- | ------------------------------ |
+| `pnpm test:all`         | Run all tests (unit/int/e2e) | `pnpm test:all`                |
+| `pnpm test:coverage`    | Run all tests with coverage  | `pnpm test:coverage`           |
+| `./scripts/test-all.sh` | Same with options            | `./scripts/test-all.sh --help` |
+
+**Example: Run Tests**
+
+```bash
+# Run all tests
+pnpm test:all
+
+# Run with coverage report
+pnpm test:coverage
+
+# Run only unit tests
+./scripts/test-all.sh --unit
+
+# Run only E2E tests
+./scripts/test-all.sh --e2e
+
+# Watch mode for TDD
+./scripts/test-all.sh --watch
+```
+
+### Script Help & Options
+
+All scripts include comprehensive help messages:
+
+```bash
+# View available options
+./scripts/dev.sh --help
+./scripts/db-reset.sh --help
+./scripts/generate-migration.sh --help
+./scripts/lint-fix.sh --help
+./scripts/test-all.sh --help
+```
+
+---
+
 ## Useful Development Commands
 
-| Command             | Description                            |
-| ------------------- | -------------------------------------- |
-| `pnpm dev`          | Start all services in development mode |
-| `pnpm build`        | Build all apps and packages            |
-| `pnpm lint`         | Lint all code                          |
-| `pnpm format`       | Format code with Prettier              |
-| `pnpm test`         | Run all tests                          |
-| `pnpm typecheck`    | Type check with TypeScript             |
-| `pnpm docker:up`    | Start Docker services                  |
-| `pnpm docker:down`  | Stop Docker services                   |
-| `pnpm docker:logs`  | View Docker logs                       |
-| `pnpm docker:clean` | Remove all Docker data                 |
+| Command              | Description                               |
+| -------------------- | ----------------------------------------- |
+| `pnpm dev`           | Start all services in development mode    |
+| `pnpm dev:full`      | Full startup (Docker + migrations + apps) |
+| `pnpm build`         | Build all apps and packages               |
+| `pnpm lint`          | Lint all code                             |
+| `pnpm lint:fix`      | Auto-fix linting issues                   |
+| `pnpm format`        | Format code with Prettier                 |
+| `pnpm test`          | Run all tests                             |
+| `pnpm test:all`      | Run all tests (comprehensive)             |
+| `pnpm test:coverage` | Run tests with coverage                   |
+| `pnpm typecheck`     | Type check with TypeScript                |
+| `pnpm docker:up`     | Start Docker services                     |
+| `pnpm docker:down`   | Stop Docker services                      |
+| `pnpm docker:logs`   | View Docker logs                          |
+| `pnpm docker:clean`  | Remove all Docker data                    |
+| `pnpm db:reset`      | Reset database (drop/recreate/seed)       |
+| `pnpm db:migrate`    | Create new Prisma migration               |
 
 ---
 
