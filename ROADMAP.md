@@ -227,7 +227,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#122](https://github.com/tjsasakifln/sentinel-rfp/issues/122) - Configure Storybook para Web App
   - [ ] [#123](https://github.com/tjsasakifln/sentinel-rfp/issues/123) - Create Development Scripts & CLI Tools
   - [x] [#124](https://github.com/tjsasakifln/sentinel-rfp/issues/124) - Setup Git Hooks com Husky + lint-staged
-  - [ ] [#125](https://github.com/tjsasakifln/sentinel-rfp/issues/125) - VS Code Workspace Configuration
+  - [x] [#125](https://github.com/tjsasakifln/sentinel-rfp/issues/125) - VS Code Workspace Configuration
 - [ ] Beta user recruitment
 
 **Exit Criteria:**
