@@ -4,6 +4,18 @@
  * Enforces role-based access control (RBAC) using @Roles decorator.
  * Validates JWT payload role against required roles.
  *
+ * **Role Hierarchy:**
+ * OWNER > ADMIN > MEMBER > SME > VIEWER
+ *
+ * **When to use:**
+ * - Use @Roles for simple role checks (e.g., admin-only routes)
+ * - Use @Permissions (PermissionsGuard) for granular resource:action checks
+ *
+ * **Order of guards:**
+ * 1. JwtAuthGuard (authentication)
+ * 2. TenantGuard (multi-tenancy)
+ * 3. RolesGuard (role-based) OR PermissionsGuard (permission-based)
+ *
  * @module RolesGuard
  */
 
@@ -17,12 +29,21 @@ export const ROLES_KEY = 'roles';
  * Roles decorator
  *
  * Marks route with required roles.
+ * User must have ONE OF the specified roles to access the route.
+ *
+ * @param roles - Required roles (OR logic)
  *
  * @example
  * ```typescript
- * @Roles('OWNER', 'ADMIN')
+ * // Allow OWNER or ADMIN
+ * @Roles(UserRole.OWNER, UserRole.ADMIN)
  * @Get('/admin-only')
  * adminRoute() {}
+ *
+ * // Allow all roles except VIEWER
+ * @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MEMBER, UserRole.SME)
+ * @Post('/proposals')
+ * createProposal() {}
  * ```
  */
 export const Roles = (...roles: UserRole[]) => SetMetadata(ROLES_KEY, roles);

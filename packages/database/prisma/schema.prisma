@@ -126,10 +126,11 @@ enum OrgStatus {
 }
 
 enum UserRole {
-  OWNER
-  ADMIN
-  MEMBER
-  VIEWER
+  OWNER   // Full access, billing, organization deletion
+  ADMIN   // User management, settings, integrations
+  MEMBER  // Create/edit proposals, manage library
+  SME     // Subject Matter Expert - Respond to requests via Slack/Teams
+  VIEWER  // Read-only access
 }
 
 enum UserStatus {
