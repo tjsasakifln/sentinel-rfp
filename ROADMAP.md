@@ -229,6 +229,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [ ] [#123](https://github.com/tjsasakifln/sentinel-rfp/issues/123) - Create Development Scripts & CLI Tools
   - [x] [#124](https://github.com/tjsasakifln/sentinel-rfp/issues/124) - Setup Git Hooks com Husky + lint-staged
   - [x] [#125](https://github.com/tjsasakifln/sentinel-rfp/issues/125) - VS Code Workspace Configuration
+  - [x] [#126](https://github.com/tjsasakifln/sentinel-rfp/issues/126) - API Documentation com Swagger/OpenAPI
 - [ ] Beta user recruitment
 
 **Exit Criteria:**
@@ -567,6 +568,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                                                                                                                                         |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1     | 2026-01-19 | Marked #126 complete after PR #183 merge (Swagger/OpenAPI documentation for backend API with 19 documented endpoints)                                                                           |
 | 2.0     | 2026-01-15 | Comprehensive ROADMAP audit: Fixed GitHub Project Status (133 issues, 41 closed = 31%), added missing decompositions (#22→#168-172, #49→#144-148), corrected milestone tracking (#52, #87, #56) |
 | 1.9     | 2026-01-15 | Marked #120 complete after PR #162 merge (Error alerting & monitoring rules with enhanced health check endpoint) - All Error Handling & Logging sub-issues complete!                            |
 | 1.8     | 2026-01-14 | Marked #148 complete after PR #156 merge (DELETE /v1/proposals/:id soft delete endpoint) - All Proposal CRUD operations complete!                                                               |
