@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "prisma.prisma",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-typescript-next",
+    "github.copilot",
+    "orta.vscode-jest",
+    "firsttris.vscode-jest-runner",
+    "christian-kohler.path-intellisense",
+    "wix.vscode-import-cost"
+  ]
+}
