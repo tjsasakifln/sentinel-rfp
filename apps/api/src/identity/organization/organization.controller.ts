@@ -23,12 +23,23 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard, Roles } from '../auth/guards/roles.guard';
 import { UserService } from '../user/user.service';
 
 import { CreateOrganizationDto, UpdateOrganizationDto, AddMemberDto } from './dto';
 import { OrganizationService } from './organization.service';
+
+/**
+ * User payload extracted from JWT token
+ */
+interface JwtPayload {
+  userId: string;
+  email: string;
+  organizationId: string;
+  role: string;
+}
 
 @ApiTags('Organizations')
 @ApiBearerAuth()
@@ -115,8 +126,8 @@ export class OrganizationController {
     status: 404,
     description: 'Not Found - Organization does not exist or is deleted',
   })
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.service.findOne(id, user.organizationId);
   }
 
   @Patch(':id')
@@ -151,8 +162,12 @@ export class OrganizationController {
     status: 409,
     description: 'Conflict - Attempted to modify immutable slug',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateOrganizationDto) {
-    return this.service.update(id, dto);
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateOrganizationDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.service.update(id, dto, user.organizationId);
   }
 
   // ==========================================

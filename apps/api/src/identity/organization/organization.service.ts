@@ -93,13 +93,23 @@ export class OrganizationService {
    * Find one organization by ID
    *
    * Returns organization with related users and settings.
+   * Enforces tenant isolation - users can only access their own organization.
    *
    * @param id - Organization UUID
+   * @param userOrganizationId - Organization ID from authenticated user's JWT
    * @returns Organization with users
-   * @throws NotFoundException if organization not found or soft-deleted
+   * @throws NotFoundException if organization not found, soft-deleted, or user lacks access
    */
-  async findOne(id: string) {
-    this.logger.log(`Fetching organization: ${id}`);
+  async findOne(id: string, userOrganizationId: string) {
+    this.logger.log(`Fetching organization: ${id} (user org: ${userOrganizationId})`);
+
+    // Tenant isolation: user can only access their own organization
+    if (id !== userOrganizationId) {
+      this.logger.warn(
+        `Tenant isolation violation: User from org ${userOrganizationId} attempted to access org ${id}`,
+      );
+      throw new NotFoundException(`Organization with ID ${id} not found`);
+    }
 
     const organization = await prisma.organization.findUnique({
       where: { id, deletedAt: null },
@@ -130,14 +140,24 @@ export class OrganizationService {
    *
    * Updates organization data. Slug cannot be changed after creation
    * to prevent breaking external integrations.
+   * Enforces tenant isolation - users can only update their own organization.
    *
    * @param id - Organization UUID
    * @param dto - Update data
+   * @param userOrganizationId - Organization ID from authenticated user's JWT
    * @returns Updated organization
-   * @throws NotFoundException if organization not found or soft-deleted
+   * @throws NotFoundException if organization not found, soft-deleted, or user lacks access
    */
-  async update(id: string, dto: UpdateOrganizationDto) {
-    this.logger.log(`Updating organization: ${id}`);
+  async update(id: string, dto: UpdateOrganizationDto, userOrganizationId: string) {
+    this.logger.log(`Updating organization: ${id} (user org: ${userOrganizationId})`);
+
+    // Tenant isolation: user can only update their own organization
+    if (id !== userOrganizationId) {
+      this.logger.warn(
+        `Tenant isolation violation: User from org ${userOrganizationId} attempted to update org ${id}`,
+      );
+      throw new NotFoundException(`Organization with ID ${id} not found`);
+    }
 
     // Verify organization exists
     const existing = await prisma.organization.findUnique({
