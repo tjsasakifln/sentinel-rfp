@@ -113,7 +113,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 
 #### Milestone 2.1: Document Upload ([EPIC #3](https://github.com/tjsasakifln/sentinel-rfp/issues/3))
 
-- [ ] File upload API (multipart) - [#25](https://github.com/tjsasakifln/sentinel-rfp/issues/25)
+- [x] File upload API (multipart) - [#25](https://github.com/tjsasakifln/sentinel-rfp/issues/25) - [PR #198](https://github.com/tjsasakifln/sentinel-rfp/pull/198)
 - [ ] Cloudflare R2 integration - [#26](https://github.com/tjsasakifln/sentinel-rfp/issues/26)
 - [ ] Document type detection - [#27](https://github.com/tjsasakifln/sentinel-rfp/issues/27)
 - [ ] File validation & security - [#28](https://github.com/tjsasakifln/sentinel-rfp/issues/28)
