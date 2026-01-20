@@ -569,6 +569,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                                                                                                                                         |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.5     | 2026-01-20 | Marked #191 complete after PR #196 merge (Turborepo cache optimization for CI/CD, branch protection documentation, security fix for tar CVE via argon2 upgrade)                                 |
 | 2.4     | 2026-01-20 | Added #17 CI/CD decomposition (#187-#191, 5 sub-issues); Marked #190 complete after PR #195 merge (CD workflow for Railway staging deploy with workflow_run trigger)                            |
 | 2.3     | 2026-01-19 | Marked #20 complete (PostgreSQL 16 + pgvector setup with PgBouncer connection pooling, automated backups, HNSW indexes)                                                                         |
 | 2.2     | 2026-01-19 | Marked #23 complete after PR #185 merge (RBAC system with 35 granular permissions, role hierarchy, PermissionsGuard, AnyPermissionsGuard, 100% test coverage)                                   |
