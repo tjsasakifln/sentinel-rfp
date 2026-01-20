@@ -1,17 +1,25 @@
 name: CD
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
     branches: [main]
   workflow_dispatch:
 
 jobs:
+  # Job 1: Deploy - Deploy to Railway Staging Environment
   deploy:
-    name: Deploy to Staging
+    name: Deploy to Railway (Staging)
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Only run on main branch after successful CI
-    if: github.ref == 'refs/heads/main'
+    # Only deploy if CI workflow passed successfully
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+
+    environment:
+      name: staging
+      url: https://sentinel-rfp-staging.up.railway.app
 
     steps:
       - name: Checkout code
@@ -31,21 +39,57 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build applications
+      - name: Generate Prisma Client
+        run: |
+          cd packages/database
+          pnpm prisma generate
+
+      - name: Build All via Turborepo
         run: pnpm build
 
-      - name: Deploy to Railway (Placeholder)
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway (Staging)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "🚀 Deploy to Railway staging would happen here"
-          echo "📦 Build completed successfully"
-          echo "⏳ Waiting for Railway CLI integration (Issue #190)"
-        # TODO: Add Railway CLI deployment in Issue #190
-        # - Install Railway CLI
-        # - Deploy using railway up
-        # - Verify deployment
+          echo "🚀 Deploying to Railway Staging Environment..."
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway up --service backend --environment staging
+          railway up --service frontend --environment staging
+
+      - name: Get Deployment URLs
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "📦 Deployment completed successfully!"
+          echo "🌐 Backend URL: $(railway domain --service backend --environment staging)"
+          echo "🌐 Frontend URL: $(railway domain --service frontend --environment staging)"
+
+      - name: Notify Deployment Status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment to Railway Staging: SUCCESS"
+            echo "📊 View logs: https://railway.app/project/${{ secrets.RAILWAY_PROJECT_ID }}"
+          else
+            echo "❌ Deployment to Railway Staging: FAILED"
+            echo "📊 Check logs: https://railway.app/project/${{ secrets.RAILWAY_PROJECT_ID }}"
+          fi
 
       - name: Summary
+        if: success()
         run: |
-          echo "✅ Build completed successfully"
-          echo "⏳ Railway deployment pending (Issue #190)"
-          echo "📝 Next: Configure Railway CLI in CD workflow"
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Successfully deployed to Railway Staging" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Environment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** staging" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** main" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Services Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend (NestJS API)" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend (Next.js Web)" >> $GITHUB_STEP_SUMMARY

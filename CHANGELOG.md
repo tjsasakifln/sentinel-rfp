@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **CI: CD Workflow for Staging Deploy** (#190, PR #195)
+  - Added CD workflow (.github/workflows/cd.yml) for automatic deployment to Railway staging
+  - Configured workflow_run trigger to execute after CI passes on main branch
+  - Integrated Railway CLI for deploying backend and frontend services
+  - Conditional deployment: only executes if CI workflow succeeds
+  - Environment: GitHub Environment 'staging' configured with Railway URL
+  - Secrets management: documented RAILWAY_TOKEN and RAILWAY_PROJECT_ID setup
+  - Deployment steps: checkout, build, Railway CLI install, deploy backend/frontend
+  - Status notifications: deployment URLs and logs displayed in GitHub Actions summary
+  - Comprehensive CD setup documentation in .github/CD_SETUP.md (204 lines)
+  - Manual trigger support via workflow_dispatch for testing
+
 - **CI: Test and Build Jobs** (#189, PR #194)
   - Added dedicated test job executing unit tests via Turborepo
   - Added dedicated build job building all apps and packages via Turborepo
