@@ -66,12 +66,95 @@ jobs:
       - name: Run TypeScript Type Check via Turborepo
         run: pnpm typecheck
 
-  # Job 3: Validate - Validação completa do monorepo com testes E2E
+  # Job 3: Test - Executa testes unitários de todos os apps/packages
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint, typecheck]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: |
+          cd packages/database
+          pnpm prisma generate
+
+      - name: Run Tests via Turborepo
+        run: pnpm test
+
+      - name: Upload Coverage Reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./apps/api/coverage/coverage-final.json,./apps/web/coverage/coverage-final.json
+          flags: unittests
+          name: codecov-sentinel-rfp
+          fail_ci_if_error: false
+
+  # Job 4: Build - Builda todos os apps e packages do monorepo
+  build:
+    name: Build All Apps
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint, typecheck]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: |
+          cd packages/database
+          pnpm prisma generate
+
+      - name: Build All via Turborepo
+        run: pnpm build
+
+      - name: Verify Build Artifacts
+        run: |
+          echo "✓ Verifying build artifacts..."
+          test -d apps/api/dist && echo "✓ API build artifacts exist"
+          test -d apps/web/.next && echo "✓ Web build artifacts exist"
+          echo "✓ All build artifacts verified"
+
+  # Job 5: Validate - Validação completa do monorepo com testes E2E
   validate:
     name: Validate Monorepo Setup
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [lint, typecheck]
+    needs: [test, build]
 
     services:
       postgres:

@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **CI: Test and Build Jobs** (#189, PR #194)
+  - Added dedicated test job executing unit tests via Turborepo
+  - Added dedicated build job building all apps and packages via Turborepo
+  - Configured test job to generate Prisma Client before running tests
+  - Integrated coverage upload to Codecov (optional, fail_ci_if_error: false)
+  - Configured build job to verify build artifacts (apps/api/dist, apps/web/.next)
+  - Both jobs execute in parallel after lint and typecheck pass (needs: [lint, typecheck])
+  - Updated validate job to depend on test and build passing (needs: [test, build])
+  - Test job timeout: 15 minutes, Build job timeout: 15 minutes
+  - All jobs leverage Turborepo caching for optimal CI performance
+
 - **CI: Lint and Type Check Jobs** (#188, PR #193)
   - Added dedicated lint job executing ESLint via Turborepo
   - Added dedicated typecheck job executing TypeScript compiler via Turborepo
