@@ -6,6 +6,7 @@ import { CommonModule } from './common/common.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { configValidationSchema } from './config/config.schema';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { DocumentsModule } from './documents/documents.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './identity/auth/auth.module';
 import { OrganizationModule } from './identity/organization/organization.module';
@@ -43,6 +44,7 @@ import { ProposalModule } from './proposal/proposal.module';
     TenantModule,
     ProposalModule,
     DashboardModule,
+    DocumentsModule,
   ],
 })
 export class AppModule {}
