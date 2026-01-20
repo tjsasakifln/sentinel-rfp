@@ -97,7 +97,6 @@ export async function verifyPassword(hash: string, password: string): Promise<bo
 export function needsRehash(hash: string): boolean {
   try {
     return argon2.needsRehash(hash, {
-      type: argon2.argon2id,
       memoryCost: 65536,
       timeCost: 3,
       parallelism: 4,
