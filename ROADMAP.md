@@ -73,7 +73,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#95](https://github.com/tjsasakifln/sentinel-rfp/issues/95) - Create Layout Base (Header, Sidebar, Main)
 - [x] Docker development environment - [#16](https://github.com/tjsasakifln/sentinel-rfp/issues/16)
 - [ ] CI/CD pipeline (GitHub Actions) - [#17](https://github.com/tjsasakifln/sentinel-rfp/issues/17)
-- [ ] Railway deployment configuration - [#18](https://github.com/tjsasakifln/sentinel-rfp/issues/18)
+- [x] Railway deployment configuration - [#18](https://github.com/tjsasakifln/sentinel-rfp/issues/18)
 
 #### Milestone 1.2: Database & Auth ([EPIC #1](https://github.com/tjsasakifln/sentinel-rfp/issues/1))
 
@@ -569,6 +569,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                                                                                                                                         |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.6     | 2026-01-20 | Marked #18 complete after PR #197 merge (Railway deployment configuration: Docker multi-stage builds for API/Web, railway.json, health checks, comprehensive INFRASTRUCTURE.md documentation)   |
 | 2.5     | 2026-01-20 | Marked #191 complete after PR #196 merge (Turborepo cache optimization for CI/CD, branch protection documentation, security fix for tar CVE via argon2 upgrade)                                 |
 | 2.4     | 2026-01-20 | Added #17 CI/CD decomposition (#187-#191, 5 sub-issues); Marked #190 complete after PR #195 merge (CD workflow for Railway staging deploy with workflow_run trigger)                            |
 | 2.3     | 2026-01-19 | Marked #20 complete (PostgreSQL 16 + pgvector setup with PgBouncer connection pooling, automated backups, HNSW indexes)                                                                         |
