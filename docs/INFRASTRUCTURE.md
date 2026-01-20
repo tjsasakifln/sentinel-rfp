@@ -723,9 +723,237 @@ railway service scale worker --replicas 3
 railway logs --service backend --follow
 ```
 
+## Railway Deployment Guide
+
+### Prerequisites
+
+1. **Railway Account**: Sign up at [railway.app](https://railway.app)
+2. **Railway CLI**: Install globally
+   ```bash
+   npm install -g @railway/cli
+   ```
+3. **Railway Token**: Get from Railway dashboard
+   ```bash
+   railway login
+   ```
+
+### Initial Setup
+
+#### 1. Create Railway Project
+
+```bash
+# Create new project
+railway init
+
+# Link to existing project (if already created)
+railway link
+```
+
+#### 2. Add Managed Services
+
+From Railway dashboard, add:
+
+- PostgreSQL (with pgvector extension)
+- Redis (for caching and BullMQ)
+
+#### 3. Configure Environment Variables
+
+```bash
+# Set production environment variables
+railway variables set NODE_ENV=production
+railway variables set JWT_SECRET=$(openssl rand -base64 32)
+railway variables set ANTHROPIC_API_KEY=sk-ant-xxx
+railway variables set OPENAI_API_KEY=sk-xxx
+railway variables set SENTRY_DSN=https://xxx@sentry.io/xxx
+
+# Cloudflare R2 Storage
+railway variables set CLOUDFLARE_ACCOUNT_ID=xxx
+railway variables set CLOUDFLARE_R2_ACCESS_KEY=xxx
+railway variables set CLOUDFLARE_R2_SECRET_KEY=xxx
+railway variables set CLOUDFLARE_R2_BUCKET=sentinel-rfp-storage
+```
+
+### Service Configuration
+
+#### API Service (NestJS)
+
+1. **Create Service** in Railway dashboard
+2. **Configure Settings**:
+   - Root Directory: `/`
+   - Dockerfile Path: `apps/api/Dockerfile`
+   - Health Check Path: `/api/health`
+   - Port: `3001`
+3. **Deploy**:
+   ```bash
+   railway up --service api
+   ```
+
+#### Web Service (Next.js)
+
+1. **Create Service** in Railway dashboard
+2. **Configure Settings**:
+   - Root Directory: `/`
+   - Dockerfile Path: `apps/web/Dockerfile`
+   - Health Check Path: `/api/health`
+   - Port: `3000`
+3. **Set Environment Variables**:
+   ```bash
+   railway variables set NEXT_PUBLIC_API_URL=https://api-production-xxx.up.railway.app
+   ```
+4. **Deploy**:
+   ```bash
+   railway up --service web
+   ```
+
+### Health Checks
+
+Both services include health check endpoints:
+
+- **API**: `GET /api/health`
+  - Returns 200 if healthy
+  - Returns 503 if database unavailable
+  - Includes uptime, environment, and database status
+
+- **Web**: `GET /api/health`
+  - Returns 200 if Next.js server is running
+  - Includes uptime and environment info
+
+### Deployment Process
+
+#### Automatic Deployment (via GitHub)
+
+1. **Connect GitHub Repository** in Railway dashboard
+2. **Configure Auto-Deploy**:
+   - Branch: `main`
+   - Deploy on push: Enabled
+3. **Push to main**:
+   ```bash
+   git push origin main
+   ```
+
+#### Manual Deployment (via CLI)
+
+```bash
+# Deploy specific service
+railway up --service api
+railway up --service web
+
+# Deploy all services
+railway up
+```
+
+### Database Migrations
+
+Run Prisma migrations on deployment:
+
+```bash
+# Before deploying new code
+railway run --service api npx prisma migrate deploy
+```
+
+### Monitoring Deployments
+
+```bash
+# View deployment logs
+railway logs --service api
+railway logs --service web
+
+# View deployment history
+railway deployments list
+
+# Rollback to previous deployment
+railway rollback <deployment-id>
+```
+
+### Custom Domains
+
+1. **Add Domain** in Railway service settings
+2. **Configure DNS**:
+   ```
+   # Cloudflare DNS (recommended for SSL + WAF)
+   api.sentinel-rfp.com    CNAME   api-production-xxx.up.railway.app
+   app.sentinel-rfp.com    CNAME   web-production-xxx.up.railway.app
+   ```
+3. **SSL**: Automatically provisioned by Railway
+
+### Troubleshooting
+
+#### Build Failures
+
+```bash
+# View build logs
+railway logs --service api --build
+
+# Common issues:
+# 1. Missing dependencies in Dockerfile
+# 2. Incorrect build context
+# 3. Memory limits during build (increase Railway plan)
+```
+
+#### Health Check Failures
+
+```bash
+# Test health endpoint locally
+docker build -t api-test -f apps/api/Dockerfile .
+docker run -p 3001:3001 --env-file .env api-test
+
+curl http://localhost:3001/api/health
+```
+
+#### Database Connection Issues
+
+```bash
+# Verify DATABASE_URL is set
+railway variables get DATABASE_URL
+
+# Test database connection
+railway run --service api npx prisma db execute --stdin <<< "SELECT 1"
+```
+
+### Validation Checklist
+
+After deployment, verify:
+
+- [ ] API health endpoint responds: `curl https://api.yourdomain.com/api/health`
+- [ ] Web health endpoint responds: `curl https://app.yourdomain.com/api/health`
+- [ ] Database migrations applied: `railway run npx prisma migrate status`
+- [ ] Environment variables set correctly
+- [ ] Health checks passing in Railway dashboard
+- [ ] SSL certificates active
+- [ ] Logs show no errors
+- [ ] API Swagger docs accessible: `/api/docs`
+
+### Production Readiness
+
+Before going to production:
+
+1. **Enable Auto-Scaling**:
+   - Set min/max replicas per service
+   - Configure CPU/memory thresholds
+
+2. **Set Up Monitoring**:
+   - Configure Sentry alerts
+   - Set up uptime monitoring (e.g., UptimeRobot)
+
+3. **Backup Strategy**:
+   - Enable Railway PostgreSQL automated backups
+   - Schedule manual exports to R2
+
+4. **Security**:
+   - Review environment variables
+   - Enable Cloudflare WAF
+   - Configure rate limiting
+
+5. **Performance**:
+   - Enable Redis caching
+   - Configure CDN for static assets
+   - Optimize database queries
+
 ## References
 
 - [Railway Documentation](https://docs.railway.app/)
 - [Railway CLI Reference](https://docs.railway.app/develop/cli)
 - [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 - [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
+- [Next.js Standalone Output](https://nextjs.org/docs/advanced-features/output-file-tracing)
+- [NestJS Docker Deployment](https://docs.nestjs.com/recipes/docker)
