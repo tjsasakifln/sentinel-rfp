@@ -12,6 +12,7 @@ import { AuthModule } from './identity/auth/auth.module';
 import { OrganizationModule } from './identity/organization/organization.module';
 import { TenantModule } from './identity/tenant/tenant.module';
 import { ProposalModule } from './proposal/proposal.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ProposalModule } from './proposal/proposal.module';
     ProposalModule,
     DashboardModule,
     DocumentsModule,
+    StorageModule,
   ],
 })
 export class AppModule {}
