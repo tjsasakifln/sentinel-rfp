@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **CI: Lint and Type Check Jobs** (#188, PR #193)
+  - Added dedicated lint job executing ESLint via Turborepo
+  - Added dedicated typecheck job executing TypeScript compiler via Turborepo
+  - Configured pnpm caching for dependencies (cache: 'pnpm' in setup-node)
+  - Parallelized lint and typecheck jobs for maximum CI efficiency
+  - Updated validate job to depend on lint and typecheck passing (via needs: [lint, typecheck])
+  - Added Prisma client generation to typecheck job
+  - All jobs execute in parallel when possible for optimal build times
+
 - **VS Code Workspace Configuration** (#125, PR #181)
   - Added .vscode/extensions.json with 10 recommended extensions (ESLint, Prettier, Prisma, Tailwind, Jest, GitHub Copilot, etc.)
   - Configured .vscode/settings.json with format-on-save, ESLint auto-fix, consistent indentation, and line rulers
