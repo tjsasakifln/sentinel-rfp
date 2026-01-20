@@ -24,6 +24,7 @@ Issues grandes (size:L) e Epics amplos foram decompostos em sub-issues atômicas
 | Parent Issue | Título                       | Sub-Issues               | Status                                                                  |
 | ------------ | ---------------------------- | ------------------------ | ----------------------------------------------------------------------- |
 | #15          | Next.js Frontend Scaffolding | #90-#95 (6 sub-issues)   | ✅ Completo                                                             |
+| #17          | CI/CD Pipeline               | #187-#191 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/17) |
 | #19          | Prisma Schema Design         | #102-#108 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/19) |
 | #21          | User Authentication (JWT)    | #109-#115 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/21) |
 | #22          | Organization Multi-tenancy   | #168-#172 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/22) |
@@ -568,6 +569,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                                                                                                                                         |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.4     | 2026-01-20 | Added #17 CI/CD decomposition (#187-#191, 5 sub-issues); Marked #190 complete after PR #195 merge (CD workflow for Railway staging deploy with workflow_run trigger)                            |
 | 2.3     | 2026-01-19 | Marked #20 complete (PostgreSQL 16 + pgvector setup with PgBouncer connection pooling, automated backups, HNSW indexes)                                                                         |
 | 2.2     | 2026-01-19 | Marked #23 complete after PR #185 merge (RBAC system with 35 granular permissions, role hierarchy, PermissionsGuard, AnyPermissionsGuard, 100% test coverage)                                   |
 | 2.1     | 2026-01-19 | Marked #126 complete after PR #183 merge (Swagger/OpenAPI documentation for backend API with 19 documented endpoints)                                                                           |
