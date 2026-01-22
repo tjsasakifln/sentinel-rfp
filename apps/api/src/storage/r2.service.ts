@@ -33,6 +33,7 @@ export class R2Service implements IStorageService, OnModuleInit {
   private readonly logger = new Logger(R2Service.name);
   private s3Client!: S3Client;
   private config!: R2Config;
+  private initialized = false;
 
   constructor(private configService: ConfigService) {}
 
@@ -41,6 +42,10 @@ export class R2Service implements IStorageService, OnModuleInit {
    *
    * Validates required environment variables and creates S3Client instance.
    * R2 uses S3-compatible API, so we use AWS SDK S3 client with R2 endpoint.
+   *
+   * If R2 environment variables are not configured, logs a warning and skips initialization.
+   * This allows the service to be loaded in environments where R2 is not yet configured
+   * (e.g., CI/CD, development, testing).
    */
   async onModuleInit() {
     await this.initialize();
@@ -49,14 +54,25 @@ export class R2Service implements IStorageService, OnModuleInit {
   /**
    * Initialize S3Client with R2 configuration
    *
-   * @throws Error if required environment variables are missing
+   * If required environment variables are missing, logs a warning and skips initialization.
+   * Service methods will throw errors if called before successful initialization.
    */
   async initialize(): Promise<void> {
     this.logger.log('Initializing Cloudflare R2 client...');
 
+    // Check if R2 configuration exists
+    const accountId = this.configService.get<string>('R2_ACCOUNT_ID');
+    if (!accountId) {
+      this.logger.warn(
+        'R2 environment variables not configured - R2 storage is disabled. ' +
+          'Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME to enable.',
+      );
+      return;
+    }
+
     // Load configuration from environment variables
     this.config = {
-      accountId: this.configService.getOrThrow<string>('R2_ACCOUNT_ID'),
+      accountId,
       accessKeyId: this.configService.getOrThrow<string>('R2_ACCESS_KEY_ID'),
       secretAccessKey: this.configService.getOrThrow<string>('R2_SECRET_ACCESS_KEY'),
       bucketName: this.configService.getOrThrow<string>('R2_BUCKET_NAME'),
@@ -76,8 +92,22 @@ export class R2Service implements IStorageService, OnModuleInit {
       },
     });
 
+    this.initialized = true;
     this.logger.log('R2 client initialized successfully');
     this.logger.log(`Bucket: ${this.config.bucketName}`);
+  }
+
+  /**
+   * Ensure R2 service is properly initialized before use
+   *
+   * @throws Error if R2 service was not initialized due to missing configuration
+   */
+  private ensureInitialized(): void {
+    if (!this.initialized) {
+      throw new Error(
+        'R2 service is not initialized. Please configure R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, and R2_BUCKET_NAME environment variables.',
+      );
+    }
   }
 
   /**
@@ -101,6 +131,7 @@ export class R2Service implements IStorageService, OnModuleInit {
    * ```
    */
   async generatePresignedUploadUrl(_params: UploadUrlParams): Promise<PresignedUrlResult> {
+    this.ensureInitialized();
     // Implementation will be added in sub-issue #202
     throw new Error('Not implemented yet - see issue #202');
   }
@@ -126,6 +157,7 @@ export class R2Service implements IStorageService, OnModuleInit {
    * ```
    */
   async generatePresignedDownloadUrl(_params: DownloadUrlParams): Promise<PresignedUrlResult> {
+    this.ensureInitialized();
     // Implementation will be added in sub-issue #203
     throw new Error('Not implemented yet - see issue #203');
   }
@@ -134,9 +166,11 @@ export class R2Service implements IStorageService, OnModuleInit {
    * Get S3Client instance for testing purposes
    *
    * @returns S3Client instance
+   * @throws Error if R2 service was not initialized
    * @internal
    */
   getClient(): S3Client {
+    this.ensureInitialized();
     return this.s3Client;
   }
 
@@ -144,12 +178,23 @@ export class R2Service implements IStorageService, OnModuleInit {
    * Get R2 configuration
    *
    * @returns R2 configuration (credentials excluded for security)
+   * @throws Error if R2 service was not initialized
    * @internal
    */
   getConfig(): Omit<R2Config, 'accessKeyId' | 'secretAccessKey'> {
+    this.ensureInitialized();
     return {
       accountId: this.config.accountId,
       bucketName: this.config.bucketName,
     };
+  }
+
+  /**
+   * Check if R2 service is initialized and ready to use
+   *
+   * @returns true if service is initialized, false otherwise
+   */
+  isInitialized(): boolean {
+    return this.initialized;
   }
 }

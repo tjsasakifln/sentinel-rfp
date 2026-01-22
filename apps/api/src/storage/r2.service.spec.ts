@@ -30,6 +30,7 @@ describe('R2Service', () => {
         {
           provide: ConfigService,
           useValue: {
+            get: jest.fn((key: string) => mockEnv[key as keyof typeof mockEnv]),
             getOrThrow: jest.fn(
               (key: string) => mockEnv[key as keyof typeof mockEnv] || `mock-${key}`,
             ),
@@ -66,26 +67,43 @@ describe('R2Service', () => {
       expect(config.bucketName).toBe(mockEnv.R2_BUCKET_NAME);
     });
 
-    it('should call ConfigService.getOrThrow for each required variable', async () => {
+    it('should call ConfigService methods for configuration loading', async () => {
       await service.initialize();
 
-      expect(configService.getOrThrow).toHaveBeenCalledWith('R2_ACCOUNT_ID');
+      // R2_ACCOUNT_ID uses get() to allow graceful skip if missing
+      expect(configService.get).toHaveBeenCalledWith('R2_ACCOUNT_ID');
+      // Other variables use getOrThrow() since they're required if R2_ACCOUNT_ID exists
       expect(configService.getOrThrow).toHaveBeenCalledWith('R2_ACCESS_KEY_ID');
       expect(configService.getOrThrow).toHaveBeenCalledWith('R2_SECRET_ACCESS_KEY');
       expect(configService.getOrThrow).toHaveBeenCalledWith('R2_BUCKET_NAME');
     });
 
-    it('should throw error if required environment variable is missing', async () => {
+    it('should skip initialization and log warning if R2_ACCOUNT_ID is missing', async () => {
       // Mock missing environment variable
+      jest.spyOn(configService, 'get').mockReturnValue(undefined);
+
+      const loggerWarnSpy = jest.spyOn(service['logger'], 'warn');
+
+      await service.initialize();
+
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('R2 environment variables not configured'),
+      );
+      expect(service.isInitialized()).toBe(false);
+    });
+
+    it('should throw error if R2_ACCESS_KEY_ID is missing but R2_ACCOUNT_ID exists', async () => {
+      // Mock partially missing environment variables
+      jest.spyOn(configService, 'get').mockReturnValue('test-account-id');
       jest.spyOn(configService, 'getOrThrow').mockImplementation((key) => {
-        if (key === 'R2_ACCOUNT_ID') {
+        if (key === 'R2_ACCESS_KEY_ID') {
           throw new Error(`Configuration key "${key}" does not exist`);
         }
         return mockEnv[key as keyof typeof mockEnv] || '';
       });
 
       await expect(service.initialize()).rejects.toThrow(
-        'Configuration key "R2_ACCOUNT_ID" does not exist',
+        'Configuration key "R2_ACCESS_KEY_ID" does not exist',
       );
     });
   });
@@ -97,6 +115,12 @@ describe('R2Service', () => {
       const client = service.getClient();
       expect(client).toBeDefined();
       expect(client.constructor.name).toBe('S3Client');
+    });
+
+    it('should throw error if called before initialization', () => {
+      expect(() => service.getClient()).toThrow(
+        'R2 service is not initialized. Please configure R2_ACCOUNT_ID',
+      );
     });
   });
 
@@ -110,10 +134,48 @@ describe('R2Service', () => {
       expect(config).not.toHaveProperty('accessKeyId');
       expect(config).not.toHaveProperty('secretAccessKey');
     });
+
+    it('should throw error if called before initialization', () => {
+      expect(() => service.getConfig()).toThrow(
+        'R2 service is not initialized. Please configure R2_ACCOUNT_ID',
+      );
+    });
+  });
+
+  describe('isInitialized', () => {
+    it('should return false before initialization', () => {
+      expect(service.isInitialized()).toBe(false);
+    });
+
+    it('should return true after successful initialization', async () => {
+      await service.initialize();
+      expect(service.isInitialized()).toBe(true);
+    });
+
+    it('should return false if initialization was skipped', async () => {
+      jest.spyOn(configService, 'get').mockReturnValue(undefined);
+      await service.initialize();
+      expect(service.isInitialized()).toBe(false);
+    });
   });
 
   describe('presigned URLs (not implemented yet)', () => {
-    it('should throw error for generatePresignedUploadUrl', async () => {
+    it('should throw error for generatePresignedUploadUrl when not initialized', async () => {
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+      };
+
+      await expect(service.generatePresignedUploadUrl(params)).rejects.toThrow(
+        'R2 service is not initialized',
+      );
+    });
+
+    it('should throw "not implemented" error for generatePresignedUploadUrl after initialization', async () => {
+      await service.initialize();
+
       const params = {
         organizationId: 'org_123',
         documentId: 'doc_456',
@@ -126,7 +188,22 @@ describe('R2Service', () => {
       );
     });
 
-    it('should throw error for generatePresignedDownloadUrl', async () => {
+    it('should throw error for generatePresignedDownloadUrl when not initialized', async () => {
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        filename: 'test.pdf',
+      };
+
+      await expect(service.generatePresignedDownloadUrl(params)).rejects.toThrow(
+        'R2 service is not initialized',
+      );
+    });
+
+    it('should throw "not implemented" error for generatePresignedDownloadUrl after initialization', async () => {
+      await service.initialize();
+
       const params = {
         organizationId: 'org_123',
         documentId: 'doc_456',
