@@ -28,6 +28,7 @@ Issues grandes (size:L) e Epics amplos foram decompostos em sub-issues atômicas
 | #19          | Prisma Schema Design         | #102-#108 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/19) |
 | #21          | User Authentication (JWT)    | #109-#115 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/21) |
 | #22          | Organization Multi-tenancy   | #168-#172 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/22) |
+| #26          | Cloudflare R2 Integration    | #201-#205 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/26) |
 | #49          | Proposal CRUD                | #144-#148 (5 sub-issues) | ✅ Completo                                                             |
 | #52          | Basic Dashboard              | #127-#131 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/52) |
 | #61          | Error Handling & Logging     | #116-#120 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/61) |
@@ -115,6 +116,11 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 
 - [x] File upload API (multipart) - [#25](https://github.com/tjsasakifln/sentinel-rfp/issues/25) - [PR #198](https://github.com/tjsasakifln/sentinel-rfp/pull/198)
 - [ ] Cloudflare R2 integration - [#26](https://github.com/tjsasakifln/sentinel-rfp/issues/26)
+  - [x] [#201](https://github.com/tjsasakifln/sentinel-rfp/issues/201) - Setup R2 Client & Configuration
+  - [x] [#202](https://github.com/tjsasakifln/sentinel-rfp/issues/202) - Implement Presigned Upload URLs
+  - [ ] [#203](https://github.com/tjsasakifln/sentinel-rfp/issues/203) - Implement Presigned Download URLs
+  - [ ] [#204](https://github.com/tjsasakifln/sentinel-rfp/issues/204) - Implement Streaming Upload for Large Files
+  - [ ] [#205](https://github.com/tjsasakifln/sentinel-rfp/issues/205) - Configure CORS & Lifecycle Rules
 - [ ] Document type detection - [#27](https://github.com/tjsasakifln/sentinel-rfp/issues/27)
 - [ ] File validation & security - [#28](https://github.com/tjsasakifln/sentinel-rfp/issues/28)
 
@@ -569,6 +575,7 @@ Transform from tool to intelligent platform with predictive capabilities and aut
 
 | Version | Date       | Changes                                                                                                                                                                                         |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.7     | 2026-01-22 | Added #26 to decomposition table (#201-#205, 5 sub-issues); Marked #202 complete after PR #207 merge (Presigned upload URLs for R2 with parameter validation and comprehensive tests)           |
 | 2.6     | 2026-01-20 | Marked #18 complete after PR #197 merge (Railway deployment configuration: Docker multi-stage builds for API/Web, railway.json, health checks, comprehensive INFRASTRUCTURE.md documentation)   |
 | 2.5     | 2026-01-20 | Marked #191 complete after PR #196 merge (Turborepo cache optimization for CI/CD, branch protection documentation, security fix for tar CVE via argon2 upgrade)                                 |
 | 2.4     | 2026-01-20 | Added #17 CI/CD decomposition (#187-#191, 5 sub-issues); Marked #190 complete after PR #195 merge (CD workflow for Railway staging deploy with workflow_run trigger)                            |
