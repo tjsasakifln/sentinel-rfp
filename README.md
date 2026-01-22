@@ -294,14 +294,41 @@ R2_SECRET_ACCESS_KEY=your_r2_secret_key
 R2_BUCKET_NAME=sentinel-rfp-documents
 ```
 
-4. **Initialize the database**
+4. **Configure Cloudflare R2 storage (Optional)**
+
+If you're using Cloudflare R2 for object storage, configure CORS and lifecycle rules:
+
+```bash
+# Set R2 environment variables
+export CLOUDFLARE_ACCOUNT_ID=your-account-id
+export CLOUDFLARE_R2_ACCESS_KEY=your-access-key
+export CLOUDFLARE_R2_SECRET_KEY=your-secret-key
+export CLOUDFLARE_R2_BUCKET=sentinel-rfp-storage
+
+# Optional: Set custom domains for CORS
+export FRONTEND_URL=https://app.sentinel-rfp.com
+export API_URL=https://api.sentinel-rfp.com
+
+# Run configuration script
+./scripts/configure-r2-bucket.sh
+```
+
+The script will configure:
+
+- **CORS rules** for presigned URL access from frontend/API
+- **Lifecycle rules** to auto-delete temp files after 7 days
+- **Incomplete upload cleanup** after 2 days
+
+See [INFRASTRUCTURE.md](docs/INFRASTRUCTURE.md#storage-cloudflare-r2) for detailed R2 documentation.
+
+5. **Initialize the database**
 
 ```bash
 pnpm db:migrate
 pnpm db:seed
 ```
 
-5. **Start development servers**
+6. **Start development servers**
 
 Turborepo will orchestrate builds and run all services in parallel:
 
@@ -326,7 +353,7 @@ pnpm --filter web dev       # Next.js on port 3000
 pnpm --filter shared build  # Build shared package
 ```
 
-6. **Access the application**
+7. **Access the application**
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 

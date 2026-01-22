@@ -61,6 +61,206 @@ This document describes the infrastructure architecture for Sentinel RFP, optimi
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+## Storage (Cloudflare R2)
+
+### Overview
+
+Sentinel RFP uses Cloudflare R2 for object storage, providing an S3-compatible API with zero egress fees and global distribution.
+
+### Bucket Structure
+
+```
+sentinel-rfp-storage/
+├── documents/          # Uploaded RFP documents (permanent)
+│   ├── {orgId}/
+│   │   ├── {docId}/
+│   │   │   ├── original.pdf
+│   │   │   └── metadata.json
+├── uploads/            # Multipart upload temporary storage
+│   └── {uploadId}/
+│       └── part-{n}
+├── temp/               # Temporary files (7-day expiration)
+│   ├── previews/
+│   └── cache/
+└── exports/            # Generated Word exports (30-day expiration)
+    └── {proposalId}/
+        └── proposal-{timestamp}.docx
+```
+
+### CORS Configuration
+
+CORS is configured to allow presigned URLs to work from frontend and API domains.
+
+```json
+{
+  "CORSRules": [
+    {
+      "AllowedOrigins": [
+        "https://app.sentinel-rfp.com",
+        "https://api.sentinel-rfp.com",
+        "http://localhost:3000",
+        "http://localhost:4000"
+      ],
+      "AllowedMethods": ["GET", "PUT", "POST", "HEAD"],
+      "AllowedHeaders": [
+        "Content-Type",
+        "Content-Disposition",
+        "Authorization",
+        "x-amz-*",
+        "Access-Control-Allow-Origin"
+      ],
+      "ExposeHeaders": ["ETag", "Content-Length", "Content-Type", "Content-Disposition"],
+      "MaxAgeSeconds": 3600
+    }
+  ]
+}
+```
+
+### Lifecycle Rules
+
+Automatic cleanup of temporary and old files to optimize storage costs.
+
+```json
+{
+  "Rules": [
+    {
+      "ID": "expire-temp-files",
+      "Status": "Enabled",
+      "Filter": {
+        "Prefix": "temp/"
+      },
+      "Expiration": {
+        "Days": 7
+      }
+    },
+    {
+      "ID": "expire-old-uploads",
+      "Status": "Enabled",
+      "Filter": {
+        "Prefix": "uploads/"
+      },
+      "AbortIncompleteMultipartUpload": {
+        "DaysAfterInitiation": 2
+      }
+    }
+  ]
+}
+```
+
+### Configuration Script
+
+Use the automated configuration script to set up CORS and Lifecycle rules:
+
+```bash
+# Set environment variables first
+export CLOUDFLARE_ACCOUNT_ID=your-account-id
+export CLOUDFLARE_R2_ACCESS_KEY=your-access-key
+export CLOUDFLARE_R2_SECRET_KEY=your-secret-key
+export CLOUDFLARE_R2_BUCKET=sentinel-rfp-storage
+
+# For production domains
+export FRONTEND_URL=https://app.sentinel-rfp.com
+export API_URL=https://api.sentinel-rfp.com
+
+# Run configuration script
+./scripts/configure-r2-bucket.sh
+```
+
+The script will:
+
+1. Validate environment variables
+2. Check for AWS CLI dependency
+3. Configure AWS CLI for R2 endpoint
+4. Apply CORS configuration
+5. Apply Lifecycle rules
+6. Verify configuration
+7. Display verification results
+
+### Environment Variables
+
+```bash
+# Cloudflare R2 Configuration
+CLOUDFLARE_ACCOUNT_ID=<your-cloudflare-account-id>
+CLOUDFLARE_R2_ACCESS_KEY=<r2-access-key-id>
+CLOUDFLARE_R2_SECRET_KEY=<r2-secret-access-key>
+CLOUDFLARE_R2_BUCKET=sentinel-rfp-storage
+CLOUDFLARE_R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+```
+
+### Presigned URL Configuration
+
+The R2 service generates presigned URLs with the following defaults:
+
+```typescript
+// Upload URLs (60-minute expiration)
+const uploadUrl = await r2Service.generatePresignedUploadUrl(
+  key,
+  contentType,
+  60 * 60, // 3600 seconds
+);
+
+// Download URLs (60-minute expiration, with Content-Disposition)
+const downloadUrl = await r2Service.generatePresignedDownloadUrl(
+  key,
+  filename, // Optional - sets Content-Disposition header
+  60 * 60, // 3600 seconds
+);
+```
+
+### Security Considerations
+
+1. **CORS**: Only configured domains can access presigned URLs
+2. **Expiration**: All presigned URLs expire after 60 minutes
+3. **Lifecycle**: Temporary files auto-delete after 7 days
+4. **Incomplete Uploads**: Multipart uploads abort after 2 days
+5. **Private Bucket**: Direct bucket access is disabled; only presigned URLs work
+
+### Validation Checklist
+
+After configuring R2:
+
+- [ ] Run `./scripts/configure-r2-bucket.sh` successfully
+- [ ] Verify CORS configuration: `aws s3api get-bucket-cors --bucket $BUCKET_NAME --endpoint-url $ENDPOINT_URL`
+- [ ] Verify Lifecycle rules: `aws s3api get-bucket-lifecycle-configuration --bucket $BUCKET_NAME --endpoint-url $ENDPOINT_URL`
+- [ ] Test presigned upload URL from frontend (check Network tab for CORS headers)
+- [ ] Test presigned download URL from frontend
+- [ ] Verify Content-Disposition header sets correct filename
+- [ ] Confirm temp files expire after 7 days (check manually or via lifecycle events)
+
+### Troubleshooting
+
+#### CORS Issues
+
+If presigned URLs fail with CORS errors:
+
+1. **Check Origin**: Ensure frontend domain is in `AllowedOrigins`
+2. **Verify Configuration**: Run `aws s3api get-bucket-cors`
+3. **Re-apply CORS**: Run `./scripts/configure-r2-bucket.sh` again
+4. **Browser Cache**: Clear browser cache and retry
+
+#### Lifecycle Rules Not Working
+
+1. **Verify Rules**: Run `aws s3api get-bucket-lifecycle-configuration`
+2. **Check Prefix**: Ensure files are in correct path (`temp/`, `uploads/`)
+3. **Wait Time**: Lifecycle rules run once per day; allow 24-48 hours
+4. **Manual Cleanup**: Use `aws s3 rm s3://$BUCKET_NAME/temp/ --recursive --endpoint-url $ENDPOINT_URL`
+
+### Cost Optimization
+
+| Metric       | Pricing          | Monthly Estimate (100 tenants) |
+| ------------ | ---------------- | ------------------------------ |
+| Storage (GB) | $0.015/GB/month  | ~$15 (1TB)                     |
+| Class A Ops  | $4.50/million    | ~$4.50 (1M uploads)            |
+| Class B Ops  | $0.36/million    | ~$0.36 (1M downloads)          |
+| Egress       | $0 (zero egress) | $0                             |
+| **Total**    |                  | **~$20/month**                 |
+
+Lifecycle rules reduce costs by:
+
+- Auto-deleting temp files after 7 days (~30% storage savings)
+- Aborting incomplete uploads after 2 days (~10% storage savings)
+- Total estimated savings: **$8/month** at 1TB scale
+
 ## Railway Configuration
 
 ### Project Structure
