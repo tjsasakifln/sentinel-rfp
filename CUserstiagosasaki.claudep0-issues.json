@@ -1,0 +1,1178 @@
+[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8psQ",
+        "name": "module:knowledge",
+        "description": "Library, documents, chunks",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9BYA",
+        "name": "size:S",
+        "description": "Small (1-2 days)",
+        "color": "10B981"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 2,
+      "title": "Phase 1 - Month 2: Document Processing",
+      "description": "File upload, R2 storage, VLM parsing, chunking, embeddings",
+      "dueOn": null
+    },
+    "number": 205,
+    "title": "[R2-26e] Configure CORS & Lifecycle Rules"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9-Tg",
+        "name": "module:infra",
+        "description": "Infrastructure/DevOps",
+        "color": "F59E0B"
+      }
+    ],
+    "milestone": {
+      "number": 1,
+      "title": "Phase 1 - Month 1: Infrastructure & Auth",
+      "description": "Monorepo setup, NestJS/Next.js scaffolding, Docker, CI/CD, Auth, RBAC",
+      "dueOn": null
+    },
+    "number": 86,
+    "title": "[EPIC] Observability - Sentry, APM, Tracing"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8ghg",
+        "name": "type:test",
+        "description": "Testing",
+        "color": "06B6D4"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9-Tg",
+        "name": "module:infra",
+        "description": "Infrastructure/DevOps",
+        "color": "F59E0B"
+      }
+    ],
+    "milestone": {
+      "number": 1,
+      "title": "Phase 1 - Month 1: Infrastructure & Auth",
+      "description": "Monorepo setup, NestJS/Next.js scaffolding, Docker, CI/CD, Auth, RBAC",
+      "dueOn": null
+    },
+    "number": 85,
+    "title": "[EPIC] Testing Infrastructure - Unit, Integration, E2E, Load"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8v4g",
+        "name": "module:compliance",
+        "description": "GovCon, FAR/DFARS",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9OlA",
+        "name": "phase:4",
+        "description": "Phase 4 - Intelligence Platform",
+        "color": "DB2777"
+      }
+    ],
+    "milestone": {
+      "number": 13,
+      "title": "Phase 4 - Intelligence Platform",
+      "description": "Autonomous agents, predictive intelligence, FedRAMP, marketplace",
+      "dueOn": null
+    },
+    "number": 84,
+    "title": "[EPIC] FedRAMP Authorization - GovCloud, 3PAO"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8upQ",
+        "name": "module:analytics",
+        "description": "Dashboard, metrics",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9OlA",
+        "name": "phase:4",
+        "description": "Phase 4 - Intelligence Platform",
+        "color": "DB2777"
+      }
+    ],
+    "milestone": {
+      "number": 13,
+      "title": "Phase 4 - Intelligence Platform",
+      "description": "Autonomous agents, predictive intelligence, FedRAMP, marketplace",
+      "dueOn": null
+    },
+    "number": 81,
+    "title": "[EPIC] Predictive Intelligence - Market Intel, Competitors"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8rSg",
+        "name": "module:agents",
+        "description": "AI agents, orchestration",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9OlA",
+        "name": "phase:4",
+        "description": "Phase 4 - Intelligence Platform",
+        "color": "DB2777"
+      }
+    ],
+    "milestone": {
+      "number": 13,
+      "title": "Phase 4 - Intelligence Platform",
+      "description": "Autonomous agents, predictive intelligence, FedRAMP, marketplace",
+      "dueOn": null
+    },
+    "number": 80,
+    "title": "[EPIC] Autonomous Agents - Autopilot, Gap Filling, Deadline Management"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8v4g",
+        "name": "module:compliance",
+        "description": "GovCon, FAR/DFARS",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9NsA",
+        "name": "phase:3",
+        "description": "Phase 3 - GovCon & Compliance",
+        "color": "7C3AED"
+      }
+    ],
+    "milestone": {
+      "number": 11,
+      "title": "Phase 3 - Month 11: GovCon Features",
+      "description": "Pwin Prediction, Compliance Matrix",
+      "dueOn": null
+    },
+    "number": 78,
+    "title": "[EPIC] Compliance Matrix - Auto-generation, L/M Mapping"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8upQ",
+        "name": "module:analytics",
+        "description": "Dashboard, metrics",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9NsA",
+        "name": "phase:3",
+        "description": "Phase 3 - GovCon & Compliance",
+        "color": "7C3AED"
+      }
+    ],
+    "milestone": {
+      "number": 11,
+      "title": "Phase 3 - Month 11: GovCon Features",
+      "description": "Pwin Prediction, Compliance Matrix",
+      "dueOn": null
+    },
+    "number": 77,
+    "title": "[EPIC] Pwin Prediction - ML Model, Feature Engineering"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8m3A",
+        "name": "module:identity",
+        "description": "Auth, users, organizations",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9NsA",
+        "name": "phase:3",
+        "description": "Phase 3 - GovCon & Compliance",
+        "color": "7C3AED"
+      }
+    ],
+    "milestone": {
+      "number": 10,
+      "title": "Phase 3 - Month 10: Security Hardening",
+      "description": "SOC 2 Type I, SSO/SAML, IP Allowlisting",
+      "dueOn": null
+    },
+    "number": 76,
+    "title": "[EPIC] Advanced Security - SSO/SAML, IP Allowlist"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8v4g",
+        "name": "module:compliance",
+        "description": "GovCon, FAR/DFARS",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9NsA",
+        "name": "phase:3",
+        "description": "Phase 3 - GovCon & Compliance",
+        "color": "7C3AED"
+      }
+    ],
+    "milestone": {
+      "number": 10,
+      "title": "Phase 3 - Month 10: Security Hardening",
+      "description": "SOC 2 Type I, SSO/SAML, IP Allowlisting",
+      "dueOn": null
+    },
+    "number": 75,
+    "title": "[EPIC] SOC 2 Preparation - Controls, Pen Testing"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8v4g",
+        "name": "module:compliance",
+        "description": "GovCon, FAR/DFARS",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9NsA",
+        "name": "phase:3",
+        "description": "Phase 3 - GovCon & Compliance",
+        "color": "7C3AED"
+      }
+    ],
+    "milestone": {
+      "number": 9,
+      "title": "Phase 3 - Month 9: Compliance Framework",
+      "description": "FAR/DFARS, Audit Trail",
+      "dueOn": null
+    },
+    "number": 74,
+    "title": "[EPIC] Audit Trail - Logging, Change Tracking"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8v4g",
+        "name": "module:compliance",
+        "description": "GovCon, FAR/DFARS",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9NsA",
+        "name": "phase:3",
+        "description": "Phase 3 - GovCon & Compliance",
+        "color": "7C3AED"
+      }
+    ],
+    "milestone": {
+      "number": 9,
+      "title": "Phase 3 - Month 9: Compliance Framework",
+      "description": "FAR/DFARS, Audit Trail",
+      "dueOn": null
+    },
+    "number": 73,
+    "title": "[EPIC] FAR/DFARS Compliance - Clause Library, Checklists"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8upQ",
+        "name": "module:analytics",
+        "description": "Dashboard, metrics",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9J_g",
+        "name": "phase:2",
+        "description": "Phase 2 - Scale & Integrations",
+        "color": "0891B2"
+      }
+    ],
+    "milestone": {
+      "number": 8,
+      "title": "Phase 2 - Month 8: Analytics",
+      "description": "Dashboard, content optimization, auto-learning",
+      "dueOn": null
+    },
+    "number": 71,
+    "title": "[EPIC] Analytics Dashboard - Metricas e ROI"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8oQw",
+        "name": "module:proposal",
+        "description": "Proposals, questions, responses",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9J_g",
+        "name": "phase:2",
+        "description": "Phase 2 - Scale & Integrations",
+        "color": "0891B2"
+      }
+    ],
+    "milestone": {
+      "number": 7,
+      "title": "Phase 2 - Month 7: Collaboration",
+      "description": "Real-time presence, comments, approval workflows",
+      "dueOn": null
+    },
+    "number": 70,
+    "title": "[EPIC] Approval Workflow - Multi-stage Review"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8oQw",
+        "name": "module:proposal",
+        "description": "Proposals, questions, responses",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9J_g",
+        "name": "phase:2",
+        "description": "Phase 2 - Scale & Integrations",
+        "color": "0891B2"
+      }
+    ],
+    "milestone": {
+      "number": 7,
+      "title": "Phase 2 - Month 7: Collaboration",
+      "description": "Real-time presence, comments, approval workflows",
+      "dueOn": null
+    },
+    "number": 69,
+    "title": "[EPIC] Team Collaboration - Real-time, Comments, Activity"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8rSg",
+        "name": "module:agents",
+        "description": "AI agents, orchestration",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9J_g",
+        "name": "phase:2",
+        "description": "Phase 2 - Scale & Integrations",
+        "color": "0891B2"
+      }
+    ],
+    "milestone": {
+      "number": 6,
+      "title": "Phase 2 - Month 6: Advanced AI",
+      "description": "Multi-Agent Architecture, Win Themes",
+      "dueOn": null
+    },
+    "number": 67,
+    "title": "[EPIC] Multi-Agent Architecture - Orchestrator e Agentes Especializados"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8brw",
+        "name": "type:epic",
+        "description": "Epic - High-level feature grouping",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8sqw",
+        "name": "module:integrations",
+        "description": "Slack, Teams, CRM",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9J_g",
+        "name": "phase:2",
+        "description": "Phase 2 - Scale & Integrations",
+        "color": "0891B2"
+      }
+    ],
+    "milestone": {
+      "number": 5,
+      "title": "Phase 2 - Month 5: Enterprise Integrations",
+      "description": "Slack OAuth, Microsoft Teams, Salesforce Sync",
+      "dueOn": null
+    },
+    "number": 64,
+    "title": "[EPIC] Slack Integration - OAuth, Bot, Notifications"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9EGg",
+        "name": "size:L",
+        "description": "Large (1-2 weeks)",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUfCj6A",
+        "name": "type:docs",
+        "description": "Documentation",
+        "color": "EAB308"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 63,
+    "title": "[FEAT] Documentation"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8zEA",
+        "name": "module:frontend",
+        "description": "UI components, pages",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 62,
+    "title": "[FEAT] User Onboarding Flow"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8z-g",
+        "name": "module:backend",
+        "description": "API, services",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUu2Evg",
+        "name": "parent-issue",
+        "description": "Parent issue that has been broken down into atomic sub-issues",
+        "color": "8B5CF6"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 61,
+    "title": "[FEAT] Error Handling & Logging"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8zEA",
+        "name": "module:frontend",
+        "description": "UI components, pages",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8z-g",
+        "name": "module:backend",
+        "description": "API, services",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 60,
+    "title": "[FEAT] Performance Optimization"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8xfw",
+        "name": "module:export",
+        "description": "Word export, formatting",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9EGg",
+        "name": "size:L",
+        "description": "Large (1-2 weeks)",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 57,
+    "title": "[FEAT] Word Document Export"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8zEA",
+        "name": "module:frontend",
+        "description": "UI components, pages",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 56,
+    "title": "[FEAT] Trust Score Explanation UI"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8zEA",
+        "name": "module:frontend",
+        "description": "UI components, pages",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9EGg",
+        "name": "size:L",
+        "description": "Large (1-2 weeks)",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 53,
+    "title": "[FEAT] Rich Text Editor (TipTap)"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8oQw",
+        "name": "module:proposal",
+        "description": "Proposals, questions, responses",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 50,
+    "title": "[FEAT] Question Status Workflow"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8oQw",
+        "name": "module:proposal",
+        "description": "Proposals, questions, responses",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUu2Evg",
+        "name": "parent-issue",
+        "description": "Parent issue that has been broken down into atomic sub-issues",
+        "color": "8B5CF6"
+      }
+    ],
+    "milestone": {
+      "number": 4,
+      "title": "Phase 1 - Month 4: MVP Polish & Launch",
+      "description": "Proposal management, editor, export, beta launch",
+      "dueOn": null
+    },
+    "number": 49,
+    "title": "[FEAT] Proposal CRUD"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8rSg",
+        "name": "module:agents",
+        "description": "AI agents, orchestration",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 3,
+      "title": "Phase 1 - Month 3: AI Response Generation",
+      "description": "Knowledge library, RAG pipeline, LLM abstraction, Trust Score",
+      "dueOn": null
+    },
+    "number": 48,
+    "title": "[FEAT] Citation Mapping"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8rSg",
+        "name": "module:agents",
+        "description": "AI agents, orchestration",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9EGg",
+        "name": "size:L",
+        "description": "Large (1-2 weeks)",
+        "color": "8B5CF6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 3,
+      "title": "Phase 1 - Month 3: AI Response Generation",
+      "description": "Knowledge library, RAG pipeline, LLM abstraction, Trust Score",
+      "dueOn": null
+    },
+    "number": 47,
+    "title": "[FEAT] Trust Score Calculation"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8rSg",
+        "name": "module:agents",
+        "description": "AI agents, orchestration",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 3,
+      "title": "Phase 1 - Month 3: AI Response Generation",
+      "description": "Knowledge library, RAG pipeline, LLM abstraction, Trust Score",
+      "dueOn": null
+    },
+    "number": 46,
+    "title": "[FEAT] Response Streaming"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8dAA",
+        "name": "type:feature",
+        "description": "Feature - Deliverable capability",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe8rSg",
+        "name": "module:agents",
+        "description": "AI agents, orchestration",
+        "color": "F59E0B"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe86gA",
+        "name": "priority:p0",
+        "description": "Critical - Blocking/urgent",
+        "color": "DC2626"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9Cdw",
+        "name": "size:M",
+        "description": "Medium (3-5 days)",
+        "color": "3B82F6"
+      },
+      {
+        "id": "LA_kwDOQ1BlgM8AAAACUe9IdQ",
+        "name": "phase:1",
+        "description": "Phase 1 - Foundation MVP",
+        "color": "059669"
+      }
+    ],
+    "milestone": {
+      "number": 3,
+      "title": "Phase 1 - Month 3: AI Response Generation",
+      "description": "Knowledge library, RAG pipeline, LLM abstraction, Trust Score",
+      "dueOn": null
+    },
+    "number": 45,
+    "title": "[FEAT] Prompt Engineering System"
+  }
+]

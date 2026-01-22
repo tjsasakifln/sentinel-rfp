@@ -24,16 +24,24 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { ForgotPasswordResponseDto } from './dto/forgot-password-response.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
+import { ResetPasswordResponseDto } from './dto/reset-password-response.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoginAttemptsGuard } from './guards/login-attempts.guard';
+import { PasswordResetService } from './password-reset.service';
 
 @ApiTags('identity')
 @Controller('v1/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly passwordResetService: PasswordResetService,
+  ) {}
 
   /**
    * POST /v1/auth/register - Register new user
@@ -265,5 +273,118 @@ export class AuthController {
     const accessToken = authorization.substring(7); // Remove 'Bearer ' prefix
 
     return this.authService.logout(accessToken, dto);
+  }
+
+  /**
+   * POST /v1/auth/forgot-password - Request password reset
+   *
+   * Public endpoint (no authentication required).
+   * Generates secure reset token and sends email.
+   *
+   * Rate Limiting: 3 requests per hour per IP
+   *
+   * Security - Preventing User Enumeration:
+   * - Generic success message for all requests
+   * - No indication whether email exists in system
+   * - Same response time regardless of email validity
+   * - Reset email only sent if user exists and is active
+   *
+   * Token Security:
+   * - Cryptographically secure random token (32 bytes)
+   * - Token hashed with SHA-256 before storage
+   * - 1-hour expiration
+   * - Single-use enforcement
+   *
+   * @param dto - Email address requesting password reset
+   * @returns Generic success message
+   * @throws BadRequestException if validation fails (400)
+   * @throws ThrottlerException if rate limit exceeded (429)
+   */
+  @ApiOperation({
+    summary: 'Request password reset',
+    description:
+      'Generates secure reset token and sends email. Generic response prevents user enumeration.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Generic success message (always returned regardless of email existence)',
+    type: ForgotPasswordResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation failed',
+  })
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: 'Rate limit exceeded (3 requests per hour)',
+  })
+  @Public()
+  @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 req/hour (strict to prevent abuse)
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    dto: ForgotPasswordDto,
+  ): Promise<ForgotPasswordResponseDto> {
+    return this.passwordResetService.forgotPassword(dto);
+  }
+
+  /**
+   * POST /v1/auth/reset-password - Reset password with token
+   *
+   * Public endpoint (no authentication required).
+   * Validates token and updates password.
+   *
+   * Rate Limiting: 5 requests per hour per IP
+   *
+   * Security - Token Validation:
+   * - Token must match SHA-256 hash in database
+   * - Token must not be expired (1-hour TTL)
+   * - Token is deleted after successful use (single-use)
+   * - Password complexity requirements enforced by DTO validation
+   *
+   * Password Requirements:
+   * - Minimum 8 characters
+   * - At least one uppercase letter
+   * - At least one lowercase letter
+   * - At least one number
+   *
+   * @param dto - Reset token and new password
+   * @returns Success message
+   * @throws UnauthorizedException if token invalid, expired, or already used (401)
+   * @throws BadRequestException if validation fails (400)
+   * @throws ThrottlerException if rate limit exceeded (429)
+   */
+  @ApiOperation({
+    summary: 'Reset password with token',
+    description:
+      'Validates token and updates password. Token is single-use and expires after 1 hour.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password reset successfully',
+    type: ResetPasswordResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid, expired, or already used reset token',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation failed (invalid password format or token)',
+  })
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: 'Rate limit exceeded (5 requests per hour)',
+  })
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 3600000 } }) // 5 req/hour
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    dto: ResetPasswordDto,
+  ): Promise<ResetPasswordResponseDto> {
+    return this.passwordResetService.resetPassword(dto);
   }
 }
