@@ -121,7 +121,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#203](https://github.com/tjsasakifln/sentinel-rfp/issues/203) - Implement Presigned Download URLs
   - [x] [#204](https://github.com/tjsasakifln/sentinel-rfp/issues/204) - Implement Streaming Upload for Large Files
   - [x] [#205](https://github.com/tjsasakifln/sentinel-rfp/issues/205) - Configure CORS & Lifecycle Rules
-- [ ] Document type detection - [#27](https://github.com/tjsasakifln/sentinel-rfp/issues/27)
+- [x] Document type detection - [#27](https://github.com/tjsasakifln/sentinel-rfp/issues/27)
 - [ ] File validation & security - [#28](https://github.com/tjsasakifln/sentinel-rfp/issues/28)
 
 #### Milestone 2.2: Document Processing Pipeline ([EPIC #4](https://github.com/tjsasakifln/sentinel-rfp/issues/4))
