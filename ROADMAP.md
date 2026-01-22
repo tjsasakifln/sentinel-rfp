@@ -119,7 +119,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#201](https://github.com/tjsasakifln/sentinel-rfp/issues/201) - Setup R2 Client & Configuration
   - [x] [#202](https://github.com/tjsasakifln/sentinel-rfp/issues/202) - Implement Presigned Upload URLs
   - [x] [#203](https://github.com/tjsasakifln/sentinel-rfp/issues/203) - Implement Presigned Download URLs
-  - [ ] [#204](https://github.com/tjsasakifln/sentinel-rfp/issues/204) - Implement Streaming Upload for Large Files
+  - [x] [#204](https://github.com/tjsasakifln/sentinel-rfp/issues/204) - Implement Streaming Upload for Large Files
   - [ ] [#205](https://github.com/tjsasakifln/sentinel-rfp/issues/205) - Configure CORS & Lifecycle Rules
 - [ ] Document type detection - [#27](https://github.com/tjsasakifln/sentinel-rfp/issues/27)
 - [ ] File validation & security - [#28](https://github.com/tjsasakifln/sentinel-rfp/issues/28)
