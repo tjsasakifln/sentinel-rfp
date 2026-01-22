@@ -1,17 +1,38 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ParserType } from './detection/mime-types';
+import { TypeDetectorService } from './detection/type-detector.service';
 import { DocumentsService } from './documents.service';
 import { UploadService } from './upload/upload.service';
 
 describe('DocumentsService', () => {
   let service: DocumentsService;
+  let typeDetectorService: TypeDetectorService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DocumentsService, UploadService],
+      providers: [
+        DocumentsService,
+        UploadService,
+        {
+          provide: TypeDetectorService,
+          useValue: {
+            detectType: jest.fn().mockResolvedValue({
+              mimeType: 'application/pdf',
+              extension: '.pdf',
+              parserType: ParserType.PDF_PARSER,
+              detectionMethod: 'MAGIC_BYTES',
+              isSupported: true,
+            }),
+            isSupportedMimeType: jest.fn().mockReturnValue(true),
+            isSupportedExtension: jest.fn().mockReturnValue(true),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<DocumentsService>(DocumentsService);
+    typeDetectorService = module.get<TypeDetectorService>(TypeDetectorService);
   });
 
   it('should be defined', () => {
@@ -81,6 +102,11 @@ describe('DocumentsService', () => {
         filename: '',
         path: '',
       } as Express.Multer.File;
+
+      // Mock TypeDetectorService to reject unsupported file type
+      jest
+        .spyOn(typeDetectorService, 'detectType')
+        .mockRejectedValueOnce(new Error('Unsupported file type: image/jpeg'));
 
       await expect(service.uploadDocument(file, {})).rejects.toThrow();
     });
@@ -156,6 +182,18 @@ describe('DocumentsService', () => {
           path: '',
         },
       ];
+
+      // Mock TypeDetectorService to succeed for PDF and fail for JPG
+      jest
+        .spyOn(typeDetectorService, 'detectType')
+        .mockResolvedValueOnce({
+          mimeType: 'application/pdf',
+          extension: '.pdf',
+          parserType: ParserType.PDF_PARSER,
+          detectionMethod: 'MAGIC_BYTES',
+          isSupported: true,
+        })
+        .mockRejectedValueOnce(new Error('Unsupported file type: image/jpeg'));
 
       const result = await service.uploadBatch(files, {});
 
