@@ -28,7 +28,7 @@ Issues grandes (size:L) e Epics amplos foram decompostos em sub-issues atômicas
 | #19          | Prisma Schema Design         | #102-#108 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/19) |
 | #21          | User Authentication (JWT)    | #109-#115 (7 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/21) |
 | #22          | Organization Multi-tenancy   | #168-#172 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/22) |
-| #26          | Cloudflare R2 Integration    | #201-#205 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/26) |
+| #26          | Cloudflare R2 Integration    | #201-#205 (5 sub-issues) | ✅ Completo                                                             |
 | #49          | Proposal CRUD                | #144-#148 (5 sub-issues) | ✅ Completo                                                             |
 | #52          | Basic Dashboard              | #127-#131 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/52) |
 | #61          | Error Handling & Logging     | #116-#120 (5 sub-issues) | [→ Ver detalhes](https://github.com/tjsasakifln/sentinel-rfp/issues/61) |
@@ -115,12 +115,12 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
 #### Milestone 2.1: Document Upload ([EPIC #3](https://github.com/tjsasakifln/sentinel-rfp/issues/3))
 
 - [x] File upload API (multipart) - [#25](https://github.com/tjsasakifln/sentinel-rfp/issues/25) - [PR #198](https://github.com/tjsasakifln/sentinel-rfp/pull/198)
-- [ ] Cloudflare R2 integration - [#26](https://github.com/tjsasakifln/sentinel-rfp/issues/26)
+- [x] Cloudflare R2 integration - [#26](https://github.com/tjsasakifln/sentinel-rfp/issues/26)
   - [x] [#201](https://github.com/tjsasakifln/sentinel-rfp/issues/201) - Setup R2 Client & Configuration
   - [x] [#202](https://github.com/tjsasakifln/sentinel-rfp/issues/202) - Implement Presigned Upload URLs
   - [x] [#203](https://github.com/tjsasakifln/sentinel-rfp/issues/203) - Implement Presigned Download URLs
   - [x] [#204](https://github.com/tjsasakifln/sentinel-rfp/issues/204) - Implement Streaming Upload for Large Files
-  - [ ] [#205](https://github.com/tjsasakifln/sentinel-rfp/issues/205) - Configure CORS & Lifecycle Rules
+  - [x] [#205](https://github.com/tjsasakifln/sentinel-rfp/issues/205) - Configure CORS & Lifecycle Rules
 - [ ] Document type detection - [#27](https://github.com/tjsasakifln/sentinel-rfp/issues/27)
 - [ ] File validation & security - [#28](https://github.com/tjsasakifln/sentinel-rfp/issues/28)
 
