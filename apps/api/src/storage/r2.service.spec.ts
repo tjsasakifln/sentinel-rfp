@@ -6,10 +6,16 @@
  * @module R2ServiceTests
  */
 
+import { Readable } from 'stream';
+
+import { Upload } from '@aws-sdk/lib-storage';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { R2Service } from './r2.service';
+
+// Mock @aws-sdk/lib-storage Upload class
+jest.mock('@aws-sdk/lib-storage');
 
 describe('R2Service', () => {
   let service: R2Service;
@@ -544,6 +550,340 @@ describe('R2Service', () => {
       await expect(service.generatePresignedDownloadUrl(params)).rejects.toThrow(
         'extension is required',
       );
+    });
+  });
+
+  describe('uploadStream', () => {
+    // Helper to create a mock readable stream
+    const createMockStream = (size = 1024): Readable => {
+      const stream = new Readable();
+      stream.push(Buffer.alloc(size));
+      stream.push(null); // End stream
+      return stream;
+    };
+
+    // Mock Upload instance
+    let mockUploadInstance: any;
+
+    beforeEach(() => {
+      // Reset Upload mock
+      mockUploadInstance = {
+        done: jest.fn().mockResolvedValue({
+          ETag: '"test-etag-12345"',
+          Location: 'https://test-bucket.r2.cloudflarestorage.com/test-key',
+        }),
+        on: jest.fn(),
+      };
+
+      (Upload as unknown as jest.Mock).mockImplementation(() => mockUploadInstance);
+    });
+
+    it('should throw error when not initialized', async () => {
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow('R2 service is not initialized');
+    });
+
+    it('should successfully upload stream with correct parameters', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      const result = await service.uploadStream(params);
+
+      // Verify Upload was constructed with correct parameters
+      expect(Upload).toHaveBeenCalledWith({
+        client: expect.anything(),
+        params: {
+          Bucket: 'test-bucket',
+          Key: 'org_123/documents/doc_456/original.pdf',
+          Body: stream,
+          ContentType: 'application/pdf',
+        },
+        queueSize: 4,
+        partSize: 10 * 1024 * 1024, // 10MB default
+        leavePartsOnError: false,
+      });
+
+      // Verify upload.done() was called
+      expect(mockUploadInstance.done).toHaveBeenCalled();
+
+      // Verify result structure
+      expect(result).toEqual({
+        key: 'org_123/documents/doc_456/original.pdf',
+        uploadId: '"test-etag-12345"',
+        location: 'https://test-bucket.r2.cloudflarestorage.com/test-key',
+      });
+    });
+
+    it('should use default partSize of 10MB', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      await service.uploadStream(params);
+
+      expect(Upload).toHaveBeenCalledWith(
+        expect.objectContaining({
+          partSize: 10 * 1024 * 1024, // 10MB
+        }),
+      );
+    });
+
+    it('should use custom partSize when provided', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const customPartSize = 5 * 1024 * 1024; // 5MB
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+        options: {
+          partSize: customPartSize,
+        },
+      };
+
+      await service.uploadStream(params);
+
+      expect(Upload).toHaveBeenCalledWith(
+        expect.objectContaining({
+          partSize: customPartSize,
+        }),
+      );
+    });
+
+    it('should attach progress listener when onProgress callback is provided', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const onProgress = jest.fn();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+        options: {
+          onProgress,
+        },
+      };
+
+      await service.uploadStream(params);
+
+      // Verify progress listener was attached
+      expect(mockUploadInstance.on).toHaveBeenCalledWith(
+        'httpUploadProgress',
+        expect.any(Function),
+      );
+
+      // Simulate progress event
+      const progressListener = mockUploadInstance.on.mock.calls[0][1];
+      progressListener({
+        loaded: 5000,
+        total: 10000,
+        part: 1,
+      });
+
+      // Verify onProgress callback was called
+      expect(onProgress).toHaveBeenCalledWith({
+        loaded: 5000,
+        total: 10000,
+        part: 1,
+      });
+    });
+
+    it('should handle missing total in progress event', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const onProgress = jest.fn();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+        options: {
+          onProgress,
+        },
+      };
+
+      await service.uploadStream(params);
+
+      // Simulate progress event without total
+      const progressListener = mockUploadInstance.on.mock.calls[0][1];
+      progressListener({
+        loaded: 5000,
+        part: 1,
+      });
+
+      // Verify onProgress was called with undefined total
+      expect(onProgress).toHaveBeenCalledWith({
+        loaded: 5000,
+        total: undefined,
+        part: 1,
+      });
+    });
+
+    it('should handle upload failure and throw descriptive error', async () => {
+      await service.initialize();
+
+      // Mock upload failure
+      mockUploadInstance.done.mockRejectedValue(new Error('Network timeout'));
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow(
+        'Failed to upload stream: Network timeout',
+      );
+    });
+
+    it('should handle unknown errors gracefully', async () => {
+      await service.initialize();
+
+      // Mock upload failure with non-Error object
+      mockUploadInstance.done.mockRejectedValue('Unknown error');
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow(
+        'Failed to upload stream: Unknown error',
+      );
+    });
+
+    it('should handle different file extensions', async () => {
+      await service.initialize();
+
+      const extensions = ['pdf', 'docx', 'xlsx', 'png', 'jpg'];
+
+      for (const ext of extensions) {
+        const stream = createMockStream();
+        const params = {
+          organizationId: 'org_123',
+          documentId: 'doc_456',
+          extension: ext,
+          contentType: 'application/octet-stream',
+          stream,
+        };
+
+        const result = await service.uploadStream(params);
+        expect(result.key).toBe(`org_123/documents/doc_456/original.${ext}`);
+      }
+    });
+
+    it('should throw error if organizationId is missing', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: '',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow('organizationId is required');
+    });
+
+    it('should throw error if documentId is missing', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: '',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow('documentId is required');
+    });
+
+    it('should throw error if extension is missing', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: '',
+        contentType: 'application/pdf',
+        stream,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow('extension is required');
+    });
+
+    it('should throw error if contentType is missing', async () => {
+      await service.initialize();
+
+      const stream = createMockStream();
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: '',
+        stream,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow('contentType is required');
+    });
+
+    it('should throw error if stream is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        stream: null as any,
+      };
+
+      await expect(service.uploadStream(params)).rejects.toThrow('stream is required');
     });
   });
 });

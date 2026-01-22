@@ -7,6 +7,8 @@
  * @module StorageInterface
  */
 
+import { Readable } from 'stream';
+
 /**
  * Configuration options for presigned URLs
  */
@@ -64,6 +66,58 @@ export interface PresignedUrlResult {
 }
 
 /**
+ * Parameters for streaming upload
+ */
+export interface StreamUploadParams {
+  /** Organization ID for multi-tenant isolation */
+  organizationId: string;
+  /** Unique document ID */
+  documentId: string;
+  /** File extension (e.g., "pdf", "docx") */
+  extension: string;
+  /** Content-Type (e.g., "application/pdf") */
+  contentType: string;
+  /** Readable stream of file data */
+  stream: Readable | Buffer;
+  /** Optional configuration */
+  options?: StreamUploadOptions;
+}
+
+/**
+ * Configuration options for streaming uploads
+ */
+export interface StreamUploadOptions {
+  /** Part size for multipart upload in bytes (default: 10MB) */
+  partSize?: number;
+  /** Progress callback function */
+  onProgress?: (progress: UploadProgress) => void;
+}
+
+/**
+ * Upload progress information
+ */
+export interface UploadProgress {
+  /** Number of bytes loaded */
+  loaded: number;
+  /** Total number of bytes (if known) */
+  total?: number;
+  /** Upload part number */
+  part?: number;
+}
+
+/**
+ * Result of streaming upload
+ */
+export interface StreamUploadResult {
+  /** Object key in storage */
+  key: string;
+  /** Upload identifier (e.g., ETag) */
+  uploadId?: string;
+  /** Location/URL of uploaded object */
+  location?: string;
+}
+
+/**
  * Storage service interface
  *
  * All storage implementations must implement this interface.
@@ -84,4 +138,12 @@ export interface IStorageService {
    * @returns Promise with presigned URL details
    */
   generatePresignedDownloadUrl(params: DownloadUrlParams): Promise<PresignedUrlResult>;
+
+  /**
+   * Upload file using streaming (for large files)
+   *
+   * @param params Stream upload parameters
+   * @returns Promise with upload result
+   */
+  uploadStream(params: StreamUploadParams): Promise<StreamUploadResult>;
 }
