@@ -159,8 +159,8 @@ describe('R2Service', () => {
     });
   });
 
-  describe('presigned URLs (not implemented yet)', () => {
-    it('should throw error for generatePresignedUploadUrl when not initialized', async () => {
+  describe('generatePresignedUploadUrl', () => {
+    it('should throw error when not initialized', async () => {
       const params = {
         organizationId: 'org_123',
         documentId: 'doc_456',
@@ -173,7 +173,7 @@ describe('R2Service', () => {
       );
     });
 
-    it('should throw "not implemented" error for generatePresignedUploadUrl after initialization', async () => {
+    it('should generate presigned URL with correct parameters', async () => {
       await service.initialize();
 
       const params = {
@@ -183,12 +183,152 @@ describe('R2Service', () => {
         contentType: 'application/pdf',
       };
 
+      const result = await service.generatePresignedUploadUrl(params);
+
+      // Verify result structure
+      expect(result).toHaveProperty('url');
+      expect(result).toHaveProperty('key');
+      expect(result).toHaveProperty('expiresAt');
+
+      // Verify key format: {org_id}/documents/{doc_id}/original.{ext}
+      expect(result.key).toBe('org_123/documents/doc_456/original.pdf');
+
+      // Verify URL is a valid URL
+      expect(() => new URL(result.url)).not.toThrow();
+
+      // Verify expiresAt is a valid ISO 8601 timestamp
+      expect(() => new Date(result.expiresAt)).not.toThrow();
+      expect(new Date(result.expiresAt).getTime()).toBeGreaterThan(Date.now());
+    });
+
+    it('should use default expiration of 15 minutes (900 seconds)', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+      };
+
+      const beforeCall = Date.now();
+      const result = await service.generatePresignedUploadUrl(params);
+      const afterCall = Date.now();
+
+      const expiresAt = new Date(result.expiresAt).getTime();
+      const expectedMinExpiry = beforeCall + 900 * 1000; // 15 minutes
+      const expectedMaxExpiry = afterCall + 900 * 1000;
+
+      expect(expiresAt).toBeGreaterThanOrEqual(expectedMinExpiry);
+      expect(expiresAt).toBeLessThanOrEqual(expectedMaxExpiry);
+    });
+
+    it('should use custom expiration when provided', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+        options: {
+          expiresIn: 600, // 10 minutes
+        },
+      };
+
+      const beforeCall = Date.now();
+      const result = await service.generatePresignedUploadUrl(params);
+      const afterCall = Date.now();
+
+      const expiresAt = new Date(result.expiresAt).getTime();
+      const expectedMinExpiry = beforeCall + 600 * 1000; // 10 minutes
+      const expectedMaxExpiry = afterCall + 600 * 1000;
+
+      expect(expiresAt).toBeGreaterThanOrEqual(expectedMinExpiry);
+      expect(expiresAt).toBeLessThanOrEqual(expectedMaxExpiry);
+    });
+
+    it('should handle different file extensions', async () => {
+      await service.initialize();
+
+      const extensions = ['pdf', 'docx', 'xlsx', 'png', 'jpg'];
+
+      for (const ext of extensions) {
+        const params = {
+          organizationId: 'org_123',
+          documentId: 'doc_456',
+          extension: ext,
+          contentType: 'application/octet-stream',
+        };
+
+        const result = await service.generatePresignedUploadUrl(params);
+        expect(result.key).toBe(`org_123/documents/doc_456/original.${ext}`);
+      }
+    });
+
+    it('should throw error if organizationId is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: '',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+      };
+
       await expect(service.generatePresignedUploadUrl(params)).rejects.toThrow(
-        'Not implemented yet - see issue #202',
+        'organizationId is required',
       );
     });
 
-    it('should throw error for generatePresignedDownloadUrl when not initialized', async () => {
+    it('should throw error if documentId is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: '',
+        extension: 'pdf',
+        contentType: 'application/pdf',
+      };
+
+      await expect(service.generatePresignedUploadUrl(params)).rejects.toThrow(
+        'documentId is required',
+      );
+    });
+
+    it('should throw error if extension is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: '',
+        contentType: 'application/pdf',
+      };
+
+      await expect(service.generatePresignedUploadUrl(params)).rejects.toThrow(
+        'extension is required',
+      );
+    });
+
+    it('should throw error if contentType is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        contentType: '',
+      };
+
+      await expect(service.generatePresignedUploadUrl(params)).rejects.toThrow(
+        'contentType is required',
+      );
+    });
+  });
+
+  describe('generatePresignedDownloadUrl (not implemented yet)', () => {
+    it('should throw error when not initialized', async () => {
       const params = {
         organizationId: 'org_123',
         documentId: 'doc_456',
@@ -201,7 +341,7 @@ describe('R2Service', () => {
       );
     });
 
-    it('should throw "not implemented" error for generatePresignedDownloadUrl after initialization', async () => {
+    it('should throw "not implemented" error after initialization', async () => {
       await service.initialize();
 
       const params = {

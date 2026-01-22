@@ -7,7 +7,8 @@
  * @module R2Service
  */
 
-import { S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -130,10 +131,49 @@ export class R2Service implements IStorageService, OnModuleInit {
    * // Returns: { url: 'https://...', key: 'org_123/documents/doc_456/original.pdf', expiresAt: '...' }
    * ```
    */
-  async generatePresignedUploadUrl(_params: UploadUrlParams): Promise<PresignedUrlResult> {
+  async generatePresignedUploadUrl(params: UploadUrlParams): Promise<PresignedUrlResult> {
     this.ensureInitialized();
-    // Implementation will be added in sub-issue #202
-    throw new Error('Not implemented yet - see issue #202');
+
+    // Validate required parameters
+    if (!params.organizationId) {
+      throw new Error('organizationId is required');
+    }
+    if (!params.documentId) {
+      throw new Error('documentId is required');
+    }
+    if (!params.extension) {
+      throw new Error('extension is required');
+    }
+    if (!params.contentType) {
+      throw new Error('contentType is required');
+    }
+
+    // Construct object key: {org_id}/documents/{doc_id}/original.{ext}
+    const key = `${params.organizationId}/documents/${params.documentId}/original.${params.extension}`;
+
+    // Default expiration: 15 minutes (900 seconds)
+    const expiresIn = params.options?.expiresIn ?? 900;
+
+    // Create PutObjectCommand with content type
+    const command = new PutObjectCommand({
+      Bucket: this.config.bucketName,
+      Key: key,
+      ContentType: params.contentType,
+    });
+
+    // Generate presigned URL
+    const url = await getSignedUrl(this.s3Client, command, { expiresIn });
+
+    // Calculate expiration timestamp
+    const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
+
+    this.logger.debug(`Generated presigned upload URL for key: ${key}, expires at: ${expiresAt}`);
+
+    return {
+      url,
+      key,
+      expiresAt,
+    };
   }
 
   /**
