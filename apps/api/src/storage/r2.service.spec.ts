@@ -327,7 +327,7 @@ describe('R2Service', () => {
     });
   });
 
-  describe('generatePresignedDownloadUrl (not implemented yet)', () => {
+  describe('generatePresignedDownloadUrl', () => {
     it('should throw error when not initialized', async () => {
       const params = {
         organizationId: 'org_123',
@@ -341,7 +341,41 @@ describe('R2Service', () => {
       );
     });
 
-    it('should throw "not implemented" error after initialization', async () => {
+    it('should generate presigned URL with correct parameters', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        filename: 'test-document.pdf',
+      };
+
+      const result = await service.generatePresignedDownloadUrl(params);
+
+      // Verify result structure
+      expect(result).toHaveProperty('url');
+      expect(result).toHaveProperty('key');
+      expect(result).toHaveProperty('expiresAt');
+
+      // Verify key format: {org_id}/documents/{doc_id}/original.{ext}
+      expect(result.key).toBe('org_123/documents/doc_456/original.pdf');
+
+      // Verify URL is a valid URL
+      expect(() => new URL(result.url)).not.toThrow();
+
+      // Verify URL contains Content-Disposition parameter
+      const url = new URL(result.url);
+      expect(url.searchParams.get('response-content-disposition')).toBe(
+        'attachment; filename="test-document.pdf"',
+      );
+
+      // Verify expiresAt is a valid ISO 8601 timestamp
+      expect(() => new Date(result.expiresAt)).not.toThrow();
+      expect(new Date(result.expiresAt).getTime()).toBeGreaterThan(Date.now());
+    });
+
+    it('should use default expiration of 60 minutes (3600 seconds)', async () => {
       await service.initialize();
 
       const params = {
@@ -351,8 +385,164 @@ describe('R2Service', () => {
         filename: 'test.pdf',
       };
 
+      const beforeCall = Date.now();
+      const result = await service.generatePresignedDownloadUrl(params);
+      const afterCall = Date.now();
+
+      const expiresAt = new Date(result.expiresAt).getTime();
+      const expectedMinExpiry = beforeCall + 3600 * 1000; // 60 minutes
+      const expectedMaxExpiry = afterCall + 3600 * 1000;
+
+      expect(expiresAt).toBeGreaterThanOrEqual(expectedMinExpiry);
+      expect(expiresAt).toBeLessThanOrEqual(expectedMaxExpiry);
+    });
+
+    it('should use custom expiration when provided', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        filename: 'test.pdf',
+        options: {
+          expiresIn: 1800, // 30 minutes
+        },
+      };
+
+      const beforeCall = Date.now();
+      const result = await service.generatePresignedDownloadUrl(params);
+      const afterCall = Date.now();
+
+      const expiresAt = new Date(result.expiresAt).getTime();
+      const expectedMinExpiry = beforeCall + 1800 * 1000; // 30 minutes
+      const expectedMaxExpiry = afterCall + 1800 * 1000;
+
+      expect(expiresAt).toBeGreaterThanOrEqual(expectedMinExpiry);
+      expect(expiresAt).toBeLessThanOrEqual(expectedMaxExpiry);
+    });
+
+    it('should handle different file extensions', async () => {
+      await service.initialize();
+
+      const extensions = ['pdf', 'docx', 'xlsx', 'png', 'jpg'];
+
+      for (const ext of extensions) {
+        const params = {
+          organizationId: 'org_123',
+          documentId: 'doc_456',
+          extension: ext,
+          filename: `test.${ext}`,
+        };
+
+        const result = await service.generatePresignedDownloadUrl(params);
+        expect(result.key).toBe(`org_123/documents/doc_456/original.${ext}`);
+      }
+    });
+
+    it('should generate URL without Content-Disposition when filename is not provided', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+      };
+
+      const result = await service.generatePresignedDownloadUrl(params);
+
+      // Verify URL is generated
+      expect(result.url).toBeDefined();
+      expect(() => new URL(result.url)).not.toThrow();
+
+      // Verify no Content-Disposition parameter
+      const url = new URL(result.url);
+      expect(url.searchParams.get('response-content-disposition')).toBeNull();
+    });
+
+    it('should use custom contentDisposition from options', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        options: {
+          contentDisposition: 'inline; filename="custom-name.pdf"',
+        },
+      };
+
+      const result = await service.generatePresignedDownloadUrl(params);
+
+      const url = new URL(result.url);
+      expect(url.searchParams.get('response-content-disposition')).toBe(
+        'inline; filename="custom-name.pdf"',
+      );
+    });
+
+    it('should prioritize filename parameter over options.contentDisposition', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        filename: 'priority-file.pdf',
+        options: {
+          contentDisposition: 'inline; filename="ignored.pdf"',
+        },
+      };
+
+      const result = await service.generatePresignedDownloadUrl(params);
+
+      const url = new URL(result.url);
+      expect(url.searchParams.get('response-content-disposition')).toBe(
+        'attachment; filename="priority-file.pdf"',
+      );
+    });
+
+    it('should throw error if organizationId is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: '',
+        documentId: 'doc_456',
+        extension: 'pdf',
+        filename: 'test.pdf',
+      };
+
       await expect(service.generatePresignedDownloadUrl(params)).rejects.toThrow(
-        'Not implemented yet - see issue #203',
+        'organizationId is required',
+      );
+    });
+
+    it('should throw error if documentId is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: '',
+        extension: 'pdf',
+        filename: 'test.pdf',
+      };
+
+      await expect(service.generatePresignedDownloadUrl(params)).rejects.toThrow(
+        'documentId is required',
+      );
+    });
+
+    it('should throw error if extension is missing', async () => {
+      await service.initialize();
+
+      const params = {
+        organizationId: 'org_123',
+        documentId: 'doc_456',
+        extension: '',
+        filename: 'test.pdf',
+      };
+
+      await expect(service.generatePresignedDownloadUrl(params)).rejects.toThrow(
+        'extension is required',
       );
     });
   });

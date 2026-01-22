@@ -7,7 +7,7 @@
  * @module R2Service
  */
 
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -196,10 +196,61 @@ export class R2Service implements IStorageService, OnModuleInit {
    * // Returns: { url: 'https://...', key: 'org_123/documents/doc_456/original.pdf', expiresAt: '...' }
    * ```
    */
-  async generatePresignedDownloadUrl(_params: DownloadUrlParams): Promise<PresignedUrlResult> {
+  async generatePresignedDownloadUrl(params: DownloadUrlParams): Promise<PresignedUrlResult> {
     this.ensureInitialized();
-    // Implementation will be added in sub-issue #203
-    throw new Error('Not implemented yet - see issue #203');
+
+    // Validate required parameters
+    if (!params.organizationId) {
+      throw new Error('organizationId is required');
+    }
+    if (!params.documentId) {
+      throw new Error('documentId is required');
+    }
+    if (!params.extension) {
+      throw new Error('extension is required');
+    }
+
+    // Construct object key: {org_id}/documents/{doc_id}/original.{ext}
+    const key = `${params.organizationId}/documents/${params.documentId}/original.${params.extension}`;
+
+    // Default expiration: 60 minutes (3600 seconds)
+    const expiresIn = params.options?.expiresIn ?? 3600;
+
+    // Build GetObjectCommand with optional Content-Disposition
+    const commandParams: {
+      Bucket: string;
+      Key: string;
+      ResponseContentDisposition?: string;
+    } = {
+      Bucket: this.config.bucketName,
+      Key: key,
+    };
+
+    // Set Content-Disposition if filename is provided
+    // Format: attachment; filename="document.pdf"
+    if (params.filename) {
+      commandParams.ResponseContentDisposition = `attachment; filename="${params.filename}"`;
+    } else if (params.options?.contentDisposition) {
+      // Allow custom Content-Disposition via options
+      commandParams.ResponseContentDisposition = params.options.contentDisposition;
+    }
+
+    // Create GetObjectCommand
+    const command = new GetObjectCommand(commandParams);
+
+    // Generate presigned URL
+    const url = await getSignedUrl(this.s3Client, command, { expiresIn });
+
+    // Calculate expiration timestamp
+    const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
+
+    this.logger.debug(`Generated presigned download URL for key: ${key}, expires at: ${expiresAt}`);
+
+    return {
+      url,
+      key,
+      expiresAt,
+    };
   }
 
   /**
