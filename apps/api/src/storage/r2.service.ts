@@ -8,6 +8,7 @@
  */
 
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -17,6 +18,8 @@ import {
   UploadUrlParams,
   DownloadUrlParams,
   PresignedUrlResult,
+  StreamUploadParams,
+  StreamUploadResult,
 } from './interfaces/storage.interface';
 
 /**
@@ -251,6 +254,109 @@ export class R2Service implements IStorageService, OnModuleInit {
       key,
       expiresAt,
     };
+  }
+
+  /**
+   * Upload file using streaming for large files
+   *
+   * Uses @aws-sdk/lib-storage Upload class which automatically handles multipart
+   * uploads for files larger than the configured part size (default: 10MB).
+   *
+   * Supports progress tracking and automatic cleanup on failure.
+   *
+   * @param params Stream upload parameters
+   * @returns Promise with upload result
+   *
+   * @example
+   * ```typescript
+   * const fileStream = fs.createReadStream('/path/to/large-file.pdf');
+   * const result = await r2Service.uploadStream({
+   *   organizationId: 'org_123',
+   *   documentId: 'doc_456',
+   *   extension: 'pdf',
+   *   contentType: 'application/pdf',
+   *   stream: fileStream,
+   *   options: {
+   *     partSize: 10 * 1024 * 1024, // 10MB
+   *     onProgress: (progress) => console.log(progress)
+   *   }
+   * });
+   * // Returns: { key: 'org_123/documents/doc_456/original.pdf', uploadId: '...', location: '...' }
+   * ```
+   */
+  async uploadStream(params: StreamUploadParams): Promise<StreamUploadResult> {
+    this.ensureInitialized();
+
+    // Validate required parameters
+    if (!params.organizationId) {
+      throw new Error('organizationId is required');
+    }
+    if (!params.documentId) {
+      throw new Error('documentId is required');
+    }
+    if (!params.extension) {
+      throw new Error('extension is required');
+    }
+    if (!params.contentType) {
+      throw new Error('contentType is required');
+    }
+    if (!params.stream) {
+      throw new Error('stream is required');
+    }
+
+    // Construct object key: {org_id}/documents/{doc_id}/original.{ext}
+    const key = `${params.organizationId}/documents/${params.documentId}/original.${params.extension}`;
+
+    // Default part size: 10MB (for files >100MB)
+    const partSize = params.options?.partSize ?? 10 * 1024 * 1024;
+
+    this.logger.debug(`Starting streaming upload for key: ${key}, partSize: ${partSize} bytes`);
+
+    try {
+      // Create Upload instance with multipart configuration
+      const upload = new Upload({
+        client: this.s3Client,
+        params: {
+          Bucket: this.config.bucketName,
+          Key: key,
+          Body: params.stream,
+          ContentType: params.contentType,
+        },
+        // Configure multipart upload
+        queueSize: 4, // Number of concurrent part uploads
+        partSize, // Size of each part in bytes
+        leavePartsOnError: false, // Cleanup parts on failure
+      });
+
+      // Attach progress listener if provided
+      if (params.options?.onProgress) {
+        upload.on('httpUploadProgress', (progress) => {
+          params.options!.onProgress!({
+            loaded: progress.loaded ?? 0,
+            total: progress.total,
+            part: progress.part,
+          });
+        });
+      }
+
+      // Execute upload
+      const result = await upload.done();
+
+      this.logger.log(`Successfully uploaded stream to key: ${key}, ETag: ${result.ETag}`);
+
+      return {
+        key,
+        uploadId: result.ETag,
+        location: result.Location,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to upload stream for key: ${key}`, error);
+
+      // Upload class automatically cleans up parts on error if leavePartsOnError is false
+      throw new Error(
+        `Failed to upload stream: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    }
   }
 
   /**
