@@ -102,7 +102,7 @@ Deliver a working product that demonstrates core value proposition: AI-assisted 
   - [x] [#171](https://github.com/tjsasakifln/sentinel-rfp/issues/171) - Implementar User-Organization Relationships
   - [x] [#172](https://github.com/tjsasakifln/sentinel-rfp/issues/172) - Criar Testes de Isolamento Cross-Tenant
 - [x] Role-based access control (RBAC) - [#23](https://github.com/tjsasakifln/sentinel-rfp/issues/23)
-- [ ] Password reset flow - [#24](https://github.com/tjsasakifln/sentinel-rfp/issues/24)
+- [x] Password reset flow - [#24](https://github.com/tjsasakifln/sentinel-rfp/issues/24)
 
 **Exit Criteria:**
 
