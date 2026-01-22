@@ -1,8 +1,12 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
+import { ParserType } from '../detection/mime-types';
+import { TypeDetectorService } from '../detection/type-detector.service';
+
 /**
  * Allowed document types with their MIME types
+ * @deprecated Use TypeDetectorService for type detection
  */
 export const ALLOWED_DOCUMENT_TYPES = {
   PDF: 'application/pdf',
@@ -23,13 +27,17 @@ export interface FileMetadata {
   size: number;
   mimeType: string;
   extension: string;
+  parserType?: ParserType;
+  detectionMethod?: 'MAGIC_BYTES' | 'EXTENSION_FALLBACK';
 }
 
 /**
  * Service for handling file upload validation and metadata extraction
+ * Now uses TypeDetectorService for accurate magic bytes detection (Issue #27)
  */
 @Injectable()
 export class UploadService {
+  constructor(private readonly typeDetectorService: TypeDetectorService) {}
   /**
    * Validate file size
    */
@@ -42,52 +50,43 @@ export class UploadService {
   }
 
   /**
-   * Validate file type by extension and MIME type
-   * Note: For MVP, we're using extension-based validation.
-   * TODO: Add magic number validation in future security enhancement (Issue #TBD)
+   * Validate file type using magic bytes detection (Issue #27)
+   * Uses TypeDetectorService for accurate file type detection
+   *
+   * @param file Uploaded file
+   * @returns DocumentTypeDetectionResult with MIME type, extension, and parser type
    */
-  async validateFileType(file: Express.Multer.File): Promise<string> {
-    const extension = file.originalname.split('.').pop()?.toLowerCase();
+  async validateFileType(file: Express.Multer.File) {
+    // Use TypeDetectorService for magic bytes detection
+    const detectionResult = await this.typeDetectorService.detectType(
+      file.buffer,
+      file.originalname,
+    );
 
-    // Map extensions to MIME types
-    const extensionToMimeType: Record<string, string> = {
-      pdf: ALLOWED_DOCUMENT_TYPES.PDF,
-      docx: ALLOWED_DOCUMENT_TYPES.DOCX,
-      xlsx: ALLOWED_DOCUMENT_TYPES.XLSX,
-      pptx: ALLOWED_DOCUMENT_TYPES.PPTX,
-    };
-
-    if (!extension || !extensionToMimeType[extension]) {
-      throw new BadRequestException(
-        `File type "${extension}" is not supported. Allowed types: PDF, DOCX, XLSX, PPTX`,
-      );
-    }
-
-    return extensionToMimeType[extension];
+    return detectionResult;
   }
 
   /**
-   * Extract file metadata
+   * Extract file metadata with magic bytes detection
    */
   async extractMetadata(file: Express.Multer.File): Promise<FileMetadata> {
     // Validate file size
     this.validateFileSize(file);
 
-    // Validate and get actual MIME type
-    const mimeType = await this.validateFileType(file);
+    // Validate and detect file type using magic bytes
+    const typeDetection = await this.validateFileType(file);
 
     // Generate unique document ID (UUID v4)
     const id = uuidv4();
-
-    // Extract file extension from original name
-    const extension = file.originalname.split('.').pop()?.toLowerCase() || '';
 
     return {
       id,
       originalName: file.originalname,
       size: file.size,
-      mimeType,
-      extension,
+      mimeType: typeDetection.mimeType,
+      extension: typeDetection.extension,
+      parserType: typeDetection.parserType,
+      detectionMethod: typeDetection.detectionMethod,
     };
   }
 
